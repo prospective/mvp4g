@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../mvp4g-examples/EmployeeAdmin/employeeadmim.iml" filepath="$PROJECT_DIR$/../mvp4g-examples/EmployeeAdmin/employeeadmim.iml" />
       <module fileurl="file://$PROJECT_DIR$/mvp4g.iml" filepath="$PROJECT_DIR$/mvp4g.iml" />
     </modules>
   </component>

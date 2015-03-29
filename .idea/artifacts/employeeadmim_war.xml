@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="employeeadmim:war">
+    <output-path>$PROJECT_DIR$/../mvp4g-examples/EmployeeAdmin/target</output-path>
+    <root id="archive" name="employeeadmim-1.6.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="employeeadmim:war exploded" />
+    </root>
+  </artifact>
+</component>

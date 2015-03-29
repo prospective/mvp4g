@@ -15,7 +15,10 @@
       <entry name="!?*.aj" />
     </wildcardResourcePatterns>
     <annotationProcessing>
-      <profile default="true" name="Default" enabled="false">
+      <profile default="true" name="Default" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/annotations" />
+        <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
       </profile>
       <profile default="false" name="Maven default annotation processors profile" enabled="true">
@@ -23,10 +26,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="employeeadmim" />
         <module name="mvp4g" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="employeeadmim" target="1.7" />
       <module name="mvp4g" target="1.7" />
     </bytecodeTargetLevel>
   </component>

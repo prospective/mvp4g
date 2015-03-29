@@ -150,7 +150,7 @@ public class Mvp4gConfiguration {
    * <br>
    * <ol>
    * <li>Phase 1, <i>Parsing all the annotations</i>: during this phase, all the Mvp4gElement
-   * instances are constructed from their corresponding annotations. All possible validations are
+   * instances are constructed from their corresponding annotations. All possible controls are
    * performed.</li>
    * <li>Phase 2, <i>Validation of cross-element references and removal of useless elements</i>:
    * in this phase element identifiers are checked for global uniqueness; event handler references
@@ -175,7 +175,7 @@ public class Mvp4gConfiguration {
     loadEvents(scanResult.get(Events.class));
     loadParentModule();
 
-    // Phase 2: perform cross-element validations
+    // Phase 2: perform cross-element controls
     if (eventBus == null) {
       throw new InvalidMvp4gConfigurationException(String.format(NO_EVENT_BUS,
                                                                  module.getSimpleSourceName()));
