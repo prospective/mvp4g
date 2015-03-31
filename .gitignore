@@ -920,3 +920,11 @@ target/test-classes/com/mvp4g/rebind/TestMvp4gGenerator.class
 target/test-classes/com/mvp4g/rebind/TestMvp4gRunAsyncGenerator.class
 target/test-classes/com/mvp4g/rebind/config/Mvp4gConfigurationTest.class
 target/test-classes/com/mvp4g/rebind/config/element/AbstractMvp4gElementTest.class
+target/apidocs/com/mvp4g/processor/Mvp4gAnnotationProcessor.html
+target/apidocs/com/mvp4g/processor/class-use/Mvp4gAnnotationProcessor.html
+target/apidocs/com/mvp4g/processor/controls/EventsControl.html
+target/apidocs/com/mvp4g/processor/controls/class-use/EventsControl.html
+target/classes/com/mvp4g/processor/Mvp4gAnnotationProcessor.class
+target/classes/com/mvp4g/processor/Mvp4gAnnotationProcessor.java
+target/classes/com/mvp4g/processor/controls/EventsControl.class
+target/classes/com/mvp4g/processor/controls/EventsControl.java

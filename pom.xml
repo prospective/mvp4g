@@ -117,6 +117,7 @@
       <groupId>com.google.auto.service</groupId>
       <artifactId>auto-service</artifactId>
       <version>${autoservice.version}</version>
+      <scope>compile</scope>
       <optional>true</optional>
     </dependency>
 

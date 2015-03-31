@@ -6,14 +6,17 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="gwt" url="file://$PROJECT_DIR$" />
     <file type="gwt" url="file://$PROJECT_DIR$/../mvp4g-examples/EmployeeAdmin" />
+    <file type="gwt" url="file://$PROJECT_DIR$/../mvp4g-examples/Mvp4gModules" />
     <file type="web" url="file://$PROJECT_DIR$" />
     <file type="web" url="file://$PROJECT_DIR$/../mvp4g-examples/EmployeeAdmin" />
+    <file type="web" url="file://$PROJECT_DIR$/../mvp4g-examples/Mvp4gModules" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/../mvp4g-examples/EmployeeAdmin/pom.xml" />
+        <option value="$PROJECT_DIR$/../mvp4g-examples/Mvp4gModules/pom.xml" />
       </list>
     </option>
   </component>

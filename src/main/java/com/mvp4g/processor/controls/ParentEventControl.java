@@ -15,7 +15,7 @@ public class ParentEventControl {
 //		if ( forwardToParent ) {
 //
 //			String module = appInfo.getEventBus().get( eventBus.getQualifiedName().toString() );
-//			Map<String, ModuleInfo> modules = appInfo.getModules();
+//			Map<String, ModuleInfo> modules = appInfo.getModule();
 //			ModuleInfo info = ( module == null ) ? null : modules.get( module );
 //			if ( ( info == null ) || ( info.getParentEventBus() == null ) ) {
 //				processingEnv.getMessager().printMessage( Kind.ERROR, String.format( Messages.MODULE_NO_PARENT, eventBus.getQualifiedName() ), e );

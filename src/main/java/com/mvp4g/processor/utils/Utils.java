@@ -15,9 +15,8 @@ public class Utils {
 //	final public static String CLEAR_HISTORY = "com.mvp4g.client.history.ClearHistory";
 //	final public static String STRING = String.class.getCanonicalName();
 //	final public static String EVENT = "com.mvp4g.client.annotation.Event";
-  public final static String EVENTS    = Events.class.getName();
-  public final static String PRESENTER = Presenter.class.getName()
-                                                        .toString();
+  public final static String EVENTS    = Events.class.getCanonicalName();
+  public final static String PRESENTER = Presenter.class.getCanonicalName();
 
 //	final public static String EVENT_HANDLER = "com.mvp4g.client.annotation.EventHandler";
 //	final public static String HISTORY = "com.mvp4g.client.annotation.History";

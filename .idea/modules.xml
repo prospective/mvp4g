@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../mvp4g-examples/EmployeeAdmin/employeeadmim.iml" filepath="$PROJECT_DIR$/../mvp4g-examples/EmployeeAdmin/employeeadmim.iml" />
       <module fileurl="file://$PROJECT_DIR$/mvp4g.iml" filepath="$PROJECT_DIR$/mvp4g.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mvp4g-examples/Mvp4gModules/mvp4gmodules.iml" filepath="$PROJECT_DIR$/../mvp4g-examples/Mvp4gModules/mvp4gmodules.iml" />
     </modules>
   </component>
 </project>

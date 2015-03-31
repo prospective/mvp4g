@@ -28,11 +28,13 @@
         <processorPath useClasspath="true" />
         <module name="employeeadmim" />
         <module name="mvp4g" />
+        <module name="mvp4gmodules" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="employeeadmim" target="1.7" />
       <module name="mvp4g" target="1.7" />
+      <module name="mvp4gmodules" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

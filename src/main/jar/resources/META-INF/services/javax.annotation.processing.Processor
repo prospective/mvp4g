@@ -1,2 +1,1 @@
-com.mvp4g.processor.EventAnnotationProcessor
-com.mvp4g.processor.PresenterAnnotationProcessor
+com.mvp4g.processor.Mvp4gAnnotationProcessor

@@ -21,7 +21,7 @@ public class ChildEventControl {
 //			TypeElement type;
 //			String module;
 //			String methodName = e.getSimpleName().toString();
-//			Map<String, ModuleInfo> modules = appInfo.getModules();
+//			Map<String, ModuleInfo> modules = appInfo.getModule();
 //			for ( AnnotationValue value : modulesToLoad ) {
 //				module = ( (DeclaredType)value.getValue() ).toString();
 //				info = modules.get( module );
