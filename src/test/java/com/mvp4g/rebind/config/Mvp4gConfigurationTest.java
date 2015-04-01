@@ -2782,7 +2782,7 @@ public class Mvp4gConfigurationTest {
     } catch (InvalidMvp4gConfigurationException e) {
       assertTrue(e.getMessage()
                   .contains(
-                               "history name can't start with '" + PlaceService.CRAWLABLE + "' or contain '" + PlaceService.MODULE_SEPARATOR + "'."));
+                               "history !test name can't start with '" + PlaceService.CRAWLABLE + "' or contain '" + PlaceService.MODULE_SEPARATOR + "'."));
     }
     try {
       configuration.validateHistoryName("/test",
@@ -2791,7 +2791,7 @@ public class Mvp4gConfigurationTest {
     } catch (InvalidMvp4gConfigurationException e) {
       assertTrue(e.getMessage()
                   .contains(
-                               "history name can't start with '" + PlaceService.CRAWLABLE + "' or contain '" + PlaceService.MODULE_SEPARATOR + "'."));
+                               "history /test name can't start with '" + PlaceService.CRAWLABLE + "' or contain '" + PlaceService.MODULE_SEPARATOR + "'."));
     }
     try {
       configuration.validateHistoryName("te/st",
@@ -2800,7 +2800,7 @@ public class Mvp4gConfigurationTest {
     } catch (InvalidMvp4gConfigurationException e) {
       assertTrue(e.getMessage()
                   .contains(
-                               "history name can't start with '" + PlaceService.CRAWLABLE + "' or contain '" + PlaceService.MODULE_SEPARATOR + "'."));
+                               "history te/st name can't start with '" + PlaceService.CRAWLABLE + "' or contain '" + PlaceService.MODULE_SEPARATOR + "'."));
     }
 
     configuration.validateHistoryName("test",
