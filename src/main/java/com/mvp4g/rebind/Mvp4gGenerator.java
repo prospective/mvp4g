@@ -186,7 +186,6 @@ public class Mvp4gGenerator
         writer.writeConf();
         sourceWriter.commit(logger);
       } else {
-
         Date end = new Date();
 
         logger.log(TreeLogger.INFO,
@@ -291,8 +290,7 @@ public class Mvp4gGenerator
     }
     assert sourceType instanceof JRealClassType;
     JRealClassType realClass = (JRealClassType) sourceType;
-    if (realClass == null ||
-        realClass.getLastModifiedTime() > lastTimeGenerated) {
+    if (realClass.getLastModifiedTime() > lastTimeGenerated) {
       return false;
     }
 
@@ -313,8 +311,7 @@ public class Mvp4gGenerator
     }
     assert module instanceof JRealClassType;
     JRealClassType realClass = (JRealClassType) module;
-    if (realClass == null ||
-        realClass.getLastModifiedTime() > lastTimeGenerated) {
+    if (realClass.getLastModifiedTime() > lastTimeGenerated) {
       return false;
     }
 
@@ -338,8 +335,7 @@ public class Mvp4gGenerator
       }
       assert sourceType instanceof JRealClassType;
       JRealClassType realClass = (JRealClassType) sourceType;
-      if (realClass == null ||
-          realClass.getLastModifiedTime() > lastTimeGenerated) {
+      if (realClass.getLastModifiedTime() > lastTimeGenerated) {
         return false;
       }
     }
