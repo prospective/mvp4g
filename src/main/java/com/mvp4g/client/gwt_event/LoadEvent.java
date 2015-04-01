@@ -25,7 +25,7 @@ import com.google.gwt.event.shared.GwtEvent;
 public class LoadEvent
   extends GwtEvent<LoadHandler> {
 
-  public static Type<LoadHandler> TYPE = new Type<LoadHandler>();
+  public final static Type<LoadHandler> TYPE = new Type<LoadHandler>();
 
   /*
    * (non-Javadoc)

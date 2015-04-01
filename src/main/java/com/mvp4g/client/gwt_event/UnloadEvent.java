@@ -25,7 +25,7 @@ import com.google.gwt.event.shared.GwtEvent;
 public class UnloadEvent
   extends GwtEvent<UnloadHandler> {
 
-  public static Type<UnloadHandler> TYPE = new Type<UnloadHandler>();
+  public final static Type<UnloadHandler> TYPE = new Type<UnloadHandler>();
 
   /*
    * (non-Javadoc)
