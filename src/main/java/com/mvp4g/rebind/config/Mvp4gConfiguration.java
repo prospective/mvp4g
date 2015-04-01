@@ -69,7 +69,7 @@ public class Mvp4gConfiguration {
   private static final String TOKEN_WITH_NO_CONVERTER         = "Event %s: you can't generate a token for this event if it has no history converter.";
   private static final String EMPTY_HISTORY_NAME_ROOT         = "Event %s: An event of the Mvp4g Root module can't have an history name equal to empty string.";
   private static final String SAME_HISTORY_NAME               = "Event %s: history name already used for another event: %s.";
-  private static final String WRONG_HISTORY_NAME              = "%s %s: history name can't start with '" + PlaceService.CRAWLABLE + "' or contain '"
+  private static final String WRONG_HISTORY_NAME              = "%s %s: history %s name can't start with '" + PlaceService.CRAWLABLE + "' or contain '"
     + PlaceService.MODULE_SEPARATOR + "'.";
   private static final String WRONG_FORWARD_EVENT             = "You can't define a forward event for RootModule since no event from parent can be forwarded to it.";
   private static final String NO_START_PRESENTER              = "Module %s: You must define a start presenter since this module has a parent module that uses the auto-displayed feature for this module.";
