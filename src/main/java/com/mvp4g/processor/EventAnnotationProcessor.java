@@ -20,7 +20,6 @@ package com.mvp4g.processor;
 import com.mvp4g.processor.info.ApplicationInfo;
 import com.mvp4g.processor.info.ModuleInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
-import com.mvp4g.processor.utils.Utils;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -66,18 +65,18 @@ public class EventAnnotationProcessor
   public boolean process(Set<? extends TypeElement> annotations,
                          RoundEnvironment roundEnv) {
 
-    for (TypeElement element : annotations) {
-      if (Utils.EVENTS.equals(element.asType()
-                                             .toString())) {
-        List<TypeElement> eventBus = getAllEventBus(element,
-                                                    roundEnv);
-        ApplicationInfo applicationInfo = loadChildModules(eventBus);
-        for (TypeElement e : eventBus) {
-          processEvent(e,
-                       applicationInfo);
-        }
-      }
-    }
+//    for (TypeElement element : annotations) {
+//      if (Utils.EVENTS.equals(element.asType()
+//                                             .toString())) {
+//        List<TypeElement> eventBus = getAllEventBus(element,
+//                                                    roundEnv);
+//        ApplicationInfo applicationInfo = loadChildModules(eventBus);
+//        for (TypeElement e : eventBus) {
+//          processEvent(e,
+//                       applicationInfo);
+//        }
+//      }
+//    }
 
     return true;
   }

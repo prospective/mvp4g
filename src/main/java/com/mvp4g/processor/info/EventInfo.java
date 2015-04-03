@@ -46,7 +46,7 @@ public class EventInfo {
 //   * Returns the name of the module
 //   * @return module name
 //   */
-//  public String getName() {
+//  public String getModule() {
 //    return name;
 //  }
 //

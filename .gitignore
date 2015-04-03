@@ -953,3 +953,11 @@ target/mvp4g-1.5.0.jar.asc
 target/mvp4g-1.5.0.pom
 target/mvp4g-1.5.0.pom.asc
 target/apidocs/script.js
+target/apidocs/com/mvp4g/processor/controls/ChildModuleControl.html
+target/apidocs/com/mvp4g/processor/controls/class-use/ChildModuleControl.html
+target/classes/com/mvp4g/processor/controls/ChildModuleControl.class
+target/classes/com/mvp4g/processor/controls/ChildModuleControl.java
+target/classes/com/mvp4g/processor/utils/Utils$1.class
+target/classes/com/mvp4g/processor/utils/Utils$2.class
+target/classes/com/mvp4g/processor/utils/Utils$3.class
+target/classes/com/mvp4g/processor/utils/Utils$4.class

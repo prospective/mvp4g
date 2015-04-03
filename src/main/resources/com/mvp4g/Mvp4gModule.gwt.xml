@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='Mvp4gModule'>
   <!-- Inherit the core Web Toolkit stuff.                        -->
-  <inherits name='com.google.gwt.user.User' />
+  <inherits module='com.google.gwt.user.User' />
 
   <!-- Other module inherits                                      -->
-  <inherits name="com.google.gwt.inject.Inject"/>
+  <inherits module="com.google.gwt.inject.Inject"/>
 
   <!-- Specify the app entry point class.                         -->
   <!--<entry-point class='com.mvp4g.client.Mvp4gModule' />-->

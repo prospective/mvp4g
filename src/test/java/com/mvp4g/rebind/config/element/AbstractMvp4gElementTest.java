@@ -88,7 +88,7 @@ public abstract class AbstractMvp4gElementTest<T extends Mvp4gElement> {
 	/**
 	 * For each element, test each property getter and setter specific to this loader.<br>
 	 * <br>
-	 * For example, verify that getName() == getProperty("name")<br>
+	 * For example, verify that getModule() == getProperty("name")<br>
 	 * and setName(name) == setProperty("name", name)
 	 * 
 	 * @throws Exception

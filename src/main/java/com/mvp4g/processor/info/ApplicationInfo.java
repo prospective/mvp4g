@@ -72,6 +72,15 @@ public class ApplicationInfo {
     return modules.get(module);
   }
 
+  public ModuleInfo getModuleInfoForEventBus(String eventBusName) {
+    for (ModuleInfo info : modules.values()) {
+      if (info.getCurrentEventBus().getQualifiedName().toString().equals(eventBusName)) {
+        return info;
+      }
+    }
+    return null;
+  }
+
 //   * @param modules the modules to set
 //   */
 //  public void setModules(Map<String, ModuleInfo> modules) {

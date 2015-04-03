@@ -21,11 +21,15 @@ import com.google.auto.service.AutoService;
 import com.mvp4g.client.Mvp4gModule;
 import com.mvp4g.client.annotation.Events;
 import com.mvp4g.client.annotation.Presenter;
+import com.mvp4g.client.annotation.module.ChildModule;
+import com.mvp4g.client.annotation.module.ChildModules;
+import com.mvp4g.processor.controls.ChildModuleControl;
 import com.mvp4g.processor.controls.EventBusControl;
 import com.mvp4g.processor.controls.EventControl;
 import com.mvp4g.processor.controls.PresenterControl;
 import com.mvp4g.processor.info.ApplicationInfo;
 import com.mvp4g.processor.info.ModuleInfo;
+import com.mvp4g.processor.info.PresenterInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
 import com.mvp4g.processor.utils.Utils;
 
@@ -38,8 +42,7 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 import static javax.lang.model.util.ElementFilter.typesIn;
 
@@ -47,12 +50,13 @@ import static javax.lang.model.util.ElementFilter.typesIn;
 public class Mvp4gAnnotationProcessor
   extends AbstractProcessor {
 
-  /* application info */
-  private ApplicationInfo applicationInfo;
+  /* info */
+  private ApplicationInfo            applicationInfo;
+  private Map<String, PresenterInfo> presenterInfos;
   /* message utils */
-  private MessagerUtils   messagerUtils;
+  private MessagerUtils              messagerUtils;
   /* state of validation */
-  private boolean         isValid;
+  private boolean                    isValid;
 
 //------------------------------------------------------------------------------
 
@@ -65,6 +69,8 @@ public class Mvp4gAnnotationProcessor
   @Override
   public Set<String> getSupportedAnnotationTypes() {
     Set<String> annotataions = new LinkedHashSet<String>();
+    annotataions.add(Events.class.getCanonicalName());
+    annotataions.add(ChildModules.class.getCanonicalName());
     annotataions.add(Presenter.class.getCanonicalName());
     return annotataions;
   }
@@ -78,10 +84,12 @@ public class Mvp4gAnnotationProcessor
   @Override
   public synchronized void init(ProcessingEnvironment processingEnv) {
     super.init(processingEnv);
-
+    // initialize
     applicationInfo = new ApplicationInfo();
-    isValid = true;
+    presenterInfos = new HashMap<>();
 
+    isValid = true;
+    // set up
     messagerUtils = new MessagerUtils(processingEnv.getMessager());
   }
 
@@ -93,36 +101,95 @@ public class Mvp4gAnnotationProcessor
     if (!roundEnv.processingOver()) {
       // create start message
       messagerUtils.note("[PresenterAnnotationProcessor] - processing annotations");
-      // processing Events annotatiom
-      processEventBus(annotations,
+      // scan annotations
+      scanAnnotations(annotations,
                       roundEnv);
-
-
-      // processing Presenter annotatiom
-      processPresenter(annotations,
-                       roundEnv);
-
-
       // process only is all tests has passed successfully
       if (!isValid) {
         return true;
       }
-      // TODO may be we replace the generators with apt in the future ... :-)
-
+      // validate
+      validate(annotations,
+               roundEnv);
+//
+//
+      // process only is all tests has passed successfully
+      if (!isValid) {
+        return true;
+      }
+//      // TODO may be we replace the generators with apt in the future ... :-)
+//
     } else {
       // create start message
       messagerUtils.note("[PresenterAnnotationProcessor] - processing annotations finished");
-
-      // TODO übergreifende validierung
-
-
+//
+//      // TODO übergreifende validierung
+//
+//
       // at least, we clear the appInfo
       applicationInfo = new ApplicationInfo();
     }
     return true;
   }
 
+//==============================================================================
+
+  private void scanAnnotations(Set<? extends TypeElement> annotations,
+                               RoundEnvironment roundEnv) {
+    // processing Presenter annotatiom
+    processPresenter(annotations,
+                     roundEnv);
+    // processing Events annotatiom
+    processEventBus(annotations,
+                    roundEnv);
+    // processing child modules
+    processChildModules(annotations,
+                        roundEnv);
+
+  }
+
+  private void validate(Set<? extends TypeElement> annotations,
+                        RoundEnvironment roundEnv) {
+//    // processing Events annotatiom
+//    processEventBus(annotations,
+//                    roundEnv);
+//
+//
+//    // processing Presenter annotatiom
+//    processPresenter(annotations,
+//                     roundEnv);
+
+
+  }
+
+
 //------------------------------------------------------------------------------
+
+  private void processPresenter(Set<? extends TypeElement> annotations,
+                                RoundEnvironment roundEnv) {
+    // create the validator
+    PresenterControl validator = new PresenterControl(messagerUtils);
+    // iterate over all classes which are annotated with @Presenter
+    for (TypeElement element : typesIn(roundEnv.getElementsAnnotatedWith(Presenter.class))) {
+      // valdation
+      if (!validator.validate(processingEnv,
+                              element)) {
+        isValid = false;
+      } else {
+        PresenterInfo into = getPresenterInfo(element);
+        messagerUtils.note(element,
+                           element.getTypeParameters()
+                                  .toString());
+        messagerUtils.note(element,
+                           element.getEnclosedElements()
+                                  .toString());
+        messagerUtils.note(element,
+                           element.getEnclosingElement()
+                                  .toString());
+        // todo create presenter control
+      }
+    }
+  }
 
   private void processEventBus(Set<? extends TypeElement> annotations,
                                RoundEnvironment roundEnv) {
@@ -139,14 +206,211 @@ public class Mvp4gAnnotationProcessor
         ModuleInfo moduleInfo = getModuleInfo(element);
         // set the current EventBus
         moduleInfo.setCurrentEventBus(element);
+        // handle child modules
+
+        // TODO handle childs ....
+
+
         // process all events of the eventBus
-        processEvents(element, roundEnv);
-
-
+        processEvents(element,
+                      roundEnv);
 
 
       }
     }
+  }
+
+  private void processChildModules(Set<? extends TypeElement> annotations,
+                                   RoundEnvironment roundEnv) {
+    // create the validator
+    ChildModuleControl validator = new ChildModuleControl(messagerUtils);
+    // iterate over all classes which are annotated with @Presenter
+    for (TypeElement element : typesIn(roundEnv.getElementsAnnotatedWith(ChildModules.class))) {
+      // valdation
+      if (!validator.validate(processingEnv,
+                              element)) {
+        isValid = false;
+      } else {
+        ModuleInfo info = getModuleInfoForEventBus(element.toString());
+        if (info != null) {
+
+//				} else if ( ProcessorUtil.CHILD_MODULES.equals( annotation.getAnnotationType().toString() ) ) {
+//					children = (List<AnnotationValue>)ProcessorUtil.getAnnotationValue( ProcessorUtil.ATTRIBUTE_VALUE, annotation ).getValue();
+//					for ( AnnotationValue childValue : children ) {
+//						child = (AnnotationMirror)childValue.getValue();
+//						module = ( (DeclaredType)ProcessorUtil.getAnnotationValue( ProcessorUtil.ATTRIBUTE_MODULE_CLASS, child ).getValue() )
+//								.toString();
+//						info = childModules.get( module );
+//						if ( info == null ) {
+//							info = new ModuleInfo();
+//							childModules.put( module, info );
+//						}
+//						if ( info.getParentEventBus() != null ) {
+//							processingEnv.getMessager().printMessage( Kind.ERROR,
+//									String.format( Messages.MODULE_TWO_PARENT_EVENT_BUS, module, info.getParentEventBus().asType(), e.asType() ), e );
+//						} else {
+//							info.setParentEventBus( e );
+//						}
+//					}
+
+          //
+//		HandlerControl handlerControl = new HandlerControl();
+//		HistoryConverterControl historyConverterControl = new HistoryConverterControl();
+//		ChildEventControl childEventControl = new ChildEventControl();
+//		ParentEventControl parentEventControl = new ParentEventControl();
+//
+//		List<? extends AnnotationValue> handlers, modulesToLoad;
+//		String calledMethod;
+//		AnnotationValue historyConverter;
+//		boolean forwardToParent;
+//          for (ExecutableElement el : ElementFilter.methodsIn(processingEnv.getElementUtils()
+//                                                                           .getAllMembers(element))) {
+//            for (AnnotationMirror am : el.getAnnotationMirrors()) {
+//				if ( Utils.EVENT.equals( m.getAnnotationType().toString() ) ) {
+//					handlers = null;
+//					calledMethod = null;
+//					historyConverter = null;
+//					modulesToLoad = null;
+//					forwardToParent = false;
+//					for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : m.getElementValues().entrySet() ) {
+//						keyName = entry.getKey().getSimpleName().toString();
+//						if ( ProcessorUtil.ATTRIBUTE_HANDLERS.equals( keyName ) ) {
+//							handlers = (List<? extends AnnotationValue>)entry.getValue().getValue();
+//						} else if ( ProcessorUtil.ATTRIBUTE_CALLED_METHOD.equals( keyName ) ) {
+//							calledMethod = (String)entry.getValue().getValue();
+//						} else if ( ProcessorUtil.ATTRIBUTE_HISTORY_CONVERTER.equals( keyName ) ) {
+//							historyConverter = entry.getValue();
+//						} else if ( ProcessorUtil.ATTRIBUTE_MODULES_TO_LOAD.equals( keyName ) ) {
+//							modulesToLoad = (List<? extends AnnotationValue>)entry.getValue().getValue();
+//						} else if ( ProcessorUtil.ATTRIBUTE_FORWARD_TO_PARENT.equals( keyName ) ) {
+//							forwardToParent = (Boolean)entry.getValue().getValue();
+//						}
+//					}
+//					handlerControl.control( processingEnv, e, calledMethod, handlers );
+//					historyConverterControl.control( processingEnv, e, calledMethod, historyConverter );
+//					childEventControl.control( processingEnv, e, element, modulesToLoad, applicationInfo );
+//					parentEventControl.control( processingEnv, e, element, forwardToParent, applicationInfo );
+//				}
+//            }
+//          }
+
+
+          AnnotationMirror mirror = Utils.getAnnotationMirror(ChildModules.class.getCanonicalName(),
+                                                              element);
+
+          AnnotationValue value = Utils.getAnnotationValue(ChildModules.class.getCanonicalName(),
+                                                           "value",
+                                                           element);
+          if (value != null) {
+            List object = (List) value.getValue();
+
+
+            TypeElement te = (TypeElement) ((DeclaredType) object.get(0)).asElement();
+            System.out.println("hier bin ich ....");
+          }
+
+
+          Map<String, Object> annotationValues = Utils.getAnnotation(ChildModule.class,
+                                                                     element);
+
+          if (annotationValues.get("value") instanceof Object[]) {
+            for (int i = 0; i < ((Object[]) annotationValues.get("value")).length; i++) {
+              AnnotationValue av = (AnnotationValue) ((Object[]) annotationValues.get("value"))[i];
+// TypeElement el = (TypeElement) ((DeclaredType) ((Object[]) annotationValues.get("value"))[i]).asElement();
+//              Map<String, Object> annotationValuesChilds = Utils.getAnnotation(ChildModule.class,
+//
+//
+//                       el);
+              TypeElement te = (TypeElement) ((DeclaredType) av.getValue()).asElement();
+              System.out.println("test");
+            }
+
+
+//            for ()
+          }
+
+        }
+//        applicationInfo.getModule()
+        System.out.println("TypeParameters: " + element.getTypeParameters()
+                                                       .toString());
+        System.out.println("EnclosingElements: " + element.getEnclosedElements()
+                                                          .toString());
+        System.out.println("EnclosingElement: " + element.getEnclosingElement()
+                                                         .toString());
+//        // validation ok, just analyse the data
+//        ModuleInfo moduleInfo = getModuleInfo(element);
+//        // set the current EventBus
+//        moduleInfo.setCurrentEventBus(element);
+//
+//        // TODO handle childs ....
+//
+//
+//        // process all events of the eventBus
+//        processEvents(element,
+//                      roundEnv);
+//
+//
+      }
+    }
+
+    String keyName;
+  }
+
+  private PresenterInfo getPresenterInfo(TypeElement element) {
+    PresenterInfo info;
+
+    String presenterInfoKey = element.toString();
+
+    info = presenterInfos.get(presenterInfoKey);
+    if (info == null) {
+      info = new PresenterInfo(presenterInfoKey);
+      presenterInfos.put(presenterInfoKey,
+                         info);
+    }
+
+    return info;
+  }
+
+//------------------------------------------------------------------------------
+
+  private ModuleInfo getModuleInfo(TypeElement element) {
+    ModuleInfo info;
+
+    Map<String, Object> annotationValues = Utils.getAnnotation(Events.class,
+                                                               element);
+
+    String moduleInfoKey;
+    if (annotationValues.get("module")
+                        .equals(Mvp4gModule.class)) {
+      moduleInfoKey = Mvp4gModule.class.getCanonicalName();
+    } else {
+      moduleInfoKey = ((TypeElement) ((DeclaredType) annotationValues.get("module")).asElement()).getQualifiedName()
+                                                                                                 .toString();
+    }
+
+    info = applicationInfo.getModule(moduleInfoKey);
+    if (info == null) {
+      applicationInfo.addModules(moduleInfoKey,
+                                 new ModuleInfo(moduleInfoKey));
+    }
+    info = applicationInfo.getModule(moduleInfoKey);
+
+    info.setCurrentEventBus(element);
+    if (!annotationValues.get("module")
+                         .equals(Mvp4gModule.class)) {
+      info.setModule((TypeElement) ((DeclaredType) annotationValues.get("module")).asElement());
+    }
+    info.setStartPresenterName((String) annotationValues.get("startPresenterName"));
+    info.setStartPresenter((TypeElement) ((DeclaredType) annotationValues.get("startPresenter")).asElement());
+    info.setHistoryOnStart((Boolean) annotationValues.get("historyOnStart"));
+    if (annotationValues.get("ginModules") instanceof TypeElement[]) {
+      info.setGinModules((TypeElement[]) annotationValues.get("ginModules"));
+
+    }
+    if (annotationValues.get("ginModuleProperties") instanceof String[]) {
+      info.setGinModuleProperties((String[]) annotationValues.get("ginModuleProperties"));
+    }
+    return info;
   }
 
   private void processEvents(TypeElement eventBusElement,
@@ -189,51 +453,11 @@ public class Mvp4gAnnotationProcessor
 
   }
 
-  private void processPresenter(Set<? extends TypeElement> annotations,
-                                RoundEnvironment roundEnv) {
-    // create the validator
-    PresenterControl validator = new PresenterControl(messagerUtils);
-    // iterate over all classes which are annotated with @Presenter
-    for (TypeElement element : typesIn(roundEnv.getElementsAnnotatedWith(Presenter.class))) {
-      // valdation
-      if (!validator.validate(processingEnv,
-                              element)) {
-        isValid = false;
-      } else {
-        messagerUtils.note(element,
-                           element.getTypeParameters()
-                                  .toString());
-        messagerUtils.note(element, element.getEnclosedElements().toString());
-        messagerUtils.note(element, element.getEnclosingElement().toString());
-        // todo create presenter control
-      }
-    }
+  private ModuleInfo getModuleInfoForEventBus(String eventBusName) {
+    return applicationInfo.getModuleInfoForEventBus(eventBusName);
   }
 
-//------------------------------------------------------------------------------
-
-  private ModuleInfo getModuleInfo(TypeElement element) {
-    ModuleInfo info;
-    String moduleInfoKey = Mvp4gModule.class.getCanonicalName();
-
-    AnnotationMirror annotationMirror = Utils.getAnnotationMirror(Events.class.getCanonicalName(),
-                                                                  element);
-    if (annotationMirror != null) {
-      AnnotationValue annotationValue = Utils.getAnnotationValue("module",
-                                                                 annotationMirror);
-      if (annotationValue != null) {
-        moduleInfoKey = ((TypeElement) ((DeclaredType) annotationValue.getValue()).asElement()).getQualifiedName().toString();
-        info = applicationInfo.getModule(moduleInfoKey);
-        if (info == null) {
-          applicationInfo.addModules(moduleInfoKey,
-                                     new ModuleInfo(moduleInfoKey));
-        }
-      }
-    }
-    // set current eventbus
-    info = applicationInfo.getModule(moduleInfoKey);
-
-    return info;
+  private ModuleInfo getModuleInfo(String name) {
+    return applicationInfo.getModule(name);
   }
-
 }

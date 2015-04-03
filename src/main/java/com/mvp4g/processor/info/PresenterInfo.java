@@ -17,8 +17,44 @@
 
 package com.mvp4g.processor.info;
 
+import javax.lang.model.element.TypeElement;
+
 /**
  * Created by hoss on 30.03.15.
  */
 public class PresenterInfo {
+
+  private String name;
+
+  private TypeElement eventBus;
+
+//------------------------------------------------------------------------------
+
+  private PresenterInfo() {
+    this(null);
+  }
+
+  public PresenterInfo(String name) {
+    super();
+
+    this.name = name;
+  }
+
+//------------------------------------------------------------------------------
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public TypeElement getEventBus() {
+    return eventBus;
+  }
+
+  public void setEventBus(TypeElement eventBus) {
+    this.eventBus = eventBus;
+  }
 }

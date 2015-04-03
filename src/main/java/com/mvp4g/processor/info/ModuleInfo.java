@@ -18,18 +18,23 @@
 package com.mvp4g.processor.info;
 
 import javax.lang.model.element.TypeElement;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ModuleInfo {
 
   private String name;
 
+  private TypeElement module;
+
+  private String      startPresenterName;
+  private TypeElement startPresenter;
+
+  private boolean historyOnStart;
+
+  private TypeElement[] ginModules;
+  private String[]      ginModuleProperties;
+
   private TypeElement currentEventBus;
   private TypeElement parentEventBus;
-
-  private Map<String, EventInfo> events;
-  private Map<String, PresenterInfo>  presenters;
 
 //------------------------------------------------------------------------------
 
@@ -38,22 +43,27 @@ public class ModuleInfo {
   }
 
   public ModuleInfo(String name) {
-    super();
-
-    events = new HashMap<String, EventInfo>();
-    presenters = new HashMap<String, PresenterInfo>();
-
     this.name = name;
   }
 
-//------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------
 
   /**
-   * Returns the name of the module
-   * @return module name
+   * Returns the module. if it is the root model, null will be return
+   *
+   * @return module null or the name of the child module
    */
-  public String getName() {
-    return name;
+  public TypeElement getModule() {
+    return module;
+  }
+
+  /**
+   * Sets the value of the module attribute
+   *
+   * @param module
+   */
+  public void setModule(TypeElement module) {
+    this.module = module;
   }
 
   /**
@@ -64,17 +74,17 @@ public class ModuleInfo {
   }
 
   /**
-   * @return the parentEventBus
-   */
-  public TypeElement getParentEventBus() {
-    return parentEventBus;
-  }
-
-  /**
    * @param currentEventBus the currentEventBus to set
    */
   public void setCurrentEventBus(TypeElement currentEventBus) {
     this.currentEventBus = currentEventBus;
+  }
+
+  /**
+   * @return the parentEventBus
+   */
+  public TypeElement getParentEventBus() {
+    return parentEventBus;
   }
 
   /**
@@ -84,4 +94,47 @@ public class ModuleInfo {
     this.parentEventBus = parentEventBus;
   }
 
+  public String getStartPresenterName() {
+    return startPresenterName;
+  }
+
+  public void setStartPresenterName(String startPresenterName) {
+    this.startPresenterName = startPresenterName;
+  }
+
+  public TypeElement getStartPresenter() {
+    return startPresenter;
+  }
+
+  public void setStartPresenter(TypeElement startPresenter) {
+    this.startPresenter = startPresenter;
+  }
+
+  public boolean isHistoryOnStart() {
+    return historyOnStart;
+  }
+
+  public void setHistoryOnStart(boolean historyOnStart) {
+    this.historyOnStart = historyOnStart;
+  }
+
+  public TypeElement[] getGinModules() {
+    return ginModules;
+  }
+
+  public void setGinModules(TypeElement[] ginModules) {
+    this.ginModules = ginModules;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String[] getGinModuleProperties() {
+    return ginModuleProperties;
+  }
+
+  public void setGinModuleProperties(String[] ginModuleProperties) {
+    this.ginModuleProperties = ginModuleProperties;
+  }
 }
