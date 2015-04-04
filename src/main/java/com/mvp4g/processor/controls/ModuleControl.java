@@ -20,6 +20,7 @@ package com.mvp4g.processor.controls;
 import com.mvp4g.client.Mvp4gModule;
 import com.mvp4g.client.annotation.Events;
 import com.mvp4g.processor.info.ApplicationInfo;
+import com.mvp4g.processor.info.EventInfo;
 import com.mvp4g.processor.info.ModuleInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
 import com.mvp4g.processor.utils.Utils;
@@ -30,6 +31,7 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.util.ElementFilter;
 import java.util.List;
 import java.util.Map;
 
@@ -84,6 +86,8 @@ public class ModuleControl {
                             annotationMirror);
       }
     }
+    // process events of the element
+    processEvent(element);
 
     // TODO validation
 
@@ -92,6 +96,42 @@ public class ModuleControl {
   }
 
 //------------------------------------------------------------------------------
+
+  private void processEvent(TypeElement element) {
+    for (ExecutableElement executable : ElementFilter.methodsIn(processingEnv.getElementUtils().getAllMembers(element))) {
+      for (AnnotationMirror mirror : executable.getAnnotationMirrors()) {
+        if (Utils.EVENT.equals(mirror.getAnnotationType().toString())) {
+          EventInfo info = new EventInfo(executable.getSimpleName().toString());
+          info.setEvent(executable);
+
+          String keyName;
+          for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : mirror.getElementValues().entrySet()) {
+            keyName = entry.getKey().getSimpleName().toString();
+            if (Utils.ATTRIBUTE_HANDLERS.equals(keyName)) {
+              info.setHandlers(Utils.convert((List<? extends AnnotationValue>) entry.getValue()
+                                                                                    .getValue()));
+              info.setHandlerNames(Utils.convertNames((List<? extends AnnotationValue>) entry.getValue()
+                                                                                    .getValue()));
+            } else if (Utils.ATTRIBUTE_BIND.equals(keyName)) {
+              info.setBind(Utils.convert((List<? extends AnnotationValue>) entry.getValue()
+                                                                                .getValue()));
+              info.setBindNames(Utils.convertNames((List<? extends AnnotationValue>) entry.getValue()
+                                                                                          .getValue()));
+            } else if (Utils.ATTRIBUTE_FORWARD_TO_MODULES.equals(keyName)) {
+              info.setForwardToModules(Utils.convert((List<? extends AnnotationValue>) entry.getValue()
+                                                                                            .getValue()));
+            } else if (Utils.ATTRIBUTE_FORWARD_TO_PARENT.equals(keyName)) {
+              info.setForwardToParent((Boolean) entry.getValue()
+                                                     .getValue());
+            } else if (Utils.ATTRIBUTE_HISTORY_CONVERTER.equals(keyName)) {
+              info.setHistoryConverter(Utils.convert(entry.getValue()));
+            }
+          }
+          applicationInfo.getModuleInfoForEventBus(element.toString()).getEventBusInfo().addEvent(info);
+        }
+      }
+    }
+  }
 
   private void processEvents(TypeElement element) {
     String moduleName;

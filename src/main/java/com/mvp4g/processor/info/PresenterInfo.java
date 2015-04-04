@@ -19,10 +19,6 @@ package com.mvp4g.processor.info;
 
 import javax.lang.model.element.TypeElement;
 
-/**
- * Created by hoss on 30.03.15.
- */
-@Deprecated
 public class PresenterInfo {
 
   private String name;

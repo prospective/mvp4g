@@ -17,6 +17,7 @@
 
 package com.mvp4g.processor.utils;
 
+import com.mvp4g.client.annotation.Event;
 import com.mvp4g.client.annotation.Events;
 import com.mvp4g.client.annotation.module.ChildModules;
 import com.squareup.javapoet.ClassName;
@@ -37,7 +38,7 @@ public class Utils {
   //
   //	public final static String CLEAR_HISTORY = "com.mvp4g.client.history.ClearHistory";
   //	public final static String STRING = String.class.getCanonicalName();
-  //	public final static String EVENT = "com.mvp4g.client.annotation.Event";
+  public final static String EVENT  = Event.class.getCanonicalName();
   public final static String EVENTS = Events.class.getCanonicalName();
   //  public final static String PRESENTER = Presenter.class.getCanonicalName();
 
@@ -51,23 +52,26 @@ public class Utils {
   //
   public final static String ATTRIBUTE_ASYNC                 = "async";
   public final static String ATTRIBUTE_AUTO_DISPLAY          = "autoDisplay";
+  public final static String ATTRIBUTE_BIND                  = "bind";
+  public final static String ATTRIBUTE_FORWARD_TO_MODULES    = "forwardToModules";
+  public final static String ATTRIBUTE_FORWARD_TO_PARENT     = "forwardToParent";
+  public final static String ATTRIBUTE_HANDLERS              = "handlers";
+  public final static String ATTRIBUTE_HISTORY_CONVERTER     = "historyConverter";
   public final static String ATTRIBUTE_HISTORY_ON_START      = "historyOnStart";
   public final static String ATTRIBUTE_MODULE                = "module";
   public final static String ATTRIBUTE_MODULE_CLASS          = "moduleClass";
+  public final static String ATTRIBUTE_MODULES_TO_LOAD       = "modulesToLoad";
   public final static String ATTRIBUTE_START_PRESENTER       = "startPresenter";
   public final static String ATTRIBUTE_START_PRESENTER_NAME  = "startPresenterName";
   public final static String ATTRIBUTE_GIN_MODULES           = "ginModules";
   public final static String ATTRIBUTE_GIN_MODULE_PROPERTIES = "ginModuleProperties";
+  public final static String ATTRIBUTE_VALUE                 = "value";
 
   //	public final static String ATTRIBUTE_MODULE_CLASS = "moduleClass";
-  //	public final static String ATTRIBUTE_HANDLERS = "handlers";
   //	public final static String ATTRIBUTE_CALLED_METHOD = "calledMethod";
-  //	public final static String ATTRIBUTE_HISTORY_CONVERTER = "historyConverter";
-  //	public final static String ATTRIBUTE_MODULES_TO_LOAD = "modulesToLoad";y
-  //	public final static String ATTRIBUTE_FORWARD_TO_PARENT = "forwardToParent";
-  public final static String ATTRIBUTE_VALUE = "value";
 
-  //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
 
   private static final AnnotationValueVisitor<Object, Void> VALUE_EXTRACTOR =
     new SimpleAnnotationValueVisitor6<Object, Void>() {
@@ -100,8 +104,8 @@ public class Utils {
         Object[] result = new Object[values.size()];
         for (int i = 0; i < values.size(); i++) {
           result[i] = values.get(i)
-            .accept(this,
-                    null);
+                            .accept(this,
+                                    null);
         }
         return result;
       }
@@ -140,20 +144,6 @@ public class Utils {
   private Utils() {
   }
 
-  public static AnnotationMirror getAnnotationMirror(String annotationName,
-                                                     TypeElement element) {
-    if (null == element || null == annotationName || annotationName.length() == 0) {
-      return null;
-    }
-    for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
-      if (annotationName.equals(annotationMirror.getAnnotationType()
-                                  .toString())) {
-        return annotationMirror;
-      }
-    }
-    return null;
-  }
-
   public static AnnotationValue getAnnotationValue(String annotationName,
                                                    String elementName,
                                                    TypeElement elemnent) {
@@ -166,6 +156,20 @@ public class Utils {
                                     am);
   }
 
+  public static AnnotationMirror getAnnotationMirror(String annotationName,
+                                                     TypeElement element) {
+    if (null == element || null == annotationName || annotationName.length() == 0) {
+      return null;
+    }
+    for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
+      if (annotationName.equals(annotationMirror.getAnnotationType()
+                                                .toString())) {
+        return annotationMirror;
+      }
+    }
+    return null;
+  }
+
   public static AnnotationValue getAnnotationValue(String elementName,
                                                    AnnotationMirror annotation) {
     if (null == elementName || elementName.length() == 0 || null == annotation) {
@@ -173,10 +177,10 @@ public class Utils {
     }
     String keyName;
     for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotation.getElementValues()
-      .entrySet()) {
+                                                                                             .entrySet()) {
       keyName = entry.getKey()
-        .getSimpleName()
-        .toString();
+                     .getSimpleName()
+                     .toString();
       if (elementName.equals(keyName)) {
         return entry.getValue();
       }
@@ -205,33 +209,33 @@ public class Utils {
   public static boolean isSubType(ProcessingEnvironment processingEnv,
                                   Element element,
                                   Class clazz) {
-    TypeElement      el     = (TypeElement) element;
+    TypeElement el = (TypeElement) element;
     final TypeMirror parent = el.getSuperclass();
 
-    if (! parent.getKind()
-      .equals(TypeKind.DECLARED)) {
+    if (!parent.getKind()
+               .equals(TypeKind.DECLARED)) {
     } else {
       final DeclaredType parentType = (DeclaredType) parent;
       final Element parentEl = parentType.asElement();
-      if (! parentEl.getKind()
-        .equals(ElementKind.CLASS)) {
+      if (!parentEl.getKind()
+                   .equals(ElementKind.CLASS)) {
         return false;
       }
     }
     if (processingEnv.getTypeUtils()
-      .isSameType(parent,
-                  processingEnv.getElementUtils()
-                    .getTypeElement(clazz.getCanonicalName())
-                    .asType())) {
+                     .isSameType(parent,
+                                 processingEnv.getElementUtils()
+                                              .getTypeElement(clazz.getCanonicalName())
+                                              .asType())) {
       return true;
     } else if (parent.toString()
-      .contains(clazz.getCanonicalName())) {
+                     .contains(clazz.getCanonicalName())) {
       return true;
     } else if (processingEnv.getTypeUtils()
-      .isSameType(parent,
-                  processingEnv.getElementUtils()
-                    .getTypeElement("java.lang.Object")
-                    .asType())) {
+                            .isSameType(parent,
+                                        processingEnv.getElementUtils()
+                                                     .getTypeElement("java.lang.Object")
+                                                     .asType())) {
       return false;
     } else {
       return Utils.isSubType(processingEnv,
@@ -268,11 +272,11 @@ public class Utils {
    */
   public static String rawTypeToString(TypeMirror type,
                                        char innerClassSeparator) {
-    if (! (type instanceof DeclaredType)) {
+    if (!(type instanceof DeclaredType)) {
       throw new IllegalArgumentException("Unexpected type: " + type);
     }
-    StringBuilder result       = new StringBuilder();
-    DeclaredType  declaredType = (DeclaredType) type;
+    StringBuilder result = new StringBuilder();
+    DeclaredType declaredType = (DeclaredType) type;
     rawTypeToString(result,
                     (TypeElement) declaredType.asElement(),
                     innerClassSeparator);
@@ -296,7 +300,7 @@ public class Utils {
                   protected Void defaultAction(TypeMirror typeMirror,
                                                Void v) {
                     throw new UnsupportedOperationException(
-                      "Unexpected TypeKind " + typeMirror.getKind() + " for " + typeMirror);
+                                                             "Unexpected TypeKind " + typeMirror.getKind() + " for " + typeMirror);
                   }
 
                   @Override
@@ -307,7 +311,7 @@ public class Utils {
                                     typeElement,
                                     innerClassSeparator);
                     List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
-                    if (! typeArguments.isEmpty()) {
+                    if (!typeArguments.isEmpty()) {
                       result.append("<");
                       for (int i = 0; i < typeArguments.size(); i++) {
                         if (i != 0) {
@@ -348,7 +352,7 @@ public class Utils {
                   public Void visitTypeVariable(TypeVariable typeVariable,
                                                 Void v) {
                     result.append(typeVariable.asElement()
-                                    .getSimpleName());
+                                              .getSimpleName());
                     return null;
                   }
 
@@ -455,9 +459,9 @@ public class Utils {
   public static Map<String, Object> getAnnotation(Class<?> annotationType,
                                                   Element element) {
     for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
-      if (! rawTypeToString(annotation.getAnnotationType(),
-                            '$')
-        .equals(annotationType.getName())) {
+      if (!rawTypeToString(annotation.getAnnotationType(),
+                           '$')
+             .equals(annotationType.getName())) {
         continue;
       }
 
@@ -467,24 +471,24 @@ public class Utils {
                    m.getDefaultValue());
       }
       for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> e : annotation.getElementValues()
-        .entrySet()) {
+                                                                                           .entrySet()) {
         String name = e.getKey()
-          .getSimpleName()
-          .toString();
+                       .getSimpleName()
+                       .toString();
         Object value = e.getValue()
-          .accept(VALUE_EXTRACTOR,
-                  null);
+                        .accept(VALUE_EXTRACTOR,
+                                null);
         Object defaultValue = result.get(name);
         if (defaultValue != null) {
-          if (! lenientIsInstance(defaultValue.getClass(),
-                                  value)) {
+          if (!lenientIsInstance(defaultValue.getClass(),
+                                 value)) {
             throw new IllegalStateException(String.format("Value of %s.%s is a %s but expected a %s\n    value: %s",
                                                           annotationType,
                                                           name,
                                                           value.getClass()
-                                                            .getName(),
+                                                               .getName(),
                                                           defaultValue.getClass()
-                                                            .getName(),
+                                                                      .getName(),
                                                           value instanceof Object[] ? Arrays.toString((Object[]) value) : value));
           }
         }
@@ -570,9 +574,9 @@ public class Utils {
                               TypeElement type,
                               char innerClassSeparator) {
     String packageName = getPackage(type).getQualifiedName()
-      .toString();
+                                         .toString();
     String qualifiedName = type.getQualifiedName()
-      .toString();
+                               .toString();
     if (packageName.isEmpty()) {
       result.append(qualifiedName.replace('.',
                                           innerClassSeparator));
@@ -580,13 +584,50 @@ public class Utils {
       result.append(packageName);
       result.append('.');
       result.append(qualifiedName.substring(packageName.length() + 1)
-                      .replace('.',
-                               innerClassSeparator));
+                                 .replace('.',
+                                          innerClassSeparator));
     }
   }
 
+  public static TypeElement convert(AnnotationValue value) {
+    return (TypeElement) ((DeclaredType) value.getValue()).asElement();
+  }
 
-  //==============================================================================
+  public static TypeElement[] convert(List<? extends AnnotationValue> list) {
+    TypeElement[] elements;
+    if (list != null) {
+      elements = new TypeElement[list.size()];
+      for (int i = 0; i < list.size(); i++) {
+        TypeElement element = (TypeElement) ((DeclaredType) list.get(i)
+                                                                .getValue()
+        ).asElement();
+        elements[i] = element;
+      }
+    } else {
+      elements = new TypeElement[0];
+    }
+    return elements;
+  }
+
+  public static String[] convertNames(List<? extends AnnotationValue> list) {
+    String[] elements = new String[list.size()];
+    if (list != null) {
+      elements = new String[list.size()];
+      for (int i = 0; i < list.size(); i++) {
+        String name = ((DeclaredType) list.get(i)
+                                          .getValue()
+        ).asElement()
+         .getSimpleName()
+         .toString();
+        elements[i] = name;
+      }
+    } else {
+      elements = new String[0];
+    }
+    return elements;
+  }
+
+//==============================================================================
 
   public static PackageElement getPackage(Element type) {
     while (type.getKind() != ElementKind.PACKAGE) {
@@ -603,12 +644,12 @@ public class Utils {
                                            Object value) {
     if (expectedClass.isArray()) {
       Class<?> componentType = expectedClass.getComponentType();
-      if (! (value instanceof Object[])) {
+      if (!(value instanceof Object[])) {
         return false;
       }
       for (Object element : (Object[]) value) {
-        if (! lenientIsInstance(componentType,
-                                element)) {
+        if (!lenientIsInstance(componentType,
+                               element)) {
           return false;
         }
       }
@@ -619,5 +660,4 @@ public class Utils {
       return expectedClass == value.getClass();
     }
   }
-
 }

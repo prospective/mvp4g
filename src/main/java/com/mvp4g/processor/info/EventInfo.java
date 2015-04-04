@@ -17,15 +17,28 @@
 
 package com.mvp4g.processor.info;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 
-@Deprecated
 public class EventInfo {
 
-  private String name;
+  /* name of the event */
+  private String            eventName;
+  private ExecutableElement event;
 
-  private Map<String, PresenterInfo> presenters;
+  /* event handlers */
+  private TypeElement[] handlers;
+  private String[]      handlerNames;
+
+  private TypeElement[] bind;
+  private String[]      bindNames;
+
+  private TypeElement[] forwardToModules;
+  private boolean       forwardToParent;
+
+  private String calledMethod;
+
+  private TypeElement historyConverter;
 
 //------------------------------------------------------------------------------
 
@@ -33,24 +46,55 @@ public class EventInfo {
     this(null);
   }
 
-  public EventInfo(String name) {
+  public EventInfo(String eventName) {
     super();
 
-    presenters = new HashMap<String, PresenterInfo>();
-
-    this.name = name;
+    this.eventName = eventName;
   }
 
 //------------------------------------------------------------------------------
 
-//  /**
-//   * Returns the name of the module
-//   * @return module name
-//   */
-//  public String getModule() {
-//    return name;
-//  }
-//
+  /**
+   * Returns the name of the event
+   *
+   * @return name of the event
+   */
+  public String getEventName() {
+    return eventName;
+  }
+
+  public void setHandlers(TypeElement[] handlers) {
+    this.handlers = handlers;
+  }
+
+  public void setEvent(ExecutableElement event) {
+    this.event = event;
+  }
+
+  public void setHandlerNames(String[] handlerNames) {
+    this.handlerNames = handlerNames;
+  }
+
+  public void setBindNames(String[] bindNames) {
+    this.bindNames = bindNames;
+  }
+
+  public void setBind(TypeElement[] bind) {
+    this.bind = bind;
+  }
+
+  public void setForwardToModules(TypeElement[] forwardToModules) {
+    this.forwardToModules = forwardToModules;
+  }
+
+  public void setForwardToParent(Boolean forwardToParent) {
+    this.forwardToParent = forwardToParent;
+  }
+
+  public void setHistoryConverter(TypeElement historyConverter) {
+    this.historyConverter = historyConverter;
+  }
+
 //  /**
 //   * @return the currentEventBus
 //   */

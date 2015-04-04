@@ -18,6 +18,8 @@
 package com.mvp4g.processor.info;
 
 import javax.lang.model.element.TypeElement;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EventBusInfo {
 
@@ -35,7 +37,25 @@ public class EventBusInfo {
   private TypeElement eventBus;
   private TypeElement parentEventBus;
 
-  //------------------------------------------------------------------------------
+  private Map<String, EventInfo> events;
+
+//------------------------------------------------------------------------------
+
+  private EventBusInfo() {
+    this(null);
+  }
+
+  public EventBusInfo(String moduleName) {
+    this.moduleName = moduleName;
+
+    this.events = new HashMap<>();
+  }
+
+//------------------------------------------------------------------------------
+
+  public void addEvent(EventInfo info) {
+    events.put(info.getEventName(), info);
+  }
 
   public String getStartPresenterName() {
     return startPresenterName;
@@ -97,15 +117,7 @@ public class EventBusInfo {
     this.eventBusName = eventBusName;
   }
 
-  private EventBusInfo() {
-    this(null);
-  }
-
-  public EventBusInfo(String moduleName) {
-    this.moduleName = moduleName;
-  }
-
-  //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
   //  /**
   //   * Returns the module. if it is the root model, null will be return
@@ -151,49 +163,5 @@ public class EventBusInfo {
   //   */
   //  public void setParentEventBus(TypeElement parentEventBus) {
   //    this.parentEventBus = parentEventBus;
-  //  }
-  //
-  //  public String getStartPresenterName() {
-  //    return startPresenterName;
-  //  }
-  //
-  //  public void setStartPresenterName(String startPresenterName) {
-  //    this.startPresenterName = startPresenterName;
-  //  }
-  //
-  //  public TypeElement getStartPresenter() {
-  //    return startPresenter;
-  //  }
-  //
-  //  public void setStartPresenter(TypeElement startPresenter) {
-  //    this.startPresenter = startPresenter;
-  //  }
-  //
-  //  public boolean isHistoryOnStart() {
-  //    return historyOnStart;
-  //  }
-  //
-  //  public void setHistoryOnStart(boolean historyOnStart) {
-  //    this.historyOnStart = historyOnStart;
-  //  }
-  //
-  //  public TypeElement[] getGinModules() {
-  //    return ginModules;
-  //  }
-  //
-  //  public void setGinModules(TypeElement[] ginModules) {
-  //    this.ginModules = ginModules;
-  //  }
-  //
-  //  public String getName() {
-  //    return name;
-  //  }
-  //
-  //  public String[] getGinModuleProperties() {
-  //    return ginModuleProperties;
-  //  }
-  //
-  //  public void setGinModuleProperties(String[] ginModuleProperties) {
-  //    this.ginModuleProperties = ginModuleProperties;
   //  }
 }

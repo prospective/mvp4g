@@ -17,8 +17,6 @@
 
 package com.mvp4g.processor.info;
 
-import com.mvp4g.client.Mvp4gModule;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,26 +25,17 @@ public class ApplicationInfo {
   /* modules of the application */
   Map<String, ModuleInfo> modules;
 
-//  Map<String, String> eventBus;
-//
-
 //------------------------------------------------------------------------------
 
   public ApplicationInfo() {
     super();
 
     modules = new HashMap<>();
-    // add default module info
-//    modules.put(Mvp4gModule.class.getCanonicalName(),
-//                new ModuleInfo(Mvp4gModule.class.getCanonicalName()));
   }
 
   @Deprecated
   public ApplicationInfo(Map<String, ModuleInfo> modules,
                          Map<String, String> eventBus) {
-//    super();
-//    this.modules = modules;
-//    this.eventBus = eventBus;
   }
 
 //------------------------------------------------------------------------------
@@ -72,32 +61,19 @@ public class ApplicationInfo {
     return modules.get(module);
   }
 
+  /**
+   * Returns module info for the requested event bus name
+   *
+   * @param eventBusName name of the event bus
+   *
+   * @return the module info
+   */
   public ModuleInfo getModuleInfoForEventBus(String eventBusName) {
     for (ModuleInfo info : modules.values()) {
-//      if (info.getEventBusInfo().getCurrentEventBus().getQualifiedName().toString().equals(eventBusName)) {
-//        return info;
-//      }
+      if (info.getEventBusInfo().getEventBus().getQualifiedName().toString().equals(eventBusName)) {
+        return info;
+      }
     }
     return null;
   }
-
-//   * @param modules the modules to set
-//   */
-//  public void setModules(Map<String, ModuleInfo> modules) {
-//    this.modules = modules;
-//  }
-//
-//  /**
-//   * @return the eventBus
-//   */
-//  public Map<String, String> getEventBus() {
-//    return eventBus;
-//  }
-//
-//  /**
-//   * @param eventBus the eventBus to set
-//   */
-//  public void setEventBus(Map<String, String> eventBus) {
-//    this.eventBus = eventBus;
-//  }
 }
