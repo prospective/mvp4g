@@ -20,6 +20,7 @@ package com.mvp4g.processor.info;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class EventInfo {
 
   private String name;

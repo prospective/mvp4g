@@ -17,6 +17,7 @@
 
 package com.mvp4g.processor.utils;
 
+import com.mvp4g.client.annotation.Events;
 import com.mvp4g.client.annotation.module.ChildModules;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
@@ -34,30 +35,39 @@ import java.util.Map;
 
 public class Utils {
   //
-//	final public static String CLEAR_HISTORY = "com.mvp4g.client.history.ClearHistory";
-//	final public static String STRING = String.class.getCanonicalName();
-//	final public static String EVENT = "com.mvp4g.client.annotation.Event";
-//  public final static String EVENTS    = Events.class.getCanonicalName();
-//  public final static String PRESENTER = Presenter.class.getCanonicalName();
+  //	public final static String CLEAR_HISTORY = "com.mvp4g.client.history.ClearHistory";
+  //	public final static String STRING = String.class.getCanonicalName();
+  //	public final static String EVENT = "com.mvp4g.client.annotation.Event";
+  public final static String EVENTS = Events.class.getCanonicalName();
+  //  public final static String PRESENTER = Presenter.class.getCanonicalName();
 
-  //	final public static String EVENT_HANDLER = "com.mvp4g.client.annotation.EventHandler";
-//	final public static String HISTORY = "com.mvp4g.client.annotation.History";
+  //	public final static String EVENT_HANDLER = "com.mvp4g.client.annotation.EventHandler";
+  //	public final static String HISTORY = "com.mvp4g.client.annotation.History";
   public final static String CHILD_MODULES = ChildModules.class.getCanonicalName();
 
-//	final public static String HISTORY_CONVERTER_TYPE_NONE = "NONE";
-//	final public static String HISTORY_CONVERTER_TYPE_SIMPLE = "SIMPLE";
-//	final public static String HISTORY_CONVERTER_TYPE_DEFAULT = "DEFAULT";
-//
-//	final public static String ATTRIBUTE_MODULE = "module";
-//	final public static String ATTRIBUTE_MODULE_CLASS = "moduleClass";
-//	final public static String ATTRIBUTE_HANDLERS = "handlers";
-//	final public static String ATTRIBUTE_CALLED_METHOD = "calledMethod";
-//	final public static String ATTRIBUTE_HISTORY_CONVERTER = "historyConverter";
-//	final public static String ATTRIBUTE_MODULES_TO_LOAD = "modulesToLoad";
-//	final public static String ATTRIBUTE_FORWARD_TO_PARENT = "forwardToParent";
-//	final public static String ATTRIBUTE_VALUE = "value";
+  //	public final static String HISTORY_CONVERTER_TYPE_NONE = "NONE";
+  //	public final static String HISTORY_CONVERTER_TYPE_SIMPLE = "SIMPLE";
+  //	public final static String HISTORY_CONVERTER_TYPE_DEFAULT = "DEFAULT";
+  //
+  public final static String ATTRIBUTE_ASYNC                 = "async";
+  public final static String ATTRIBUTE_AUTO_DISPLAY          = "autoDisplay";
+  public final static String ATTRIBUTE_HISTORY_ON_START      = "historyOnStart";
+  public final static String ATTRIBUTE_MODULE                = "module";
+  public final static String ATTRIBUTE_MODULE_CLASS          = "moduleClass";
+  public final static String ATTRIBUTE_START_PRESENTER       = "startPresenter";
+  public final static String ATTRIBUTE_START_PRESENTER_NAME  = "startPresenterName";
+  public final static String ATTRIBUTE_GIN_MODULES           = "ginModules";
+  public final static String ATTRIBUTE_GIN_MODULE_PROPERTIES = "ginModuleProperties";
 
-//------------------------------------------------------------------------------
+  //	public final static String ATTRIBUTE_MODULE_CLASS = "moduleClass";
+  //	public final static String ATTRIBUTE_HANDLERS = "handlers";
+  //	public final static String ATTRIBUTE_CALLED_METHOD = "calledMethod";
+  //	public final static String ATTRIBUTE_HISTORY_CONVERTER = "historyConverter";
+  //	public final static String ATTRIBUTE_MODULES_TO_LOAD = "modulesToLoad";y
+  //	public final static String ATTRIBUTE_FORWARD_TO_PARENT = "forwardToParent";
+  public final static String ATTRIBUTE_VALUE = "value";
+
+  //------------------------------------------------------------------------------
 
   private static final AnnotationValueVisitor<Object, Void> VALUE_EXTRACTOR =
     new SimpleAnnotationValueVisitor6<Object, Void>() {
@@ -70,11 +80,11 @@ public class Utils {
       @Override
       public Object visitString(String s,
                                 Void p) {
-//        if ("<error>".equals(s)) {
-//          throw new CodeGenerationIncompleteException("Unknown type returned as <error>.");
-//        } else if ("<any>".equals(s)) {
-//          throw new CodeGenerationIncompleteException("Unknown type returned as <any>.");
-//        }
+        //        if ("<error>".equals(s)) {
+        //          throw new CodeGenerationIncompleteException("Unknown type returned as <error>.");
+        //        } else if ("<any>".equals(s)) {
+        //          throw new CodeGenerationIncompleteException("Unknown type returned as <any>.");
+        //        }
         return s;
       }
 
@@ -90,42 +100,42 @@ public class Utils {
         Object[] result = new Object[values.size()];
         for (int i = 0; i < values.size(); i++) {
           result[i] = values.get(i)
-                            .accept(this,
-                                    null);
+            .accept(this,
+                    null);
         }
         return result;
       }
     };
 
-//------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------
 
 
-//
-//	public static boolean sameParameters( List<? extends Element> expected, List<? extends Element> given, Element e ) {
-//		boolean same = ( expected.size() == given.size() );
-//		if ( same ) {
-//			for ( int i = 0; ( i < expected.size() ) && same; i++ ) {
-//				same = expected.get( i ).asType().toString().equals( given.get( i ).asType().toString() );
-//			}
-//		}
-//		return same;
-//	}
-//
-//	public static String getMethodName( String methodName, List<? extends Element> parameters ) {
-//		int parameterSize = parameters.size();
-//		StringBuilder builder = new StringBuilder( parameterSize * 20 + 50 );
-//		builder.append( methodName );
-//		builder.append( "(" );
-//		if ( parameterSize > 0 ) {
-//			builder.append( parameters.get( 0 ).asType().toString() );
-//			for ( int i = 1; i < parameterSize; i++ ) {
-//				builder.append( "," );
-//				builder.append( parameters.get( i ).asType().toString() );
-//			}
-//		}
-//		builder.append( ")" );
-//		return builder.toString();
-//	}
+  //
+  //	public static boolean sameParameters( List<? extends Element> expected, List<? extends Element> given, Element e ) {
+  //		boolean same = ( expected.size() == given.size() );
+  //		if ( same ) {
+  //			for ( int i = 0; ( i < expected.size() ) && same; i++ ) {
+  //				same = expected.get( i ).asType().toString().equals( given.get( i ).asType().toString() );
+  //			}
+  //		}
+  //		return same;
+  //	}
+  //
+  //	public static String getMethodName( String methodName, List<? extends Element> parameters ) {
+  //		int parameterSize = parameters.size();
+  //		StringBuilder builder = new StringBuilder( parameterSize * 20 + 50 );
+  //		builder.append( methodName );
+  //		builder.append( "(" );
+  //		if ( parameterSize > 0 ) {
+  //			builder.append( parameters.get( 0 ).asType().toString() );
+  //			for ( int i = 1; i < parameterSize; i++ ) {
+  //				builder.append( "," );
+  //				builder.append( parameters.get( i ).asType().toString() );
+  //			}
+  //		}
+  //		builder.append( ")" );
+  //		return builder.toString();
+  //	}
 
   private Utils() {
   }
@@ -137,7 +147,7 @@ public class Utils {
     }
     for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
       if (annotationName.equals(annotationMirror.getAnnotationType()
-                                                .toString())) {
+                                  .toString())) {
         return annotationMirror;
       }
     }
@@ -147,11 +157,13 @@ public class Utils {
   public static AnnotationValue getAnnotationValue(String annotationName,
                                                    String elementName,
                                                    TypeElement elemnent) {
-    AnnotationMirror am = Utils.getAnnotationMirror(annotationName, elemnent);
+    AnnotationMirror am = Utils.getAnnotationMirror(annotationName,
+                                                    elemnent);
     if (am == null) {
       return null;
     }
-    return Utils.getAnnotationValue(elementName, am);
+    return Utils.getAnnotationValue(elementName,
+                                    am);
   }
 
   public static AnnotationValue getAnnotationValue(String elementName,
@@ -161,10 +173,10 @@ public class Utils {
     }
     String keyName;
     for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotation.getElementValues()
-                                                                                             .entrySet()) {
+      .entrySet()) {
       keyName = entry.getKey()
-                     .getSimpleName()
-                     .toString();
+        .getSimpleName()
+        .toString();
       if (elementName.equals(keyName)) {
         return entry.getValue();
       }
@@ -173,53 +185,53 @@ public class Utils {
   }
 
 
-//  // Binding<?>.
-//  public static final TypeName BINDING_OF_ANY = ParameterizedTypeName.get(
-//                                                                           ClassName.get(Binding.class), WildcardTypeName.subtypeOf(Object.class));
-//  // Set<Binding<?>>.
-//  public static final TypeName SET_OF_BINDINGS = ParameterizedTypeName.get(
-//                                                                            ClassName.get(Set.class), BINDING_OF_ANY);
-//  // Class<?>[].
-//  public static final TypeName ARRAY_OF_CLASS = ArrayTypeName.of(ParameterizedTypeName.get(
-//                                                                                            ClassName.get(Class.class), WildcardTypeName.subtypeOf(Object.class)));
-//  // @SuppressWarnings("unchecked")
-//  public static final AnnotationSpec UNCHECKED = AnnotationSpec.builder(SuppressWarnings.class)
-//                                                               .addMember("value", "$S", "unchecked")
-//                                                               .build();
-//
-//  private Util() {
-//  }
+  //  // Binding<?>.
+  //  public static final TypeName BINDING_OF_ANY = ParameterizedTypeName.get(
+  //                                                                           ClassName.get(Binding.class), WildcardTypeName.subtypeOf(Object.class));
+  //  // Set<Binding<?>>.
+  //  public static final TypeName SET_OF_BINDINGS = ParameterizedTypeName.get(
+  //                                                                            ClassName.get(Set.class), BINDING_OF_ANY);
+  //  // Class<?>[].
+  //  public static final TypeName ARRAY_OF_CLASS = ArrayTypeName.of(ParameterizedTypeName.get(
+  //                                                                                            ClassName.get(Class.class), WildcardTypeName.subtypeOf(Object.class)));
+  //  // @SuppressWarnings("unchecked")
+  //  public static final AnnotationSpec UNCHECKED = AnnotationSpec.builder(SuppressWarnings.class)
+  //                                                               .addMember("value", "$S", "unchecked")
+  //                                                               .build();
+  //
+  //  private Util() {
+  //  }
 
   public static boolean isSubType(ProcessingEnvironment processingEnv,
                                   Element element,
                                   Class clazz) {
-    TypeElement el = (TypeElement) element;
+    TypeElement      el     = (TypeElement) element;
     final TypeMirror parent = el.getSuperclass();
 
-    if (!parent.getKind()
-               .equals(TypeKind.DECLARED)) {
+    if (! parent.getKind()
+      .equals(TypeKind.DECLARED)) {
     } else {
       final DeclaredType parentType = (DeclaredType) parent;
       final Element parentEl = parentType.asElement();
-      if (!parentEl.getKind()
-                   .equals(ElementKind.CLASS)) {
+      if (! parentEl.getKind()
+        .equals(ElementKind.CLASS)) {
         return false;
       }
     }
     if (processingEnv.getTypeUtils()
-                     .isSameType(parent,
-                                 processingEnv.getElementUtils()
-                                              .getTypeElement(clazz.getCanonicalName())
-                                              .asType())) {
+      .isSameType(parent,
+                  processingEnv.getElementUtils()
+                    .getTypeElement(clazz.getCanonicalName())
+                    .asType())) {
       return true;
     } else if (parent.toString()
-                     .contains(clazz.getCanonicalName())) {
+      .contains(clazz.getCanonicalName())) {
       return true;
     } else if (processingEnv.getTypeUtils()
-                            .isSameType(parent,
-                                        processingEnv.getElementUtils()
-                                                     .getTypeElement("java.lang.Object")
-                                                     .asType())) {
+      .isSameType(parent,
+                  processingEnv.getElementUtils()
+                    .getTypeElement("java.lang.Object")
+                    .asType())) {
       return false;
     } else {
       return Utils.isSubType(processingEnv,
@@ -228,39 +240,39 @@ public class Utils {
     }
   }
 
-//  /**
-//   * Returns the supertype, or {@code null} if the supertype is a platform
-//   * class. This is intended for annotation processors that assume platform
-//   * classes will never be annotated with application annotations.
-//   */
-//  public static TypeMirror getApplicationSupertype(TypeElement type) {
-//    TypeMirror supertype = type.getSuperclass();
-//    return Keys.isPlatformType(supertype.toString()) ? null : supertype;
-//  }
-//
-//  /** Returns a class name to complement {@code type}. */
-//  public static ClassName adapterName(ClassName type, String suffix) {
-//    return ClassName.get(type.packageName(),
-//                         Joiner.on('$').join(type.simpleNames()) + suffix);
-//  }
-//
-//  /** Returns a string for {@code type}. Primitive types are always boxed. */
-//  public static String typeToString(TypeMirror type) {
-//    StringBuilder result = new StringBuilder();
-//    typeToString(type, result, '.');
-//    return result.toString();
-//  }
+  //  /**
+  //   * Returns the supertype, or {@code null} if the supertype is a platform
+  //   * class. This is intended for annotation processors that assume platform
+  //   * classes will never be annotated with application annotations.
+  //   */
+  //  public static TypeMirror getApplicationSupertype(TypeElement type) {
+  //    TypeMirror supertype = type.getSuperclass();
+  //    return Keys.isPlatformType(supertype.toString()) ? null : supertype;
+  //  }
+  //
+  //  /** Returns a class name to complement {@code type}. */
+  //  public static ClassName adapterName(ClassName type, String suffix) {
+  //    return ClassName.get(type.packageName(),
+  //                         Joiner.on('$').join(type.simpleNames()) + suffix);
+  //  }
+  //
+  //  /** Returns a string for {@code type}. Primitive types are always boxed. */
+  //  public static String typeToString(TypeMirror type) {
+  //    StringBuilder result = new StringBuilder();
+  //    typeToString(type, result, '.');
+  //    return result.toString();
+  //  }
 
   /**
    * Returns a string for the raw type of {@code type}. Primitive types are always boxed.
    */
   public static String rawTypeToString(TypeMirror type,
                                        char innerClassSeparator) {
-    if (!(type instanceof DeclaredType)) {
+    if (! (type instanceof DeclaredType)) {
       throw new IllegalArgumentException("Unexpected type: " + type);
     }
-    StringBuilder result = new StringBuilder();
-    DeclaredType declaredType = (DeclaredType) type;
+    StringBuilder result       = new StringBuilder();
+    DeclaredType  declaredType = (DeclaredType) type;
     rawTypeToString(result,
                     (TypeElement) declaredType.asElement(),
                     innerClassSeparator);
@@ -284,7 +296,7 @@ public class Utils {
                   protected Void defaultAction(TypeMirror typeMirror,
                                                Void v) {
                     throw new UnsupportedOperationException(
-                                                             "Unexpected TypeKind " + typeMirror.getKind() + " for " + typeMirror);
+                      "Unexpected TypeKind " + typeMirror.getKind() + " for " + typeMirror);
                   }
 
                   @Override
@@ -295,7 +307,7 @@ public class Utils {
                                     typeElement,
                                     innerClassSeparator);
                     List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
-                    if (!typeArguments.isEmpty()) {
+                    if (! typeArguments.isEmpty()) {
                       result.append("<");
                       for (int i = 0; i < typeArguments.size(); i++) {
                         if (i != 0) {
@@ -336,7 +348,7 @@ public class Utils {
                   public Void visitTypeVariable(TypeVariable typeVariable,
                                                 Void v) {
                     result.append(typeVariable.asElement()
-                                              .getSimpleName());
+                                    .getSimpleName());
                     return null;
                   }
 
@@ -348,9 +360,9 @@ public class Utils {
                     // to the compiler.
 
                     // Paramterized types which don't exist are returned as an error type whose name is "<any>"
-//                    if ("<any>".equals(errorType.toString())) {
-//                      throw new CodeGenerationIncompleteException("Type reported as <any> is likely a not-yet generated parameterized type.");
-//                    }
+                    //                    if ("<any>".equals(errorType.toString())) {
+                    //                      throw new CodeGenerationIncompleteException("Type reported as <any> is likely a not-yet generated parameterized type.");
+                    //                    }
                     // TODO(cgruber): Figure out a strategy for non-FQCN cases.
                     result.append(errorType.toString());
                     return null;
@@ -378,9 +390,9 @@ public class Utils {
                            // to the compiler.
 
                            // Paramterized types which don't exist are returned as an error type whose name is "<any>"
-//                           if ("<any>".equals(errorType.toString())) {
-//                             throw new CodeGenerationIncompleteException("Type reported as <any> is likely a not-yet generated parameterized type.");
-//                           }
+                           //                           if ("<any>".equals(errorType.toString())) {
+                           //                             throw new CodeGenerationIncompleteException("Type reported as <any> is likely a not-yet generated parameterized type.");
+                           //                           }
 
                            return ClassName.bestGuess(errorType.toString());
                          }
@@ -419,20 +431,20 @@ public class Utils {
     }
   }
 
-//
-//  // TODO(sgoldfed): better format for other types of elements?
-//  static String elementToString(Element element) {
-//    switch (element.getKind()) {
-//      case FIELD:
-//        // fall through
-//      case CONSTRUCTOR:
-//        // fall through
-//      case METHOD:
-//        return element.getEnclosingElement() + "." + element;
-//      default:
-//        return element.toString();
-//    }
-//  }
+  //
+  //  // TODO(sgoldfed): better format for other types of elements?
+  //  static String elementToString(Element element) {
+  //    switch (element.getKind()) {
+  //      case FIELD:
+  //        // fall through
+  //      case CONSTRUCTOR:
+  //        // fall through
+  //      case METHOD:
+  //        return element.getEnclosingElement() + "." + element;
+  //      default:
+  //        return element.toString();
+  //    }
+  //  }
 
   /**
    * Returns the annotation on {@code element} formatted as a Map. This returns
@@ -443,9 +455,9 @@ public class Utils {
   public static Map<String, Object> getAnnotation(Class<?> annotationType,
                                                   Element element) {
     for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
-      if (!rawTypeToString(annotation.getAnnotationType(),
-                           '$')
-             .equals(annotationType.getName())) {
+      if (! rawTypeToString(annotation.getAnnotationType(),
+                            '$')
+        .equals(annotationType.getName())) {
         continue;
       }
 
@@ -455,25 +467,25 @@ public class Utils {
                    m.getDefaultValue());
       }
       for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> e : annotation.getElementValues()
-                                                                                           .entrySet()) {
+        .entrySet()) {
         String name = e.getKey()
-                       .getSimpleName()
-                       .toString();
+          .getSimpleName()
+          .toString();
         Object value = e.getValue()
-                        .accept(VALUE_EXTRACTOR,
-                                null);
+          .accept(VALUE_EXTRACTOR,
+                  null);
         Object defaultValue = result.get(name);
         if (defaultValue != null) {
-          if (!lenientIsInstance(defaultValue.getClass(),
-                                 value)) {
+          if (! lenientIsInstance(defaultValue.getClass(),
+                                  value)) {
             throw new IllegalStateException(String.format("Value of %s.%s is a %s but expected a %s\n    value: %s",
-                                                           annotationType,
-                                                           name,
-                                                           value.getClass()
-                                                                .getName(),
-                                                           defaultValue.getClass()
-                                                                       .getName(),
-                                                           value instanceof Object[] ? Arrays.toString((Object[]) value) : value));
+                                                          annotationType,
+                                                          name,
+                                                          value.getClass()
+                                                            .getName(),
+                                                          defaultValue.getClass()
+                                                            .getName(),
+                                                          value instanceof Object[] ? Arrays.toString((Object[]) value) : value));
           }
         }
         result.put(name,
@@ -484,83 +496,83 @@ public class Utils {
     return null; // Annotation not found.
   }
 
-//  /**
-//   * Returns the no-args constructor for {@code type}, or null if no such
-//   * constructor exists.
-//   */
-//  public static ExecutableElement getNoArgsConstructor(TypeElement type) {
-//    for (Element enclosed : type.getEnclosedElements()) {
-//      if (enclosed.getKind() != ElementKind.CONSTRUCTOR) {
-//        continue;
-//      }
-//      ExecutableElement constructor = (ExecutableElement) enclosed;
-//      if (constructor.getParameters().isEmpty()) {
-//        return constructor;
-//      }
-//    }
-//    return null;
-//  }
-//
-//  /**
-//   * Returns true if generated code can invoke {@code constructor}. That is, if
-//   * the constructor is non-private and its enclosing class is either a
-//   * top-level class or a static nested class.
-//   */
-//  public static boolean isCallableConstructor(ExecutableElement constructor) {
-//    if (constructor.getModifiers().contains(Modifier.PRIVATE)) {
-//      return false;
-//    }
-//    TypeElement type = (TypeElement) constructor.getEnclosingElement();
-//    return type.getEnclosingElement().getKind() == ElementKind.PACKAGE
-//           || type.getModifiers().contains(Modifier.STATIC);
-//  }
-//
-//
-//  /**
-//   * Returns a user-presentable string like {@code coffee.CoffeeModule}.
-//   */
-//  public static String className(ExecutableElement method) {
-//    return ((TypeElement) method.getEnclosingElement()).getQualifiedName().toString();
-//  }
-//
-//  public static boolean isInterface(TypeMirror typeMirror) {
-//    return typeMirror instanceof DeclaredType
-//           && ((DeclaredType) typeMirror).asElement().getKind() == ElementKind.INTERFACE;
-//  }
-//
-//  static boolean isStatic(Element element) {
-//    for (Modifier modifier : element.getModifiers()) {
-//      if (modifier.equals(Modifier.STATIC)) {
-//        return true;
-//      }
-//    }
-//    return false;
-//  }
-//
-//  static ParameterizedTypeName bindingOf(TypeMirror type) {
-//    return ParameterizedTypeName.get(ClassName.get(Binding.class), injectableType(type));
-//  }
-//
-//  /**
-//   * An exception thrown when a type is not extant (returns as an error type),
-//   * usually as a result of another processor not having yet generated its types upon
-//   * which a dagger-annotated type depends.
-//   */
-//  final static class CodeGenerationIncompleteException extends IllegalStateException {
-//    public CodeGenerationIncompleteException(String s) {
-//      super(s);
-//    }
-//  }
+  //  /**
+  //   * Returns the no-args constructor for {@code type}, or null if no such
+  //   * constructor exists.
+  //   */
+  //  public static ExecutableElement getNoArgsConstructor(TypeElement type) {
+  //    for (Element enclosed : type.getEnclosedElements()) {
+  //      if (enclosed.getKind() != ElementKind.CONSTRUCTOR) {
+  //        continue;
+  //      }
+  //      ExecutableElement constructor = (ExecutableElement) enclosed;
+  //      if (constructor.getParameters().isEmpty()) {
+  //        return constructor;
+  //      }
+  //    }
+  //    return null;
+  //  }
+  //
+  //  /**
+  //   * Returns true if generated code can invoke {@code constructor}. That is, if
+  //   * the constructor is non-private and its enclosing class is either a
+  //   * top-level class or a static nested class.
+  //   */
+  //  public static boolean isCallableConstructor(ExecutableElement constructor) {
+  //    if (constructor.getModifiers().contains(Modifier.PRIVATE)) {
+  //      return false;
+  //    }
+  //    TypeElement type = (TypeElement) constructor.getEnclosingElement();
+  //    return type.getEnclosingElement().getKind() == ElementKind.PACKAGE
+  //           || type.getModifiers().contains(Modifier.STATIC);
+  //  }
+  //
+  //
+  //  /**
+  //   * Returns a user-presentable string like {@code coffee.CoffeeModule}.
+  //   */
+  //  public static String className(ExecutableElement method) {
+  //    return ((TypeElement) method.getEnclosingElement()).getQualifiedName().toString();
+  //  }
+  //
+  //  public static boolean isInterface(TypeMirror typeMirror) {
+  //    return typeMirror instanceof DeclaredType
+  //           && ((DeclaredType) typeMirror).asElement().getKind() == ElementKind.INTERFACE;
+  //  }
+  //
+  //  static boolean isStatic(Element element) {
+  //    for (Modifier modifier : element.getModifiers()) {
+  //      if (modifier.equals(Modifier.STATIC)) {
+  //        return true;
+  //      }
+  //    }
+  //    return false;
+  //  }
+  //
+  //  static ParameterizedTypeName bindingOf(TypeMirror type) {
+  //    return ParameterizedTypeName.get(ClassName.get(Binding.class), injectableType(type));
+  //  }
+  //
+  //  /**
+  //   * An exception thrown when a type is not extant (returns as an error type),
+  //   * usually as a result of another processor not having yet generated its types upon
+  //   * which a dagger-annotated type depends.
+  //   */
+  //  final static class CodeGenerationIncompleteException extends IllegalStateException {
+  //    public CodeGenerationIncompleteException(String s) {
+  //      super(s);
+  //    }
+  //  }
 
-//==============================================================================
+  //==============================================================================
 
   static void rawTypeToString(StringBuilder result,
                               TypeElement type,
                               char innerClassSeparator) {
     String packageName = getPackage(type).getQualifiedName()
-                                         .toString();
+      .toString();
     String qualifiedName = type.getQualifiedName()
-                               .toString();
+      .toString();
     if (packageName.isEmpty()) {
       result.append(qualifiedName.replace('.',
                                           innerClassSeparator));
@@ -568,13 +580,13 @@ public class Utils {
       result.append(packageName);
       result.append('.');
       result.append(qualifiedName.substring(packageName.length() + 1)
-                                 .replace('.',
-                                          innerClassSeparator));
+                      .replace('.',
+                               innerClassSeparator));
     }
   }
 
 
-//==============================================================================
+  //==============================================================================
 
   public static PackageElement getPackage(Element type) {
     while (type.getKind() != ElementKind.PACKAGE) {
@@ -591,12 +603,12 @@ public class Utils {
                                            Object value) {
     if (expectedClass.isArray()) {
       Class<?> componentType = expectedClass.getComponentType();
-      if (!(value instanceof Object[])) {
+      if (! (value instanceof Object[])) {
         return false;
       }
       for (Object element : (Object[]) value) {
-        if (!lenientIsInstance(componentType,
-                               element)) {
+        if (! lenientIsInstance(componentType,
+                                element)) {
           return false;
         }
       }

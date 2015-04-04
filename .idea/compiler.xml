@@ -26,7 +26,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="employeeadmim" />
         <module name="mvp4g" />
         <module name="mvp4gmodules" />
       </profile>

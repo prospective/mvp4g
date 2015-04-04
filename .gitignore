@@ -961,3 +961,11 @@ target/classes/com/mvp4g/processor/utils/Utils$1.class
 target/classes/com/mvp4g/processor/utils/Utils$2.class
 target/classes/com/mvp4g/processor/utils/Utils$3.class
 target/classes/com/mvp4g/processor/utils/Utils$4.class
+target/apidocs/com/mvp4g/processor/controls/ModuleControl.html
+target/apidocs/com/mvp4g/processor/controls/class-use/ModuleControl.html
+target/apidocs/com/mvp4g/processor/info/EventBusInfo.html
+target/apidocs/com/mvp4g/processor/info/class-use/EventBusInfo.html
+target/classes/com/mvp4g/processor/controls/ModuleControl.class
+target/classes/com/mvp4g/processor/controls/ModuleControl.java
+target/classes/com/mvp4g/processor/info/EventBusInfo.class
+target/classes/com/mvp4g/processor/info/EventBusInfo.java

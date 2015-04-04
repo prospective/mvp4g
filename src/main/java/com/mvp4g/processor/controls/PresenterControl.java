@@ -28,6 +28,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 
+@Deprecated
 public class PresenterControl {
 
   private MessagerUtils messagerUtils;

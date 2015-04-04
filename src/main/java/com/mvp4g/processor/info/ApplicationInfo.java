@@ -37,8 +37,8 @@ public class ApplicationInfo {
 
     modules = new HashMap<>();
     // add default module info
-    modules.put(Mvp4gModule.class.getCanonicalName(),
-                new ModuleInfo(Mvp4gModule.class.getCanonicalName()));
+//    modules.put(Mvp4gModule.class.getCanonicalName(),
+//                new ModuleInfo(Mvp4gModule.class.getCanonicalName()));
   }
 
   @Deprecated
@@ -74,9 +74,9 @@ public class ApplicationInfo {
 
   public ModuleInfo getModuleInfoForEventBus(String eventBusName) {
     for (ModuleInfo info : modules.values()) {
-      if (info.getCurrentEventBus().getQualifiedName().toString().equals(eventBusName)) {
-        return info;
-      }
+//      if (info.getEventBusInfo().getCurrentEventBus().getQualifiedName().toString().equals(eventBusName)) {
+//        return info;
+//      }
     }
     return null;
   }

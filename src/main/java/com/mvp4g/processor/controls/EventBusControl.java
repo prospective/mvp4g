@@ -22,6 +22,7 @@ import com.mvp4g.processor.utils.MessagerUtils;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 
+@Deprecated
 public class EventBusControl {
 
   private MessagerUtils messagerUtils;
