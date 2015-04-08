@@ -50,22 +50,25 @@ public class Utils {
   //	public final static String HISTORY_CONVERTER_TYPE_SIMPLE = "SIMPLE";
   //	public final static String HISTORY_CONVERTER_TYPE_DEFAULT = "DEFAULT";
   //
-  public final static String ATTRIBUTE_ASYNC                 = "async";
-  public final static String ATTRIBUTE_AUTO_DISPLAY          = "autoDisplay";
-  public final static String ATTRIBUTE_BIND                  = "bind";
-  public final static String ATTRIBUTE_FORWARD_TO_MODULES    = "forwardToModules";
-  public final static String ATTRIBUTE_FORWARD_TO_PARENT     = "forwardToParent";
-  public final static String ATTRIBUTE_HANDLERS              = "handlers";
-  public final static String ATTRIBUTE_HISTORY_CONVERTER     = "historyConverter";
-  public final static String ATTRIBUTE_HISTORY_ON_START      = "historyOnStart";
-  public final static String ATTRIBUTE_MODULE                = "module";
-  public final static String ATTRIBUTE_MODULE_CLASS          = "moduleClass";
-  public final static String ATTRIBUTE_MODULES_TO_LOAD       = "modulesToLoad";
-  public final static String ATTRIBUTE_START_PRESENTER       = "startPresenter";
-  public final static String ATTRIBUTE_START_PRESENTER_NAME  = "startPresenterName";
-  public final static String ATTRIBUTE_GIN_MODULES           = "ginModules";
-  public final static String ATTRIBUTE_GIN_MODULE_PROPERTIES = "ginModuleProperties";
-  public final static String ATTRIBUTE_VALUE                 = "value";
+  public final static String ATTRIBUTE_ASYNC                  = "async";
+  public final static String ATTRIBUTE_AUTO_DISPLAY           = "autoDisplay";
+  public final static String ATTRIBUTE_BIND                   = "bind";
+  public final static String ATTRIBUTE_BIND_NAMES             = "bindNames";
+  public final static String ATTRIBUTE_FORWARD_TO_MODULES     = "forwardToModules";
+  public final static String ATTRIBUTE_FORWARD_TO_PARENT      = "forwardToParent";
+  public final static String ATTRIBUTE_HANDLERS               = "handlers";
+  public final static String ATTRIBUTE_HANDLER_NAMES          = "handlerNames";
+  public final static String ATTRIBUTE_HISTORY_CONVERTER      = "historyConverter";
+  public final static String ATTRIBUTE_HISTORY_CONVERTER_NAME = "historyConverterName";
+  public final static String ATTRIBUTE_HISTORY_ON_START       = "historyOnStart";
+  public final static String ATTRIBUTE_MODULE                 = "module";
+  public final static String ATTRIBUTE_MODULE_CLASS           = "moduleClass";
+  public final static String ATTRIBUTE_MODULES_TO_LOAD        = "modulesToLoad";
+  public final static String ATTRIBUTE_START_PRESENTER        = "startPresenter";
+  public final static String ATTRIBUTE_START_PRESENTER_NAME   = "startPresenterName";
+  public final static String ATTRIBUTE_GIN_MODULES            = "ginModules";
+  public final static String ATTRIBUTE_GIN_MODULE_PROPERTIES  = "ginModuleProperties";
+  public final static String ATTRIBUTE_VALUE                  = "value";
 
   //	public final static String ATTRIBUTE_MODULE_CLASS = "moduleClass";
   //	public final static String ATTRIBUTE_CALLED_METHOD = "calledMethod";
@@ -607,6 +610,16 @@ public class Utils {
       elements = new TypeElement[0];
     }
     return elements;
+  }
+
+  public static String convertName(AnnotationValue annotationValue) {
+    String name = "";
+    if (annotationValue != null) {
+      name = ((DeclaredType) annotationValue.getValue()).asElement()
+                                                        .getSimpleName()
+                                                        .toString();
+    }
+    return name;
   }
 
   public static String[] convertNames(List<? extends AnnotationValue> list) {

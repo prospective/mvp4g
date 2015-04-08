@@ -39,6 +39,19 @@ public class EventInfo {
   private String calledMethod;
 
   private TypeElement historyConverter;
+  private String      historyConverterName;
+
+  private TypeElement[] activate;
+  private String[]      activateNames;
+
+  private TypeElement[] deactivate;
+  private String[]      deactivateNames;
+
+  private String[]    name;
+  private boolean     navigationEvent;
+  private boolean     passive;
+  private TypeElement broadcastTo;
+
 
 //------------------------------------------------------------------------------
 
@@ -63,38 +76,157 @@ public class EventInfo {
     return eventName;
   }
 
-  public void setHandlers(TypeElement[] handlers) {
-    this.handlers = handlers;
-  }
-
-  public void setEvent(ExecutableElement event) {
-    this.event = event;
-  }
-
-  public void setHandlerNames(String[] handlerNames) {
-    this.handlerNames = handlerNames;
-  }
-
-  public void setBindNames(String[] bindNames) {
-    this.bindNames = bindNames;
-  }
-
-  public void setBind(TypeElement[] bind) {
-    this.bind = bind;
-  }
-
-  public void setForwardToModules(TypeElement[] forwardToModules) {
-    this.forwardToModules = forwardToModules;
+  public void setEventName(String eventName) {
+    this.eventName = eventName;
   }
 
   public void setForwardToParent(Boolean forwardToParent) {
     this.forwardToParent = forwardToParent;
   }
 
+  public ExecutableElement getEvent() {
+    return event;
+  }
+
+  public void setEvent(ExecutableElement event) {
+    this.event = event;
+  }
+
+  public TypeElement[] getHandlers() {
+    return handlers;
+  }
+
+  public void setHandlers(TypeElement[] handlers) {
+    this.handlers = handlers;
+  }
+
+  public String[] getHandlerNames() {
+    return handlerNames;
+  }
+
+  public void setHandlerNames(String[] handlerNames) {
+    this.handlerNames = handlerNames;
+  }
+
+  public TypeElement[] getBind() {
+    return bind;
+  }
+
+  public void setBind(TypeElement[] bind) {
+    this.bind = bind;
+  }
+
+  public String[] getBindNames() {
+    return bindNames;
+  }
+
+  public void setBindNames(String[] bindNames) {
+    this.bindNames = bindNames;
+  }
+
+  public TypeElement[] getForwardToModules() {
+    return forwardToModules;
+  }
+
+  public void setForwardToModules(TypeElement[] forwardToModules) {
+    this.forwardToModules = forwardToModules;
+  }
+
+  public boolean isForwardToParent() {
+    return forwardToParent;
+  }
+
+  public void setForwardToParent(boolean forwardToParent) {
+    this.forwardToParent = forwardToParent;
+  }
+
+  public String getCalledMethod() {
+    return calledMethod;
+  }
+
+  public void setCalledMethod(String calledMethod) {
+    this.calledMethod = calledMethod;
+  }
+
+  public TypeElement getHistoryConverter() {
+    return historyConverter;
+  }
+
   public void setHistoryConverter(TypeElement historyConverter) {
     this.historyConverter = historyConverter;
   }
 
+  public String getHistoryConverterName() {
+    return historyConverterName;
+  }
+
+  public void setHistoryConverterName(String historyConverterName) {
+    this.historyConverterName = historyConverterName;
+  }
+
+  public TypeElement[] getActivate() {
+    return activate;
+  }
+
+  public void setActivate(TypeElement[] activate) {
+    this.activate = activate;
+  }
+
+  public String[] getActivateNames() {
+    return activateNames;
+  }
+
+  public void setActivateNames(String[] activateNames) {
+    this.activateNames = activateNames;
+  }
+
+  public TypeElement[] getDeactivate() {
+    return deactivate;
+  }
+
+  public void setDeactivate(TypeElement[] deactivate) {
+    this.deactivate = deactivate;
+  }
+
+  public String[] getDeactivateNames() {
+    return deactivateNames;
+  }
+
+  public void setDeactivateNames(String[] deactivateNames) {
+    this.deactivateNames = deactivateNames;
+  }
+
+  public String[] getName() {
+    return name;
+  }
+
+  public void setName(String[] name) {
+    this.name = name;
+  }
+
+  public boolean isNavigationEvent() {
+    return navigationEvent;
+  }
+
+  public void setNavigationEvent(boolean navigationEvent) {
+    this.navigationEvent = navigationEvent;
+  }
+
+  public boolean isPassive() {
+    return passive;
+  }
+
+  public void setPassive(boolean passive) {
+    this.passive = passive;
+  }
+
+  public TypeElement getBroadcastTo() {
+    return broadcastTo;
+  }
+
+  public void setBroadcastTo(TypeElement broadcastTo) {
+    this.broadcastTo = broadcastTo;
+  }
 //  /**
 //   * @return the currentEventBus
 //   */

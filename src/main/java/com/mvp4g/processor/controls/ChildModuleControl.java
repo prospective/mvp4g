@@ -17,19 +17,38 @@
 
 package com.mvp4g.processor.controls;
 
+import com.mvp4g.processor.info.ApplicationInfo;
+import com.mvp4g.processor.info.ModuleInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
+import com.mvp4g.processor.utils.Utils;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-@Deprecated
+import javax.lang.model.type.DeclaredType;
+import java.util.List;
+import java.util.Map;
+
 public class ChildModuleControl {
 
-  private MessagerUtils messagerUtils;
+  /* application info */
+  private ApplicationInfo applicationInfo;
+
+  /* processing envirement */
+  private ProcessingEnvironment processingEnv;
+  /* messager utils */
+  private MessagerUtils         messagerUtils;
 
 //------------------------------------------------------------------------------
 
-  public ChildModuleControl(MessagerUtils messagerUtils) {
+  public ChildModuleControl(ApplicationInfo applicationInfo,
+                            MessagerUtils messagerUtils,
+                            ProcessingEnvironment processingEnv) {
+    this.applicationInfo = applicationInfo;
     this.messagerUtils = messagerUtils;
+    this.processingEnv = processingEnv;
   }
 
 //------------------------------------------------------------------------------
@@ -42,77 +61,62 @@ public class ChildModuleControl {
    * <li>that class extends BasePresenter</li>
    * </ul>
    *
-   * @param processingEnv the processing enviremet
-   * @param element the annotated presenter to validate
+   * @param element       the annotated presenter to validate
    * @return true, if it is valid class
    */
-  public boolean validate(ProcessingEnvironment processingEnv,
-                          TypeElement element) {
-//    // check presenter
-//    if (element != null) {
-//      // Check if the annotated file is a class
-//      if (element.getKind() != ElementKind.CLASS) {
-//        messagerUtils.error(element,
-//                            Messages.NOT_A_CLASS,
-//                            Presenter.class.getSimpleName());
-//        return false; // Exit processing
-//      }
-//      // Check if the annotated file is a class
-//      if (element.getModifiers()
-//                          .contains(Modifier.ABSTRACT)) {
-//        messagerUtils.error(element,
-//                            Messages.CLASS_SHOULD_NOT_BE_ABSTRACT,
-//                            Presenter.class.getSimpleName());
-//        return false; // Exit processing
-//      }
-//      // check if the class extends BasePresenter
-//      if (!Utils.isSubType(processingEnv,
-//                           element,
-//                           BasePresenter.class)) {
-//        messagerUtils.error(element,
-//                            Messages.CLASS_SHOULD_EXTEND_BASE_PRESENTER,
-//                            Presenter.class.getSimpleName());
-//        return false; // Exit processing
-//      }
-//      // TODO
-////      TypeMirror view = null;
-////      for (ExecutableElement method : ElementFilter.methodsIn(processingEnv.getElementUtils()
-////                                                                           .getAllMembers(element))) {
-////        if ("getView".equals(method.getSimpleName()
-////                                   .toString())) {
-////          view = method.getReturnType();
-////        }
-////      }
-////      checkView(processingEnv,
-////                element,
-////                view);
-//    }
-    return true;
+  public boolean process(TypeElement element,
+                         AnnotationMirror annotationMirror) {
+    // fill info
+    createInfo(element, annotationMirror);
+    // validate
+    return isValid(element);
   }
 
 //------------------------------------------------------------------------------
 
-//   private void checkView(ProcessingEnvironment processingEnv,
-//                         TypeElement annotatedElement,
-//                         TypeMirror view) {
-//    AnnotationMirror a = Utils.getAnnotationMirror(Utils.PRESENTER,
-//                                                   annotatedElement);
-//    if (a != null) {
-//      AnnotationValue v = Utils.getAnnotationValue("view",
-//                                                   a);
-//      if (v != null) {
-//        DeclaredType injectedView = (DeclaredType) v.getValue();
-//        if (!processingEnv.getTypeUtils()
-//                          .isSubtype(injectedView,
-//                                     view)) {
-//          messagerUtils.error(annotatedElement,
-//                              Messages.INVALID_VIEW,
-//                              injectedView,
-//                              view,
-//                              injectedView,
-//                              view);
-//        }
-//      }
-//    }
-//  }
+  private void createInfo(TypeElement element,
+                          AnnotationMirror annotationMirror) {
+
+    boolean isAsync = true;
+    boolean isAutoDisplay = true;
+    TypeElement module;
+
+    for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues()
+                                                                                                   .entrySet()) {
+      for (AnnotationMirror mirror : (List<AnnotationMirror>) entry.getValue()
+                                                                   .getValue()) {
+        module = (TypeElement) ((DeclaredType) Utils.getAnnotationValue(Utils.ATTRIBUTE_MODULE_CLASS,
+                                                                        mirror)
+                                                    .getValue()
+        ).asElement();
+        AnnotationValue amIsAsync = Utils.getAnnotationValue(Utils.ATTRIBUTE_ASYNC,
+                                                             mirror);
+        if (amIsAsync != null) {
+          isAsync = (Boolean) amIsAsync.getValue();
+        }
+        AnnotationValue amIsAutoDisplay = Utils.getAnnotationValue(Utils.ATTRIBUTE_AUTO_DISPLAY,
+                                                                   mirror);
+        if (amIsAutoDisplay != null) {
+          isAutoDisplay = (Boolean) amIsAsync.getValue();
+        }
+        // set up module infos
+        ModuleInfo info = applicationInfo.getModule(module.toString());
+        if (info == null) {
+          info = new ModuleInfo(module.toString());
+          applicationInfo.addModules(info.getModuleName(),
+                                     info);
+        }
+        info.setAufoDisplay(isAutoDisplay);
+        info.setIsAsync(isAsync);
+        info.getEventBusInfo()
+            .setParentEventBus(element);
+      }
+    }
+  }
+
+//------------------------------------------------------------------------------
+
+  private boolean isValid(TypeElement element) {
+    return true;
+  }
 }
