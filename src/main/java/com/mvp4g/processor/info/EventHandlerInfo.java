@@ -22,22 +22,18 @@ import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PresenterInfo {
+public class EventHandlerInfo {
 
   /* info name */
-  private String      presenterName;
+  private String      eventHandlerName;
   /* type element of the presenter */
-  private TypeElement presenter;
+  private TypeElement eventHandler;
   /* attribute name*/
   private String      name;
-  private TypeElement view;
-  private String      viewName;
   private boolean     multiple;
   private TypeElement async;
 
   private TypeElement eventBus;
-
-  private TypeElement injectedView;
   private TypeElement injectedEventBus;
 
   private ExecutableElement       bindMethod;
@@ -45,108 +41,84 @@ public class PresenterInfo {
 
 //------------------------------------------------------------------------------
 
-  private PresenterInfo() {
+  private EventHandlerInfo() {
     this(null,
          null);
   }
 
-  public PresenterInfo(String presenterName,
-                       TypeElement presenter) {
+  public EventHandlerInfo(String eventHandlerName,
+                          TypeElement eventHandler) {
     super();
 
-    this.presenterName = presenterName;
-    this.presenter = presenter;
+    this.eventHandlerName = eventHandlerName;
+    this.eventHandler = eventHandler;
 
     eventHandlingMethods = new ArrayList<>();
   }
 
 //------------------------------------------------------------------------------
 
+  public String getEventHandlerName() {
+    return eventHandlerName;
+  }
+
+  public TypeElement getEventHandler() {
+    return eventHandler;
+  }
+
   public String getName() {
     return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public TypeElement getEventBus() {
-    return eventBus;
-  }
-
-  public void setEventBus(TypeElement eventBus) {
-    this.eventBus = eventBus;
-  }
-
-  public String getPresenterName() {
-    return presenterName;
-  }
-
-  public TypeElement getView() {
-    return view;
-  }
-
-  public void setView(TypeElement view) {
-    this.view = view;
-  }
-
-  public String getViewName() {
-    return viewName;
-  }
-
-  public void setViewName(String viewName) {
-    this.viewName = viewName;
   }
 
   public boolean isMultiple() {
     return multiple;
   }
 
-  public void setMultiple(boolean multiple) {
-    this.multiple = multiple;
-  }
-
   public TypeElement getAsync() {
     return async;
   }
 
-  public void setAsync(TypeElement async) {
-    this.async = async;
-  }
-
-  public TypeElement getPresenter() {
-    return presenter;
-  }
-
-  public TypeElement getInjectedView() {
-    return injectedView;
-  }
-
-  public void setInjectedView(TypeElement injectedView) {
-    this.injectedView = injectedView;
+  public TypeElement getEventBus() {
+    return eventBus;
   }
 
   public TypeElement getInjectedEventBus() {
     return injectedEventBus;
   }
 
-  public void setInjectedEventBus(TypeElement injectedEventBus) {
-    this.injectedEventBus = injectedEventBus;
+  public ExecutableElement getBindMethod() {
+    return bindMethod;
   }
 
   public List<ExecutableElement> getEventHandlingMethods() {
     return eventHandlingMethods;
   }
 
-  public void setEventHandlingMethods(List<ExecutableElement> eventHandlingMethods) {
-    this.eventHandlingMethods = eventHandlingMethods;
+  public void setName(String name) {
+    this.name = name;
   }
 
-  public ExecutableElement getBindMethod() {
-    return bindMethod;
+  public void setMultiple(boolean multiple) {
+    this.multiple = multiple;
+  }
+
+  public void setAsync(TypeElement async) {
+    this.async = async;
+  }
+
+  public void setEventBus(TypeElement eventBus) {
+    this.eventBus = eventBus;
+  }
+
+  public void setInjectedEventBus(TypeElement injectedEventBus) {
+    this.injectedEventBus = injectedEventBus;
   }
 
   public void setBindMethod(ExecutableElement bindMethod) {
     this.bindMethod = bindMethod;
+  }
+
+  public void setEventHandlingMethods(List<ExecutableElement> eventHandlingMethods) {
+    this.eventHandlingMethods = eventHandlingMethods;
   }
 }

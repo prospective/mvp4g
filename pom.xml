@@ -66,10 +66,13 @@
     <properties>
         <autoservice.version>1.0-rc2</autoservice.version>
 
+        <compile-testing.version>0.7</compile-testing.version>
+
         <gwt.version>2.7.0</gwt.version>
         <gin.version>2.1.2</gin.version>
 
         <javapoet.version>1.0.0</javapoet.version>
+        <junit.version>4.11</junit.version>
 
         <!-- GWT needs at least java 1.6 -->
         <maven.compiler.source>1.7</maven.compiler.source>
@@ -130,7 +133,14 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.testing.compile</groupId>
+            <artifactId>compile-testing</artifactId>
+            <version>${compile-testing.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

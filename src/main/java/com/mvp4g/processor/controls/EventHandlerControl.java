@@ -17,11 +17,12 @@
 
 package com.mvp4g.processor.controls;
 
+import com.mvp4g.client.annotation.EventHandler;
 import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
 import com.mvp4g.processor.Messages;
 import com.mvp4g.processor.info.ApplicationInfo;
-import com.mvp4g.processor.info.PresenterInfo;
+import com.mvp4g.processor.info.EventHandlerInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
 import com.mvp4g.processor.utils.Utils;
 import com.mvp4g.processor.utils.models.TypeModel;
@@ -36,7 +37,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
-public class PresenterControl {
+public class EventHandlerControl {
 
   /* application info */
   private ApplicationInfo applicationInfo;
@@ -47,13 +48,13 @@ public class PresenterControl {
   private MessagerUtils         messagerUtils;
 
   /* info */
-  private PresenterInfo info;
+  private EventHandlerInfo info;
 
 //------------------------------------------------------------------------------
 
-  public PresenterControl(ApplicationInfo applicationInfo,
-                          MessagerUtils messagerUtils,
-                          ProcessingEnvironment processingEnv) {
+  public EventHandlerControl(ApplicationInfo applicationInfo,
+                             MessagerUtils messagerUtils,
+                             ProcessingEnvironment processingEnv) {
     this.applicationInfo = applicationInfo;
     this.messagerUtils = messagerUtils;
     this.processingEnv = processingEnv;
@@ -86,21 +87,15 @@ public class PresenterControl {
 
   private boolean createInfo(TypeElement element) {
     // create info
-    info = applicationInfo.getPresenter(element.toString());
+    info = applicationInfo.getEventHandler(element.toString());
     if (info == null) {
-      info = new PresenterInfo(element.toString(),
-                               element);
+      info = new EventHandlerInfo(element.toString(),
+                                  element);
     }
 
-    Map<String, Object> annotationValues = Utils.getAnnotation(Presenter.class,
+    Map<String, Object> annotationValues = Utils.getAnnotation(EventHandler.class,
                                                                element);
     if (annotationValues != null) {
-      if (annotationValues.get(Utils.ATTRIBUTE_VIEW) != null) {
-        info.setView((TypeElement) ((DeclaredType) annotationValues.get(Utils.ATTRIBUTE_VIEW)).asElement());
-      }
-      if (annotationValues.get(Utils.ATTRIBUTE_VIEW_NAME) != null) {
-        info.setViewName((String) annotationValues.get(Utils.ATTRIBUTE_VIEW_NAME));
-      }
       if (annotationValues.get(Utils.ATTRIBUTE_NAME) != null) {
         info.setName((String) annotationValues.get(Utils.ATTRIBUTE_NAME));
       }
@@ -130,8 +125,8 @@ public class PresenterControl {
       }
     }
 
-    applicationInfo.addPresenter(info.getPresenterName(),
-                                 info);
+    applicationInfo.addEventHandler(info.getEventHandlerName(),
+                                    info);
 
     return true;
   }
@@ -176,22 +171,6 @@ public class PresenterControl {
                             Presenter.class.getSimpleName());
         return false;
       }
-      if (!processingEnv.getTypeUtils()
-                        .isSubtype(info.getView()
-                                       .asType(),
-                                   info.getInjectedView()
-                                       .asType())) {
-        messagerUtils.error(element,
-                            Messages.INVALID_VIEW,
-                            element.getSimpleName()
-                                   .toString(),
-                            info.getInjectedView()
-                                .getSimpleName(),
-                            info.getView()
-                                .getSimpleName());
-        return false;
-
-      }
     }
     return true;
   }
@@ -203,9 +182,6 @@ public class PresenterControl {
         if (model.getType()
                  .equals("E")) {
           info.setInjectedEventBus(model.getArgument());
-        } else if (model.getType()
-                        .equals("V")) {
-          info.setInjectedView(model.getArgument());
         }
       }
     } else {

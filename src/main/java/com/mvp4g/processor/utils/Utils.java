@@ -19,7 +19,13 @@ package com.mvp4g.processor.utils;
 
 import com.mvp4g.client.annotation.Event;
 import com.mvp4g.client.annotation.Events;
+import com.mvp4g.client.annotation.History;
+import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.annotation.module.ChildModules;
+import com.mvp4g.client.presenter.BasePresenter;
+import com.mvp4g.client.presenter.CyclePresenter;
+import com.mvp4g.client.presenter.LazyPresenter;
+import com.mvp4g.processor.utils.models.TypeModel;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 
@@ -29,18 +35,16 @@ import javax.lang.model.type.*;
 import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 import javax.lang.model.util.SimpleTypeVisitor6;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Utils {
   //
   //	public final static String CLEAR_HISTORY = "com.mvp4g.client.history.ClearHistory";
   //	public final static String STRING = String.class.getCanonicalName();
-  public final static String EVENT  = Event.class.getCanonicalName();
-  public final static String EVENTS = Events.class.getCanonicalName();
-  //  public final static String PRESENTER = Presenter.class.getCanonicalName();
+  public final static String EVENT     = Event.class.getCanonicalName();
+  public final static String EVENTS    = Events.class.getCanonicalName();
+  public final static String HISTORY   = History.class.getCanonicalName();
+  public final static String PRESENTER = Presenter.class.getCanonicalName();
 
   //	public final static String EVENT_HANDLER = "com.mvp4g.client.annotation.EventHandler";
   //	public final static String HISTORY = "com.mvp4g.client.annotation.History";
@@ -50,12 +54,21 @@ public class Utils {
   //	public final static String HISTORY_CONVERTER_TYPE_SIMPLE = "SIMPLE";
   //	public final static String HISTORY_CONVERTER_TYPE_DEFAULT = "DEFAULT";
   //
+  public final static String ATTRIBUTE_ACTIVATE               = "activate";
+  public final static String ATTRIBUTE_ACTIVATE_NAMES         = "activateNames";
   public final static String ATTRIBUTE_ASYNC                  = "async";
   public final static String ATTRIBUTE_AUTO_DISPLAY           = "autoDisplay";
   public final static String ATTRIBUTE_BIND                   = "bind";
   public final static String ATTRIBUTE_BIND_NAMES             = "bindNames";
+  public final static String ATTRIBUTE_BROADCAST_TO           = "broadcastTo";
+  public final static String ATTRIBUTE_DEACTIVATE             = "deactivate";
+  public final static String ATTRIBUTE_DEACTIVATE_NAMES       = "deactivateNames";
   public final static String ATTRIBUTE_FORWARD_TO_MODULES     = "forwardToModules";
   public final static String ATTRIBUTE_FORWARD_TO_PARENT      = "forwardToParent";
+  public final static String ATTRIBUTE_GENERATE               = "generate";
+  public final static String ATTRIBUTE_GENERATE_NAMES         = "generateNames";
+  public final static String ATTRIBUTE_GIN_MODULES            = "ginModules";
+  public final static String ATTRIBUTE_GIN_MODULE_PROPERTIES  = "ginModuleProperties";
   public final static String ATTRIBUTE_HANDLERS               = "handlers";
   public final static String ATTRIBUTE_HANDLER_NAMES          = "handlerNames";
   public final static String ATTRIBUTE_HISTORY_CONVERTER      = "historyConverter";
@@ -64,17 +77,23 @@ public class Utils {
   public final static String ATTRIBUTE_MODULE                 = "module";
   public final static String ATTRIBUTE_MODULE_CLASS           = "moduleClass";
   public final static String ATTRIBUTE_MODULES_TO_LOAD        = "modulesToLoad";
+  public final static String ATTRIBUTE_MULTIPLE               = "mutiple";
+  public final static String ATTRIBUTE_NAME                   = "name";
+  public final static String ATTRIBUTE_NAVIGATION_EVENT       = "navigationEvent";
+  public final static String ATTRIBUTE_PASSIVE                = "passive";
   public final static String ATTRIBUTE_START_PRESENTER        = "startPresenter";
   public final static String ATTRIBUTE_START_PRESENTER_NAME   = "startPresenterName";
-  public final static String ATTRIBUTE_GIN_MODULES            = "ginModules";
-  public final static String ATTRIBUTE_GIN_MODULE_PROPERTIES  = "ginModuleProperties";
+  public final static String ATTRIBUTE_TYPE                   = "type";
   public final static String ATTRIBUTE_VALUE                  = "value";
+  public final static String ATTRIBUTE_VIEW                   = "view";
+  public final static String ATTRIBUTE_VIEW_NAME              = "viewName";
+
+  public final static String METHOD_BIND  = "bind";
+  public final static String METHOD_EVENT = "on";
+
 
   //	public final static String ATTRIBUTE_MODULE_CLASS = "moduleClass";
   //	public final static String ATTRIBUTE_CALLED_METHOD = "calledMethod";
-
-//------------------------------------------------------------------------------
-
 
   private static final AnnotationValueVisitor<Object, Void> VALUE_EXTRACTOR =
     new SimpleAnnotationValueVisitor6<Object, Void>() {
@@ -113,6 +132,14 @@ public class Utils {
         return result;
       }
     };
+
+//------------------------------------------------------------------------------
+
+  public final String[] MVP4G_PRESENTER_SUPERCLASSES = new String[]{BasePresenter.class.getCanonicalName(),
+                                                                    LazyPresenter.class.getCanonicalName(),
+                                                                    CyclePresenter.class.getCanonicalName()
+
+  };
 
   //------------------------------------------------------------------------------
 
@@ -615,24 +642,19 @@ public class Utils {
   public static String convertName(AnnotationValue annotationValue) {
     String name = "";
     if (annotationValue != null) {
-      name = ((DeclaredType) annotationValue.getValue()).asElement()
-                                                        .getSimpleName()
-                                                        .toString();
+      name = annotationValue.getValue()
+                            .toString();
     }
     return name;
   }
 
   public static String[] convertNames(List<? extends AnnotationValue> list) {
-    String[] elements = new String[list.size()];
+    String[] elements;
     if (list != null) {
       elements = new String[list.size()];
       for (int i = 0; i < list.size(); i++) {
-        String name = ((DeclaredType) list.get(i)
-                                          .getValue()
-        ).asElement()
-         .getSimpleName()
-         .toString();
-        elements[i] = name;
+        elements[i] = (String) list.get(i)
+                                   .getValue();
       }
     } else {
       elements = new String[0];
@@ -671,6 +693,38 @@ public class Utils {
       return value instanceof TypeMirror;
     } else {
       return expectedClass == value.getClass();
+    }
+  }
+
+//==============================================================================
+
+  public static List<TypeModel> getTypeParameterFromClass(TypeElement element) {
+    List<TypeModel> list = new ArrayList<>();
+    return Utils.doGetTypeParameterFromClass(element,
+                                             list);
+  }
+
+  private static List<TypeModel> doGetTypeParameterFromClass(TypeElement element,
+                                                             List<TypeModel> list) {
+    TypeMirror superClassMirror = element.getSuperclass();
+    if (superClassMirror.toString()
+                        .equals("<none>")) {
+      return list;
+    } else {
+      List<? extends TypeMirror> typeArguments = ((DeclaredType) superClassMirror).getTypeArguments();
+      if (typeArguments.size() > 0) {
+        TypeElement superClassElement = (TypeElement) ((DeclaredType) superClassMirror).asElement();
+        List<? extends TypeParameterElement> superTypeParameter = superClassElement.getTypeParameters();
+        for (int i = 0; i < typeArguments.size(); i++) {
+          list.add(new TypeModel(superTypeParameter.get(i)
+                                                   .toString(),
+                                 (TypeElement) ((DeclaredType) typeArguments.get(i)).asElement()));
+        }
+      } else {
+        return Utils.doGetTypeParameterFromClass((TypeElement) ((DeclaredType) element.getSuperclass()).asElement(),
+                                                 list);
+      }
+      return list;
     }
   }
 }

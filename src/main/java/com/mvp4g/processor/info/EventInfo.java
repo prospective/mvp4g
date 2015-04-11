@@ -47,11 +47,13 @@ public class EventInfo {
   private TypeElement[] deactivate;
   private String[]      deactivateNames;
 
-  private String[]    name;
+  private TypeElement[] generate;
+  private String[]      generateNames;
+
+  private String      name;
   private boolean     navigationEvent;
   private boolean     passive;
   private TypeElement broadcastTo;
-
 
 //------------------------------------------------------------------------------
 
@@ -196,11 +198,11 @@ public class EventInfo {
     this.deactivateNames = deactivateNames;
   }
 
-  public String[] getName() {
+  public String getName() {
     return name;
   }
 
-  public void setName(String[] name) {
+  public void setName(String name) {
     this.name = name;
   }
 
@@ -227,7 +229,23 @@ public class EventInfo {
   public void setBroadcastTo(TypeElement broadcastTo) {
     this.broadcastTo = broadcastTo;
   }
-//  /**
+
+  public TypeElement[] getGenerate() {
+    return generate;
+  }
+
+  public void setGenerate(TypeElement[] generate) {
+    this.generate = generate;
+  }
+
+  public String[] getGenerateNames() {
+    return generateNames;
+  }
+
+  public void setGenerateNames(String[] generateNames) {
+    this.generateNames = generateNames;
+  }
+  //  /**
 //   * @return the currentEventBus
 //   */
 //  public TypeElement getCurrentEventBus() {

@@ -18,12 +18,17 @@
 package com.mvp4g.processor;
 
 import com.google.auto.service.AutoService;
+import com.mvp4g.client.annotation.EventHandler;
 import com.mvp4g.client.annotation.Events;
+import com.mvp4g.client.annotation.History;
 import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.annotation.module.ChildModules;
-import com.mvp4g.processor.controls.*;
+import com.mvp4g.processor.controls.EventHandlerControl;
+import com.mvp4g.processor.controls.HistoryConverterControl;
+import com.mvp4g.processor.controls.ModuleControl;
+import com.mvp4g.processor.controls.PresenterControl;
+import com.mvp4g.processor.exceptions.ConfigurationException;
 import com.mvp4g.processor.info.ApplicationInfo;
-import com.mvp4g.processor.info.PresenterInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -32,7 +37,8 @@ import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static javax.lang.model.util.ElementFilter.typesIn;
 
@@ -41,12 +47,11 @@ public class Mvp4gAnnotationProcessor
   extends AbstractProcessor {
 
   /* info */
-  private ApplicationInfo            applicationInfo;
-  private Map<String, PresenterInfo> presenterInfos;
+  private ApplicationInfo applicationInfo;
   /* message utils */
-  private MessagerUtils              messagerUtils;
+  private MessagerUtils   messagerUtils;
   /* state of validation */
-  private boolean                    isValid;
+  private boolean         isValid;
 
 //------------------------------------------------------------------------------
 
@@ -58,9 +63,11 @@ public class Mvp4gAnnotationProcessor
 
   @Override
   public Set<String> getSupportedAnnotationTypes() {
-    Set<String> annotataions = new LinkedHashSet<String>();
-    annotataions.add(Events.class.getCanonicalName());
+    Set<String> annotataions = new LinkedHashSet<>();
     annotataions.add(ChildModules.class.getCanonicalName());
+    annotataions.add(EventHandler.class.getCanonicalName());
+    annotataions.add(Events.class.getCanonicalName());
+    annotataions.add(History.class.getCanonicalName());
     annotataions.add(Presenter.class.getCanonicalName());
     return annotataions;
   }
@@ -76,8 +83,6 @@ public class Mvp4gAnnotationProcessor
     super.init(processingEnv);
     // initialize
     applicationInfo = new ApplicationInfo();
-    presenterInfos = new HashMap<>();
-
     isValid = true;
     // set up
     messagerUtils = new MessagerUtils(processingEnv.getMessager());
@@ -92,23 +97,27 @@ public class Mvp4gAnnotationProcessor
       // create start message
       messagerUtils.note("[PresenterAnnotationProcessor] - processing annotations");
       // scan annotations
-      scanAnnotations(annotations,
-                      roundEnv);
-      // process only is all tests has passed successfully
-      if (!isValid) {
-        return true;
-      }
-      // validate
-      validate(annotations,
-               roundEnv);
+      try {
+        scanAnnotations(annotations,
+                        roundEnv);
+        // process only is all tests has passed successfully
+        if (!isValid) {
+          return true;
+        }
+        // validate
+        validate(annotations,
+                 roundEnv);
 //
 //
-      // process only is all tests has passed successfully
-      if (!isValid) {
-        return true;
-      }
+        // process only is all tests has passed successfully
+        if (!isValid) {
+          return true;
+        }
 //      // TODO may be we replace the generators with apt in the future ... :-)
 //
+      } catch (ConfigurationException e) {
+        return false;
+      }
     } else {
       // create start message
       messagerUtils.note("[PresenterAnnotationProcessor] - processing annotations finished");
@@ -125,16 +134,24 @@ public class Mvp4gAnnotationProcessor
 //==============================================================================
 
   private void scanAnnotations(Set<? extends TypeElement> annotations,
-                               RoundEnvironment roundEnv) {
+                               RoundEnvironment roundEnv)
+    throws ConfigurationException {
     // processing modules (eventbus)
-    processModules(annotations, roundEnv);
+    processModules(annotations,
+                   roundEnv);
+    // processing presenter annotatiom
+    processPresenter(annotations,
+                     roundEnv);
+    // processing event handler annotatiom
+    processEventHandler(annotations,
+                        roundEnv);
+    // processing history annotatiom
+    processHistory(annotations,
+                   roundEnv);
 
 
-System.out.println("Stop");
+    System.out.println("Finish");
     // TODO
-//    // processing Presenter annotatiom
-//    processPresenter(annotations,
-//                     roundEnv);
 //    // processing Events annotatiom
 //    processEventBus(annotations,
 //                    roundEnv);
@@ -162,43 +179,63 @@ System.out.println("Stop");
 //------------------------------------------------------------------------------
 
   private void processModules(Set<? extends TypeElement> annotations,
-                              RoundEnvironment roudEnv) {
+                              RoundEnvironment roudEnv)
+    throws ConfigurationException {
     // create the control class
     ModuleControl control = new ModuleControl(applicationInfo,
                                               messagerUtils,
                                               processingEnv);
     // iterate over all classes which are annotated with @Events
     for (TypeElement element : typesIn(roudEnv.getElementsAnnotatedWith(Events.class))) {
-      isValid = control.process(element);
+      if (!control.process(element)) {
+        isValid = false;
+      }
     }
   }
 
-//  private void processPresenter(Set<? extends TypeElement> annotations,
-//                                RoundEnvironment roundEnv) {
-//    // create the controll class
-//    PresenterControl validator = new PresenterControl(messagerUtils);
-//    // iterate over all classes which are annotated with @Presenter
-//    for (TypeElement element : typesIn(roundEnv.getElementsAnnotatedWith(Presenter.class))) {
-//      // valdation
-//      if (!validator.validate(processingEnv,
-//                              element)) {
-//        isValid = false;
-//      } else {
-//        PresenterInfo into = getPresenterInfo(element);
-//        messagerUtils.note(element,
-//                           element.getTypeParameters()
-//                                  .toString());
-//        messagerUtils.note(element,
-//                           element.getEnclosedElements()
-//                                  .toString());
-//        messagerUtils.note(element,
-//                           element.getEnclosingElement()
-//                                  .toString());
-//        // todo create presenter control
-//      }
-//    }
-//  }
-//
+  private void processPresenter(Set<? extends TypeElement> annotations,
+                                RoundEnvironment roundEnv) {
+    // create the controll class
+    PresenterControl control = new PresenterControl(applicationInfo,
+                                                    messagerUtils,
+                                                    processingEnv);
+    // iterate over all classes which are annotated with @Presenter
+    for (TypeElement element : typesIn(roundEnv.getElementsAnnotatedWith(Presenter.class))) {
+      if (!control.process(element)) {
+        isValid = false;
+      }
+    }
+  }
+
+  private void processEventHandler(Set<? extends TypeElement> annotations,
+                                   RoundEnvironment roundEnv) {
+    // create the controll class
+    EventHandlerControl control = new EventHandlerControl(applicationInfo,
+                                                          messagerUtils,
+                                                          processingEnv);
+    // iterate over all classes which are annotated with @Presenter
+    for (TypeElement element : typesIn(roundEnv.getElementsAnnotatedWith(EventHandler.class))) {
+      if (!control.process(element)) {
+        isValid = false;
+      }
+    }
+  }
+
+  private void processHistory(Set<? extends TypeElement> annotations,
+                              RoundEnvironment roudEnv)
+    throws ConfigurationException {
+    // create the control class
+    HistoryConverterControl control = new HistoryConverterControl(applicationInfo,
+                                                                  messagerUtils,
+                                                                  processingEnv);
+    // iterate over all classes which are annotated with @Events
+    for (TypeElement element : typesIn(roudEnv.getElementsAnnotatedWith(History.class))) {
+      if (!control.process(element)) {
+        isValid = false;
+      }
+    }
+  }
+
 //  private void processEventBus(Set<? extends TypeElement> annotations,
 //                               RoundEnvironment roundEnv) {
 //    // create the validator

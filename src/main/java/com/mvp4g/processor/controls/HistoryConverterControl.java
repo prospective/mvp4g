@@ -17,85 +17,191 @@
 
 package com.mvp4g.processor.controls;
 
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.ExecutableElement;
+import com.mvp4g.client.annotation.History;
+import com.mvp4g.client.history.HistoryConverter;
+import com.mvp4g.processor.Messages;
+import com.mvp4g.processor.info.ApplicationInfo;
+import com.mvp4g.processor.info.HistoryConverterInfo;
+import com.mvp4g.processor.utils.MessagerUtils;
+import com.mvp4g.processor.utils.Utils;
 
-@Deprecated
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
+import java.util.List;
+import java.util.Map;
+
 public class HistoryConverterControl {
 
-	public void control( ProcessingEnvironment processingEnv, ExecutableElement e, String methodName, AnnotationValue historyConverter ) {
+  /* application info */
+  private ApplicationInfo applicationInfo;
 
-//		if ( historyConverter != null ) {
-//			DeclaredType type = (DeclaredType)historyConverter.getValue();
-//			if ( !Utils.CLEAR_HISTORY.equals( type.toString() ) ) {
-//
-//				TypeElement element = (TypeElement)( (DeclaredType)historyConverter.getValue() ).asElement();
-//				AnnotationMirror history = Utils.getAnnotationMirror(Utils.HISTORY,
-//																														 element);
-//				if ( history == null ) {
-//					processingEnv.getMessager().printMessage( Kind.ERROR,
-//							String.format( Messages.MISSING_ANNOTATION, element.getSimpleName(), Utils.HISTORY ), e );
-//				} else {
-//					AnnotationValue value = Utils.getAnnotationValue("type",
-//																													 history);
-//
-//					boolean found = false;
-//					String convertMetodName = null;
-//					String valueStr = ( ( value == null ) || ( value.getValue() == null ) ) ? Utils.HISTORY_CONVERTER_TYPE_DEFAULT : value
-//							.getValue().toString();
-//
-//					List<Element> parameters = new ArrayList<Element>();
-//					if ( Utils.HISTORY_CONVERTER_TYPE_NONE.equals( valueStr ) ) {
-//						found = true;
-//					} else if ( Utils.HISTORY_CONVERTER_TYPE_SIMPLE.equals( valueStr ) ) {
-//						convertMetodName = "convertToToken";
-//						Element v = processingEnv.getElementUtils().getTypeElement( Utils.STRING );
-//						parameters.add( v );
-//						parameters.addAll( e.getParameters() );
-//					} else {
-//						convertMetodName = methodName;
-//						if ( convertMetodName == null ) {
-//							convertMetodName = "on" + e.getSimpleName().toString().substring( 0, 1 ).toUpperCase()
-//									+ e.getSimpleName().toString().substring( 1 );
-//						}
-//						parameters.addAll( e.getParameters() );
-//					}
-//
-//					Types types = processingEnv.getTypeUtils();
-//					String mName;
-//					TypeMirror eventBus = e.getEnclosingElement().asType();
-//					TypeMirror handlerEventBus;
-//
-//					for ( ExecutableElement method : ElementFilter.methodsIn( processingEnv.getElementUtils().getAllMembers( element ) ) ) {
-//						mName = method.getSimpleName().toString();
-//						if ( !found && mName.toString().equals( convertMetodName ) ) {
-//							if ( method.getModifiers().contains( Modifier.PUBLIC ) && Utils.STRING.equals( method.getReturnType().toString() ) ) {
-//								found = Utils.sameParameters(parameters,
-//																						 method.getParameters(),
-//																						 e);
-//							}
-//						} else if ( "convertFromToken".equals( mName ) ) {
-//							handlerEventBus = method.getParameters().get( 2 ).asType();
-//							if ( !types.isSubtype( eventBus, handlerEventBus ) ) {
-//								processingEnv.getMessager().printMessage( Kind.ERROR,
-//										String.format( Messages.INVALID_EVENT_BUS, eventBus, type, eventBus, handlerEventBus ), e );
-//							}
-//						}
-//					}
-//
-//					if ( !found ) {
-//						processingEnv.getMessager().printMessage(
-//								Kind.ERROR,
-//								String.format( Messages.MISSING_METHOD, element.getSimpleName(), Utils.getMethodName(convertMetodName,
-//																																																		 parameters), "String" ), e );
-//					}
-//
-//				}
-//
-//			}
-//
-//		}
+  /* processing envirement */
+  private ProcessingEnvironment processingEnv;
+  /* messager utils */
+  private MessagerUtils         messagerUtils;
 
-	}
+  /* info */
+  private HistoryConverterInfo info;
+
+//------------------------------------------------------------------------------
+
+  public HistoryConverterControl(ApplicationInfo applicationInfo,
+                                 MessagerUtils messagerUtils,
+                                 ProcessingEnvironment processingEnv) {
+    this.applicationInfo = applicationInfo;
+    this.messagerUtils = messagerUtils;
+    this.processingEnv = processingEnv;
+  }
+
+//------------------------------------------------------------------------------
+
+  /**
+   * Checks the class if:
+   * <ul>
+   * <li>it is a class</li>
+   * <li>that the class is not abstract</li>
+   * <li>that class extends BasePresenter</li>
+   * </ul>
+   *
+   * @param element the annotated presenter to validate
+   * @return true, if it is valid class
+   */
+  public boolean process(TypeElement element) {
+    // fill eventBus info
+    if (!createInfo(element)) {
+      return false;
+    }
+    ;
+    // validate
+    return isValid(element);
+  }
+
+//------------------------------------------------------------------------------
+
+  private boolean createInfo(TypeElement element) {
+    // create info
+    info = applicationInfo.getHistoryConverter(element.toString());
+    if (info == null) {
+      info = new HistoryConverterInfo(element);
+    }
+
+    for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
+      if (Utils.HISTORY.equals(annotationMirror.getAnnotationType()
+                                              .toString())) {
+   			for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues().entrySet() ) {
+          String keyName = entry.getKey().getSimpleName().toString();
+          if (Utils.ATTRIBUTE_NAME.equals(keyName)) {
+            info.setName((String) entry.getValue().getValue());
+          } else if (Utils.ATTRIBUTE_TYPE.equals(keyName)) {
+            if (entry.getValue() != null) {
+              info.setType(History.HistoryConverterType.valueOf(entry.getValue().getValue().toString()));
+            }
+          }
+        }
+      }
+    }
+
+    if (!getTypeParameter(element)) {
+      return false;
+    }
+
+    for (ExecutableElement executable : ElementFilter.methodsIn(processingEnv.getElementUtils()
+                                                                             .getAllMembers(element))) {
+      if (executable.getSimpleName()
+                           .toString()
+                           .startsWith(Utils.METHOD_EVENT)) {
+        info.getEventHandlingMethods()
+            .add(executable);
+      }
+    }
+
+    applicationInfo.addHistoryConverter(info.getName(),
+                                        info);
+
+    return true;
+  }
+
+//------------------------------------------------------------------------------
+
+  /**
+   * Checks the class if:
+   * <ul>
+   * <li>it is a class</li>
+   * <li>that the class is not abstract</li>
+   * <li>that class extends BasePresenter</li>
+   * </ul>
+   *
+   * @param element the annotated presenter to validate
+   * @return true, if it is valid class
+   */
+  private boolean isValid(TypeElement element) {
+//    // check presenter
+//    if (element != null) {
+//      // Check if the annotated file is a class
+//      if (element.getKind() != ElementKind.CLASS) {
+//        messagerUtils.error(element,
+//                            Messages.NOT_A_CLASS,
+//                            Presenter.class.getSimpleName());
+//        return false;
+//      }
+//      // Check if the annotated file is a class
+//      if (element.getModifiers()
+//                 .contains(Modifier.ABSTRACT)) {
+//        messagerUtils.error(element,
+//                            Messages.CLASS_SHOULD_NOT_BE_ABSTRACT,
+//                            Presenter.class.getSimpleName());
+//        return false;
+//      }
+//      // check if the class extends BasePresenter
+//      if (!Utils.isSubType(processingEnv,
+//                           element,
+//                           BasePresenter.class)) {
+//        messagerUtils.error(element,
+//                            Messages.CLASS_SHOULD_EXTEND_BASE_PRESENTER,
+//                            Presenter.class.getSimpleName());
+//        return false;
+//      }
+//      if (!processingEnv.getTypeUtils()
+//                        .isSubtype(info.getView()
+//                                       .asType(),
+//                                   info.getInjectedView()
+//                                       .asType())) {
+//        messagerUtils.error(element,
+//                            Messages.INVALID_VIEW,
+//                            element.getSimpleName()
+//                                   .toString(),
+//                            info.getInjectedView()
+//                                .getSimpleName(),
+//                            info.getView()
+//                                .getSimpleName());
+//        return false;
+//
+//      }
+//    }
+    return true;
+  }
+
+  private boolean getTypeParameter(TypeElement element) {
+    List<? extends TypeMirror> interfaces = element.getInterfaces();
+    for (TypeMirror mirror : interfaces) {
+      TypeElement el = (TypeElement) ((DeclaredType) mirror).asElement();
+      if (el.toString()
+            .equals(HistoryConverter.class.getCanonicalName())) {
+        List<? extends TypeMirror> parameters = ((DeclaredType) mirror).getTypeArguments();
+        if (parameters.size() > 0) {
+          info.setInjectedEventBus((TypeElement) ((DeclaredType) parameters.get(0)).asElement());
+          break;
+        } else {
+          messagerUtils.error(element,
+                              Messages.MISSING_GENERICS_HISTORY,
+                              History.class.getSimpleName());
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 }

@@ -21,46 +21,46 @@ import javax.lang.model.element.TypeElement;
 
 public class ModuleInfo {
 
-    private String moduleName;
-    private EventBusInfo eventBusInfo;
+  private String       moduleName;
+  private EventBusInfo eventBusInfo;
 
-    private TypeElement module;
+  private TypeElement module;
 
-    private boolean isAsync;
-    private boolean aufoDisplay;
-
-//------------------------------------------------------------------------------
-
-    private ModuleInfo() {
-        this(null);
-    }
-
-    public ModuleInfo(String moduleName) {
-        this.moduleName = moduleName;
-
-        eventBusInfo = new EventBusInfo(moduleName);
-        isAsync = false;
-        aufoDisplay = false;
-    }
+  private boolean isAsync;
+  private boolean autoDisplay;
 
 //------------------------------------------------------------------------------
 
-    /**
-     * Name of the representing module
-     *
-     * @return name of the module
-     */
-    public String getModuleName() {
-        return moduleName;
-    }
+  private ModuleInfo() {
+    this(null);
+  }
 
-    /**
-     * EventBusInfo element
-     *
-     * @return the eventbus info element
-     */
-    public EventBusInfo getEventBusInfo() {
-        return eventBusInfo;
+  public ModuleInfo(String moduleName) {
+    this.moduleName = moduleName;
+
+    eventBusInfo = new EventBusInfo(moduleName);
+    isAsync = false;
+    autoDisplay = false;
+  }
+
+//------------------------------------------------------------------------------
+
+  /**
+   * Name of the representing module
+   *
+   * @return name of the module
+   */
+  public String getModuleName() {
+    return moduleName;
+  }
+
+  /**
+   * EventBusInfo element
+   *
+   * @return the eventbus info element
+   */
+  public EventBusInfo getEventBusInfo() {
+    return eventBusInfo;
     }
 
     /**
@@ -76,7 +76,7 @@ public class ModuleInfo {
     /**
      * Set the module type element.
      *
-     * @param module
+     * @param module type Element of the module
      */
     public void setModule(TypeElement module) {
         this.module = module;
@@ -103,11 +103,11 @@ public class ModuleInfo {
      *
      * @return true -> show start view
      */
-    public boolean isAufoDisplay() {
-        return aufoDisplay;
+    public boolean isAutoDisplay() {
+        return autoDisplay;
     }
 
-    public void setAufoDisplay(boolean aufoDisplay) {
-        this.aufoDisplay = aufoDisplay;
+    public void setAutoDisplay(boolean autoDisplay) {
+        this.autoDisplay = autoDisplay;
     }
 }

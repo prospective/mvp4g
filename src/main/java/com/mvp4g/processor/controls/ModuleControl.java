@@ -17,6 +17,7 @@
 
 package com.mvp4g.processor.controls;
 
+import com.mvp4g.processor.exceptions.ConfigurationException;
 import com.mvp4g.processor.info.ApplicationInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
 import com.mvp4g.processor.utils.Utils;
@@ -76,24 +77,29 @@ public class ModuleControl {
    * @param element the annotated presenter to validate
    * @return true, if it is valid class
    */
-  public boolean process(TypeElement element) {
-
+  public boolean process(TypeElement element)
+    throws ConfigurationException {
+    // process
     for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
       if (Utils.EVENTS.equals(annotationMirror.getAnnotationType()
                                               .toString())) {
-        isValid = eventBusControl.process(element);
+        if (!eventBusControl.process(element)) {
+          return false;
+        }
       } else if (Utils.CHILD_MODULES.equals(annotationMirror.getAnnotationType()
                                                             .toString())) {
-        isValid = childModuleControl.process(element,
-                                             annotationMirror);
+        if (!childModuleControl.process(element,
+                                        annotationMirror)) {
+          return false;
+        }
       }
     }
-
-    // TODO validation
-
-
-    return isValid;
+    return isValid(element);
   }
 
 //------------------------------------------------------------------------------
+
+  private boolean isValid(TypeElement element) {
+    return true;
+  }
 }

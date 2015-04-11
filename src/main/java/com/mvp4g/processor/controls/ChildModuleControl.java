@@ -106,7 +106,7 @@ public class ChildModuleControl {
           applicationInfo.addModules(info.getModuleName(),
                                      info);
         }
-        info.setAufoDisplay(isAutoDisplay);
+        info.setAutoDisplay(isAutoDisplay);
         info.setIsAsync(isAsync);
         info.getEventBusInfo()
             .setParentEventBus(element);
