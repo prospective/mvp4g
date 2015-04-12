@@ -18,6 +18,7 @@
 package com.mvp4g.processor.controls.info;
 
 import javax.lang.model.element.TypeElement;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,6 +56,15 @@ public class EventBusInfo {
 
   public void addEvent(EventInfo info) {
     events.put(info.getEventName(), info);
+  }
+
+  /**
+   * Returns all evnet infos of this eventbus
+   *
+   * @return all event info
+   */
+  public Collection<EventInfo> getEvents() {
+    return events.values();
   }
 
   public String getStartPresenterName() {

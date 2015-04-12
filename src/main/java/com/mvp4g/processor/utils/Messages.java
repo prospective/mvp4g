@@ -20,7 +20,11 @@ package com.mvp4g.processor.utils;
 
 public class Messages {
 
+	public static final String CLASS_SHOULD_EXTEND_BASE_EVENT_HANDLER = "mvp4g: a event handler annotated with @%s must extend BaseEventHandler";
+
 	public static final String CLASS_SHOULD_EXTEND_BASE_PRESENTER = "mvp4g: a presenter annotated with @%s must extend BasePresenter or LazyPresenter";
+
+	public static final String CLASS_SHOULD_IMPLEMENTS_HISTORY_CONVERTER = "mvp4g: a history converter annotated with @%s must implement HistoryConverter";
 
 	public static final String CLASS_SHOULD_NOT_BE_ABSTRACT = "mvp4g: a class annotated with @%s can not be abstract";
 

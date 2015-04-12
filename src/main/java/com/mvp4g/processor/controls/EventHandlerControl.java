@@ -19,13 +19,13 @@ package com.mvp4g.processor.controls;
 
 import com.mvp4g.client.annotation.EventHandler;
 import com.mvp4g.client.annotation.Presenter;
-import com.mvp4g.client.presenter.BasePresenter;
-import com.mvp4g.processor.utils.Messages;
+import com.mvp4g.client.event.BaseEventHandler;
 import com.mvp4g.processor.controls.info.ApplicationInfo;
 import com.mvp4g.processor.controls.info.EventHandlerInfo;
-import com.mvp4g.processor.utils.MessagerUtils;
-import com.mvp4g.processor.utils.Utils;
 import com.mvp4g.processor.controls.info.models.TypeModel;
+import com.mvp4g.processor.utils.MessagerUtils;
+import com.mvp4g.processor.utils.Messages;
+import com.mvp4g.processor.utils.Utils;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ElementKind;
@@ -151,7 +151,7 @@ public class EventHandlerControl {
       if (element.getKind() != ElementKind.CLASS) {
         messagerUtils.error(element,
                             Messages.NOT_A_CLASS,
-                            Presenter.class.getSimpleName());
+                            EventHandler.class.getSimpleName());
         return false;
       }
       // Check if the annotated file is a class
@@ -159,16 +159,16 @@ public class EventHandlerControl {
                  .contains(Modifier.ABSTRACT)) {
         messagerUtils.error(element,
                             Messages.CLASS_SHOULD_NOT_BE_ABSTRACT,
-                            Presenter.class.getSimpleName());
+                            EventHandler.class.getSimpleName());
         return false;
       }
-      // check if the class extends BasePresenter
+      // check if the class extends BaseEventHandler
       if (!Utils.isSubType(processingEnv,
                            element,
-                           BasePresenter.class)) {
+                           BaseEventHandler.class)) {
         messagerUtils.error(element,
-                            Messages.CLASS_SHOULD_EXTEND_BASE_PRESENTER,
-                            Presenter.class.getSimpleName());
+                            Messages.CLASS_SHOULD_EXTEND_BASE_EVENT_HANDLER,
+                            EventHandler.class.getSimpleName());
         return false;
       }
     }

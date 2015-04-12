@@ -27,9 +27,13 @@ import com.mvp4g.processor.controls.EventHandlerControl;
 import com.mvp4g.processor.controls.HistoryConverterControl;
 import com.mvp4g.processor.controls.ModuleControl;
 import com.mvp4g.processor.controls.PresenterControl;
-import com.mvp4g.processor.exceptions.ConfigurationException;
 import com.mvp4g.processor.controls.info.ApplicationInfo;
+import com.mvp4g.processor.controls.info.EventInfo;
+import com.mvp4g.processor.controls.info.ModuleInfo;
+import com.mvp4g.processor.controls.info.models.BroadcastToModel;
+import com.mvp4g.processor.exceptions.ConfigurationException;
 import com.mvp4g.processor.utils.MessagerUtils;
+import com.mvp4g.processor.validation.Mvp4gValidator;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -37,7 +41,9 @@ import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static javax.lang.model.util.ElementFilter.typesIn;
@@ -51,7 +57,7 @@ public class Mvp4gAnnotationProcessor
   /* message utils */
   private MessagerUtils   messagerUtils;
   /* state of validation */
-  private boolean         isValid;
+  private boolean         valid;
 
 //------------------------------------------------------------------------------
 
@@ -83,7 +89,7 @@ public class Mvp4gAnnotationProcessor
     super.init(processingEnv);
     // initialize
     applicationInfo = new ApplicationInfo();
-    isValid = true;
+    valid = true;
     // set up
     messagerUtils = new MessagerUtils(processingEnv.getMessager());
   }
@@ -100,35 +106,27 @@ public class Mvp4gAnnotationProcessor
       try {
         scanAnnotations(annotations,
                         roundEnv);
-        // process only is all tests has passed successfully
-        if (!isValid) {
-          return true;
-        }
-        // validate
-        validate(annotations,
-                 roundEnv);
-//
-//
-        // process only is all tests has passed successfully
-        if (!isValid) {
-          return true;
-        }
-//      // TODO may be we replace the generators with apt in the future ... :-)
-//
       } catch (ConfigurationException e) {
-        return false;
+        valid = false;
       }
     } else {
-      // create start message
-      messagerUtils.note("[PresenterAnnotationProcessor] - processing annotations finished");
-//
-//      // TODO übergreifende validierung
-//
-//
+      System.out.println("Start validating");
+      if (!roundEnv.errorRaised()) {
+        scanBroadcastTo();
+
+
+        Mvp4gValidator validator = new Mvp4gValidator(applicationInfo,
+                                                      processingEnv,
+                                                      messagerUtils);
+        valid = validator.validate();
+//      // TODO may be we replace the generators with apt in the future ... :-)
+      }
       // at least, we clear the appInfo
       applicationInfo = new ApplicationInfo();
+      // create finish message
+      messagerUtils.note("[PresenterAnnotationProcessor] - processing annotations finished");
     }
-    return true;
+    return valid;
   }
 
 //==============================================================================
@@ -148,33 +146,40 @@ public class Mvp4gAnnotationProcessor
     // processing history annotatiom
     processHistory(annotations,
                    roundEnv);
-
-
-    System.out.println("Finish");
-    // TODO
-//    // processing Events annotatiom
-//    processEventBus(annotations,
-//                    roundEnv);
-//    // processing child modules
-//    processChildModules(annotations,
-//                        roundEnv);
-
   }
 
-  private void validate(Set<? extends TypeElement> annotations,
-                        RoundEnvironment roundEnv) {
-//    // processing Events annotatiom
-//    processEventBus(annotations,
-//                    roundEnv);
-//
-//
-//    // processing Presenter annotatiom
-//    processPresenter(annotations,
-//                     roundEnv);
+  private void scanBroadcastTo() {
+    Map<String, BroadcastToModel> broadcastTos = new HashMap<>();
+    for (ModuleInfo moduleInfo : applicationInfo.getModules()) {
+      for (EventInfo eventInfo : moduleInfo.getEventBusInfo()
+                                           .getEvents()) {
+        if (eventInfo.getBroadcastTo() != null) {
+          BroadcastToModel model = broadcastTos.get(eventInfo.getBroadcastTo()
+                                                             .getSimpleName()
+                                                             .toString());
+          if (model == null) {
+            broadcastTos.put(eventInfo.getBroadcastTo()
+                                      .getSimpleName()
+                                      .toString(),
+                             new BroadcastToModel(eventInfo.getBroadcastTo()
+                                                           .getSimpleName()
+                                                           .toString(),
+                                                  eventInfo.getBroadcastTo(),
+                                                  eventInfo.getEvent()));
 
 
+          } else {
+            if (model.getMethod(eventInfo.getBroadcastTo()
+                                         .getSimpleName()
+                                         .toString()) == null) {
+              model.addMethod(eventInfo.getEvent());
+            }
+          }
+        }
+      }
+    }
+    applicationInfo.setBroadcastTos(broadcastTos);
   }
-
 
 //------------------------------------------------------------------------------
 
@@ -188,7 +193,7 @@ public class Mvp4gAnnotationProcessor
     // iterate over all classes which are annotated with @Events
     for (TypeElement element : typesIn(roudEnv.getElementsAnnotatedWith(Events.class))) {
       if (!control.process(element)) {
-        isValid = false;
+        valid = false;
       }
     }
   }
@@ -202,7 +207,7 @@ public class Mvp4gAnnotationProcessor
     // iterate over all classes which are annotated with @Presenter
     for (TypeElement element : typesIn(roundEnv.getElementsAnnotatedWith(Presenter.class))) {
       if (!control.process(element)) {
-        isValid = false;
+        valid = false;
       }
     }
   }
@@ -216,7 +221,7 @@ public class Mvp4gAnnotationProcessor
     // iterate over all classes which are annotated with @Presenter
     for (TypeElement element : typesIn(roundEnv.getElementsAnnotatedWith(EventHandler.class))) {
       if (!control.process(element)) {
-        isValid = false;
+        valid = false;
       }
     }
   }
@@ -231,7 +236,7 @@ public class Mvp4gAnnotationProcessor
     // iterate over all classes which are annotated with @Events
     for (TypeElement element : typesIn(roudEnv.getElementsAnnotatedWith(History.class))) {
       if (!control.process(element)) {
-        isValid = false;
+        valid = false;
       }
     }
   }

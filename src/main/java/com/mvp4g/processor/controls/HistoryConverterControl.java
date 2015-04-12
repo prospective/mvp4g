@@ -19,10 +19,10 @@ package com.mvp4g.processor.controls;
 
 import com.mvp4g.client.annotation.History;
 import com.mvp4g.client.history.HistoryConverter;
-import com.mvp4g.processor.utils.Messages;
 import com.mvp4g.processor.controls.info.ApplicationInfo;
 import com.mvp4g.processor.controls.info.HistoryConverterInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
+import com.mvp4g.processor.utils.Messages;
 import com.mvp4g.processor.utils.Utils;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -90,14 +90,20 @@ public class HistoryConverterControl {
 
     for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
       if (Utils.HISTORY.equals(annotationMirror.getAnnotationType()
-                                              .toString())) {
-   			for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues().entrySet() ) {
-          String keyName = entry.getKey().getSimpleName().toString();
+                                               .toString())) {
+        for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues()
+                                                                                                       .entrySet()) {
+          String keyName = entry.getKey()
+                                .getSimpleName()
+                                .toString();
           if (Utils.ATTRIBUTE_NAME.equals(keyName)) {
-            info.setName((String) entry.getValue().getValue());
+            info.setName((String) entry.getValue()
+                                       .getValue());
           } else if (Utils.ATTRIBUTE_TYPE.equals(keyName)) {
             if (entry.getValue() != null) {
-              info.setType(History.HistoryConverterType.valueOf(entry.getValue().getValue().toString()));
+              info.setType(History.HistoryConverterType.valueOf(entry.getValue()
+                                                                     .getValue()
+                                                                     .toString()));
             }
           }
         }
@@ -111,8 +117,8 @@ public class HistoryConverterControl {
     for (ExecutableElement executable : ElementFilter.methodsIn(processingEnv.getElementUtils()
                                                                              .getAllMembers(element))) {
       if (executable.getSimpleName()
-                           .toString()
-                           .startsWith(Utils.METHOD_EVENT)) {
+                    .toString()
+                    .startsWith(Utils.METHOD_EVENT)) {
         info.getEventHandlingMethods()
             .add(executable);
       }
@@ -138,49 +144,33 @@ public class HistoryConverterControl {
    * @return true, if it is valid class
    */
   private boolean isValid(TypeElement element) {
-//    // check presenter
-//    if (element != null) {
-//      // Check if the annotated file is a class
-//      if (element.getKind() != ElementKind.CLASS) {
-//        messagerUtils.error(element,
-//                            Messages.NOT_A_CLASS,
-//                            Presenter.class.getSimpleName());
-//        return false;
-//      }
-//      // Check if the annotated file is a class
-//      if (element.getModifiers()
-//                 .contains(Modifier.ABSTRACT)) {
-//        messagerUtils.error(element,
-//                            Messages.CLASS_SHOULD_NOT_BE_ABSTRACT,
-//                            Presenter.class.getSimpleName());
-//        return false;
-//      }
-//      // check if the class extends BasePresenter
-//      if (!Utils.isSubType(processingEnv,
-//                           element,
-//                           BasePresenter.class)) {
-//        messagerUtils.error(element,
-//                            Messages.CLASS_SHOULD_EXTEND_BASE_PRESENTER,
-//                            Presenter.class.getSimpleName());
-//        return false;
-//      }
-//      if (!processingEnv.getTypeUtils()
-//                        .isSubtype(info.getView()
-//                                       .asType(),
-//                                   info.getInjectedView()
-//                                       .asType())) {
-//        messagerUtils.error(element,
-//                            Messages.INVALID_VIEW,
-//                            element.getSimpleName()
-//                                   .toString(),
-//                            info.getInjectedView()
-//                                .getSimpleName(),
-//                            info.getView()
-//                                .getSimpleName());
-//        return false;
-//
-//      }
-//    }
+    // check history control
+    if (element != null) {
+      // Check if the annotated file is a class
+      if (element.getKind() != ElementKind.CLASS) {
+        messagerUtils.error(element,
+                            Messages.NOT_A_CLASS,
+                            History.class.getSimpleName());
+        return false;
+      }
+      // Check if the annotated class isnot abstract
+      if (element.getModifiers()
+                 .contains(Modifier.ABSTRACT)) {
+        messagerUtils.error(element,
+                            Messages.CLASS_SHOULD_NOT_BE_ABSTRACT,
+                            History.class.getSimpleName());
+        return false;
+      }
+      // check if the class extends BasePresenter
+      if (!Utils.isImplementingType(processingEnv,
+                                    element,
+                                    HistoryConverter.class)) {
+        messagerUtils.error(element,
+                            Messages.CLASS_SHOULD_IMPLEMENTS_HISTORY_CONVERTER,
+                            History.class.getSimpleName());
+        return false;
+      }
+    }
     return true;
   }
 

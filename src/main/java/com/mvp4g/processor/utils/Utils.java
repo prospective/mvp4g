@@ -236,6 +236,20 @@ public class Utils {
   //  private Util() {
   //  }
 
+  public static boolean isImplementingType(ProcessingEnvironment processingEnv,
+                                           TypeElement element,
+                                           Class clazz) {
+    List<? extends TypeMirror> interfaces = element.getInterfaces();
+    for (TypeMirror mirror : interfaces) {
+      TypeElement el = (TypeElement) ((DeclaredType) mirror).asElement();
+      if (el.toString()
+            .equals(clazz.getCanonicalName())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public static boolean isSubType(ProcessingEnvironment processingEnv,
                                   Element element,
                                   Class clazz) {

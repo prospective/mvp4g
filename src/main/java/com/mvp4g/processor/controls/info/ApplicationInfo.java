@@ -17,6 +17,9 @@
 
 package com.mvp4g.processor.controls.info;
 
+import com.mvp4g.processor.controls.info.models.BroadcastToModel;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +33,8 @@ public class ApplicationInfo {
   private Map<String, PresenterInfo>        presenters;
   /* history infos */
   private Map<String, HistoryConverterInfo> histroyConverterInfos;
+  /* list of all broadcast interfaces odf this application */
+  private Map<String, BroadcastToModel>     broadcastTos;
 
 //------------------------------------------------------------------------------
 
@@ -78,7 +83,6 @@ public class ApplicationInfo {
    *
    * @param presenterName name of the presenter info
    * @param info          presenter info
-   * @return the modules
    */
   public void addPresenter(String presenterName,
                            PresenterInfo info) {
@@ -91,7 +95,6 @@ public class ApplicationInfo {
    *
    * @param eventHandlerName name of the event handler info
    * @param info             event handler info
-   * @return the modules
    */
   public void addEventHandler(String eventHandlerName,
                               EventHandlerInfo info) {
@@ -107,6 +110,15 @@ public class ApplicationInfo {
    */
   public ModuleInfo getModule(String module) {
     return modules.get(module);
+  }
+
+  /**
+   * Returns all module infos of this application
+   *
+   * @return all module info
+   */
+  public Collection<ModuleInfo> getModules() {
+    return modules.values();
   }
 
   /**
@@ -179,5 +191,32 @@ public class ApplicationInfo {
       }
     }
     return null;
+  }
+
+  /**
+   * Returns all presenter infos of the application
+   *
+   * @return list of presenters of thsi application
+   */
+  public Collection<PresenterInfo> getPresenter() {
+    return presenters.values();
+  }
+
+  /**
+   * returns the list of broadcast Elements
+   *
+   * @return list of broadcast elements
+   */
+  public Collection<BroadcastToModel> getBroadcastTos() {
+    return broadcastTos.values();
+  }
+
+  /**
+   * set the list of broadcast elements of this application
+   *
+   * @param broadcastTos list of broadcast interfaces
+   */
+  public void setBroadcastTos(Map<String, BroadcastToModel> broadcastTos) {
+    this.broadcastTos = broadcastTos;
   }
 }
