@@ -15,7 +15,7 @@
  *
  */
 
-package com.mvp4g.processor.utils.models;
+package com.mvp4g.processor.controls.info.models;
 
 import javax.lang.model.element.TypeElement;
 

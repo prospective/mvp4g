@@ -19,9 +19,9 @@ package com.mvp4g.processor.controls;
 
 import com.mvp4g.client.annotation.History;
 import com.mvp4g.client.history.HistoryConverter;
-import com.mvp4g.processor.Messages;
-import com.mvp4g.processor.info.ApplicationInfo;
-import com.mvp4g.processor.info.HistoryConverterInfo;
+import com.mvp4g.processor.utils.Messages;
+import com.mvp4g.processor.controls.info.ApplicationInfo;
+import com.mvp4g.processor.controls.info.HistoryConverterInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
 import com.mvp4g.processor.utils.Utils;
 

@@ -19,12 +19,12 @@ package com.mvp4g.processor.controls;
 
 import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
-import com.mvp4g.processor.Messages;
-import com.mvp4g.processor.info.ApplicationInfo;
-import com.mvp4g.processor.info.PresenterInfo;
+import com.mvp4g.processor.utils.Messages;
+import com.mvp4g.processor.controls.info.ApplicationInfo;
+import com.mvp4g.processor.controls.info.PresenterInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
 import com.mvp4g.processor.utils.Utils;
-import com.mvp4g.processor.utils.models.TypeModel;
+import com.mvp4g.processor.controls.info.models.TypeModel;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ElementKind;

@@ -25,7 +25,7 @@ import com.mvp4g.client.annotation.module.ChildModules;
 import com.mvp4g.client.presenter.BasePresenter;
 import com.mvp4g.client.presenter.CyclePresenter;
 import com.mvp4g.client.presenter.LazyPresenter;
-import com.mvp4g.processor.utils.models.TypeModel;
+import com.mvp4g.processor.controls.info.models.TypeModel;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 

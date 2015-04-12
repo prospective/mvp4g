@@ -15,7 +15,7 @@
  *
  */
 
-package com.mvp4g.processor;
+package com.mvp4g.processor.utils;
 
 
 public class Messages {

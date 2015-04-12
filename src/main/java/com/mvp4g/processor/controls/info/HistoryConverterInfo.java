@@ -15,7 +15,7 @@
  *
  */
 
-package com.mvp4g.processor.info;
+package com.mvp4g.processor.controls.info;
 
 import com.mvp4g.client.annotation.History;
 

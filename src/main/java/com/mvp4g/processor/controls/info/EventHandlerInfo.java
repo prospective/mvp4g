@@ -15,7 +15,7 @@
  *
  */
 
-package com.mvp4g.processor.info;
+package com.mvp4g.processor.controls.info;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;

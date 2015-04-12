@@ -17,10 +17,10 @@
 
 package com.mvp4g.processor.controls;
 
-import com.mvp4g.processor.Messages;
+import com.mvp4g.processor.utils.Messages;
 import com.mvp4g.processor.exceptions.ConfigurationException;
-import com.mvp4g.processor.info.ApplicationInfo;
-import com.mvp4g.processor.info.EventInfo;
+import com.mvp4g.processor.controls.info.ApplicationInfo;
+import com.mvp4g.processor.controls.info.EventInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
 import com.mvp4g.processor.utils.Utils;
 

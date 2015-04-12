@@ -17,8 +17,8 @@
 
 package com.mvp4g.processor;
 
-import com.mvp4g.processor.info.ApplicationInfo;
-import com.mvp4g.processor.info.ModuleInfo;
+import com.mvp4g.processor.controls.info.ApplicationInfo;
+import com.mvp4g.processor.controls.info.ModuleInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
 
 import javax.annotation.processing.AbstractProcessor;

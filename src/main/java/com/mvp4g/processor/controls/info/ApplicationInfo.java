@@ -15,7 +15,7 @@
  *
  */
 
-package com.mvp4g.processor.info;
+package com.mvp4g.processor.controls.info;
 
 import java.util.HashMap;
 import java.util.Map;
