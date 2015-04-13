@@ -20,6 +20,7 @@ package com.mvp4g.processor.controls;
 import com.mvp4g.processor.exceptions.ConfigurationException;
 import com.mvp4g.processor.controls.info.ApplicationInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
+import com.mvp4g.processor.utils.Mvp4gUtils;
 import com.mvp4g.processor.utils.Utils;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -81,7 +82,7 @@ public class ModuleControl {
     throws ConfigurationException {
     // process
     for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
-      if (Utils.EVENTS.equals(annotationMirror.getAnnotationType()
+      if (Mvp4gUtils.EVENTS.equals(annotationMirror.getAnnotationType()
                                               .toString())) {
         if (!eventBusControl.process(element)) {
           return false;

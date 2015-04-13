@@ -28,6 +28,8 @@ public class Messages {
 
 	public static final String CLASS_SHOULD_NOT_BE_ABSTRACT = "mvp4g: a class annotated with @%s can not be abstract";
 
+	public static final String INVALID_EVENT_METHOD = "mvp4g: presenter: %s -> event >>%s<< has invalid or missing event handling method >>%s<< in the event handler / presenter";
+
 	public static final String INVALID_VIEW = "mvp4g: %s has invalid View: %s can not be converted to %s.";
 
 	public static final String MISSING_GENERICS_HISTORY = "mvp4g: history converter %s -> generic <E> is missing";

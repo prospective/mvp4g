@@ -23,7 +23,7 @@ import com.mvp4g.processor.controls.info.ApplicationInfo;
 import com.mvp4g.processor.controls.info.HistoryConverterInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
 import com.mvp4g.processor.utils.Messages;
-import com.mvp4g.processor.utils.Utils;
+import com.mvp4g.processor.utils.Mvp4gUtils;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.*;
@@ -89,17 +89,17 @@ public class HistoryConverterControl {
     }
 
     for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
-      if (Utils.HISTORY.equals(annotationMirror.getAnnotationType()
+      if (Mvp4gUtils.HISTORY.equals(annotationMirror.getAnnotationType()
                                                .toString())) {
         for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues()
                                                                                                        .entrySet()) {
           String keyName = entry.getKey()
                                 .getSimpleName()
                                 .toString();
-          if (Utils.ATTRIBUTE_NAME.equals(keyName)) {
+          if (Mvp4gUtils.ATTRIBUTE_NAME.equals(keyName)) {
             info.setName((String) entry.getValue()
                                        .getValue());
-          } else if (Utils.ATTRIBUTE_TYPE.equals(keyName)) {
+          } else if (Mvp4gUtils.ATTRIBUTE_TYPE.equals(keyName)) {
             if (entry.getValue() != null) {
               info.setType(History.HistoryConverterType.valueOf(entry.getValue()
                                                                      .getValue()
@@ -118,7 +118,7 @@ public class HistoryConverterControl {
                                                                              .getAllMembers(element))) {
       if (executable.getSimpleName()
                     .toString()
-                    .startsWith(Utils.METHOD_EVENT)) {
+                    .startsWith(Mvp4gUtils.METHOD_EVENT)) {
         info.getEventHandlingMethods()
             .add(executable);
       }
@@ -162,9 +162,9 @@ public class HistoryConverterControl {
         return false;
       }
       // check if the class extends BasePresenter
-      if (!Utils.isImplementingType(processingEnv,
-                                    element,
-                                    HistoryConverter.class)) {
+      if (!Mvp4gUtils.isImplementingType(processingEnv,
+              element,
+              HistoryConverter.class)) {
         messagerUtils.error(element,
                             Messages.CLASS_SHOULD_IMPLEMENTS_HISTORY_CONVERTER,
                             History.class.getSimpleName());

@@ -23,6 +23,7 @@ import com.mvp4g.processor.utils.Messages;
 import com.mvp4g.processor.controls.info.ApplicationInfo;
 import com.mvp4g.processor.controls.info.PresenterInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
+import com.mvp4g.processor.utils.Mvp4gUtils;
 import com.mvp4g.processor.utils.Utils;
 import com.mvp4g.processor.controls.info.models.TypeModel;
 
@@ -95,20 +96,20 @@ public class PresenterControl {
     Map<String, Object> annotationValues = Utils.getAnnotation(Presenter.class,
                                                                element);
     if (annotationValues != null) {
-      if (annotationValues.get(Utils.ATTRIBUTE_VIEW) != null) {
-        info.setView((TypeElement) ((DeclaredType) annotationValues.get(Utils.ATTRIBUTE_VIEW)).asElement());
+      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_VIEW) != null) {
+        info.setView((TypeElement) ((DeclaredType) annotationValues.get(Mvp4gUtils.ATTRIBUTE_VIEW)).asElement());
       }
-      if (annotationValues.get(Utils.ATTRIBUTE_VIEW_NAME) != null) {
-        info.setViewName((String) annotationValues.get(Utils.ATTRIBUTE_VIEW_NAME));
+      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_VIEW_NAME) != null) {
+        info.setViewName((String) annotationValues.get(Mvp4gUtils.ATTRIBUTE_VIEW_NAME));
       }
-      if (annotationValues.get(Utils.ATTRIBUTE_NAME) != null) {
-        info.setName((String) annotationValues.get(Utils.ATTRIBUTE_NAME));
+      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_NAME) != null) {
+        info.setName((String) annotationValues.get(Mvp4gUtils.ATTRIBUTE_NAME));
       }
-      if (annotationValues.get(Utils.ATTRIBUTE_MULTIPLE) != null) {
-        info.setMultiple((Boolean) annotationValues.get(Utils.ATTRIBUTE_MULTIPLE));
+      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_MULTIPLE) != null) {
+        info.setMultiple((Boolean) annotationValues.get(Mvp4gUtils.ATTRIBUTE_MULTIPLE));
       }
-      if (annotationValues.get(Utils.ATTRIBUTE_ASYNC) instanceof TypeElement) {
-        info.setAsync((TypeElement) ((DeclaredType) annotationValues.get(Utils.ATTRIBUTE_ASYNC)).asElement());
+      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_ASYNC) instanceof TypeElement) {
+        info.setAsync((TypeElement) ((DeclaredType) annotationValues.get(Mvp4gUtils.ATTRIBUTE_ASYNC)).asElement());
       }
     }
 
@@ -120,11 +121,11 @@ public class PresenterControl {
                                                                              .getAllMembers(element))) {
       if (executable.getSimpleName()
                     .toString()
-                    .equals(Utils.METHOD_BIND)) {
+                    .equals(Mvp4gUtils.METHOD_BIND)) {
         info.setBindMethod(executable);
       } else if (executable.getSimpleName()
                            .toString()
-                           .startsWith(Utils.METHOD_EVENT)) {
+                           .startsWith(Mvp4gUtils.METHOD_EVENT)) {
         info.getEventHandlingMethods()
             .add(executable);
       }

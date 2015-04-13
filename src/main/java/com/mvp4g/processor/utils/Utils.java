@@ -38,61 +38,13 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 public class Utils {
-  //
-  //	public final static String CLEAR_HISTORY = "com.mvp4g.client.history.ClearHistory";
-  //	public final static String STRING = String.class.getCanonicalName();
-  public final static String EVENT     = Event.class.getCanonicalName();
-  public final static String EVENTS    = Events.class.getCanonicalName();
-  public final static String HISTORY   = History.class.getCanonicalName();
-  public final static String PRESENTER = Presenter.class.getCanonicalName();
 
-  //	public final static String EVENT_HANDLER = "com.mvp4g.client.annotation.EventHandler";
+    //	public final static String EVENT_HANDLER = "com.mvp4g.client.annotation.EventHandler";
   //	public final static String HISTORY = "com.mvp4g.client.annotation.History";
   public final static String CHILD_MODULES = ChildModules.class.getCanonicalName();
 
-  //	public final static String HISTORY_CONVERTER_TYPE_NONE = "NONE";
-  //	public final static String HISTORY_CONVERTER_TYPE_SIMPLE = "SIMPLE";
-  //	public final static String HISTORY_CONVERTER_TYPE_DEFAULT = "DEFAULT";
-  //
-  public final static String ATTRIBUTE_ACTIVATE               = "activate";
-  public final static String ATTRIBUTE_ACTIVATE_NAMES         = "activateNames";
-  public final static String ATTRIBUTE_ASYNC                  = "async";
-  public final static String ATTRIBUTE_AUTO_DISPLAY           = "autoDisplay";
-  public final static String ATTRIBUTE_BIND                   = "bind";
-  public final static String ATTRIBUTE_BIND_NAMES             = "bindNames";
-  public final static String ATTRIBUTE_BROADCAST_TO           = "broadcastTo";
-  public final static String ATTRIBUTE_DEACTIVATE             = "deactivate";
-  public final static String ATTRIBUTE_DEACTIVATE_NAMES       = "deactivateNames";
-  public final static String ATTRIBUTE_FORWARD_TO_MODULES     = "forwardToModules";
-  public final static String ATTRIBUTE_FORWARD_TO_PARENT      = "forwardToParent";
-  public final static String ATTRIBUTE_GENERATE               = "generate";
-  public final static String ATTRIBUTE_GENERATE_NAMES         = "generateNames";
-  public final static String ATTRIBUTE_GIN_MODULES            = "ginModules";
-  public final static String ATTRIBUTE_GIN_MODULE_PROPERTIES  = "ginModuleProperties";
-  public final static String ATTRIBUTE_HANDLERS               = "handlers";
-  public final static String ATTRIBUTE_HANDLER_NAMES          = "handlerNames";
-  public final static String ATTRIBUTE_HISTORY_CONVERTER      = "historyConverter";
-  public final static String ATTRIBUTE_HISTORY_CONVERTER_NAME = "historyConverterName";
-  public final static String ATTRIBUTE_HISTORY_ON_START       = "historyOnStart";
-  public final static String ATTRIBUTE_MODULE                 = "module";
-  public final static String ATTRIBUTE_MODULE_CLASS           = "moduleClass";
-  public final static String ATTRIBUTE_MODULES_TO_LOAD        = "modulesToLoad";
-  public final static String ATTRIBUTE_MULTIPLE               = "mutiple";
-  public final static String ATTRIBUTE_NAME                   = "name";
-  public final static String ATTRIBUTE_NAVIGATION_EVENT       = "navigationEvent";
-  public final static String ATTRIBUTE_PASSIVE                = "passive";
-  public final static String ATTRIBUTE_START_PRESENTER        = "startPresenter";
-  public final static String ATTRIBUTE_START_PRESENTER_NAME   = "startPresenterName";
-  public final static String ATTRIBUTE_TYPE                   = "type";
-  public final static String ATTRIBUTE_VALUE                  = "value";
-  public final static String ATTRIBUTE_VIEW                   = "view";
-  public final static String ATTRIBUTE_VIEW_NAME              = "viewName";
 
-  public final static String METHOD_BIND  = "bind";
-  public final static String METHOD_EVENT = "on";
-
-
-  //	public final static String ATTRIBUTE_MODULE_CLASS = "moduleClass";
+    //	public final static String ATTRIBUTE_MODULE_CLASS = "moduleClass";
   //	public final static String ATTRIBUTE_CALLED_METHOD = "calledMethod";
 
   private static final AnnotationValueVisitor<Object, Void> VALUE_EXTRACTOR =
@@ -236,21 +188,7 @@ public class Utils {
   //  private Util() {
   //  }
 
-  public static boolean isImplementingType(ProcessingEnvironment processingEnv,
-                                           TypeElement element,
-                                           Class clazz) {
-    List<? extends TypeMirror> interfaces = element.getInterfaces();
-    for (TypeMirror mirror : interfaces) {
-      TypeElement el = (TypeElement) ((DeclaredType) mirror).asElement();
-      if (el.toString()
-            .equals(clazz.getCanonicalName())) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public static boolean isSubType(ProcessingEnvironment processingEnv,
+    public static boolean isSubType(ProcessingEnvironment processingEnv,
                                   Element element,
                                   Class clazz) {
     TypeElement el = (TypeElement) element;

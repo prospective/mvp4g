@@ -17,15 +17,17 @@
 
 package com.mvp4g.processor.validation;
 
+import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.processor.controls.info.ApplicationInfo;
 import com.mvp4g.processor.controls.info.ModuleInfo;
 import com.mvp4g.processor.controls.info.PresenterInfo;
 import com.mvp4g.processor.controls.info.models.BroadcastToModel;
 import com.mvp4g.processor.utils.MessagerUtils;
+import com.mvp4g.processor.utils.Messages;
+import com.mvp4g.processor.utils.Mvp4gUtils;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.util.ElementFilter;
 
 /**
  * Created by hoss on 12.04.15.
@@ -76,7 +78,6 @@ public class Mvp4gValidator {
   private void checkBroadcastToDefinitions() {
     for (BroadcastToModel model : applicationInfo.getBroadcastTos()) {
       for (ExecutableElement eventMethod : model.getMethods()) {
-        boolean isMethodImplemented = false;
         String eventHandlingMethodName = createEventHandlingMethodName(eventMethod.getSimpleName()
                                                                                   .toString());
         for (PresenterInfo presenterInfo : applicationInfo.getPresenter()) {
@@ -85,23 +86,44 @@ public class Mvp4gValidator {
                                                    .asType(),
                                       model.getBroadcastTo()
                                            .asType())) {
-            // todo Super class checking
-
-            for (ExecutableElement presenterMethod : ElementFilter.methodsIn(processingEnv.getElementUtils()
-                                                                                          .getAllMembers(presenterInfo.getPresenter()))) {
-
-
-              if (presenterMethod.getSimpleName()
-                                 .toString()
-                                 .equals(eventHandlingMethodName)) {
-                isMethodImplemented = true;
-              }
+            if (!Mvp4gUtils.isImplementingMethod(processingEnv,
+                                                 presenterInfo.getPresenter(),
+                                                 eventMethod,
+                                                 eventHandlingMethodName)) {
+              messagerUtils.error(presenterInfo.getPresenter(),
+                                  Messages.INVALID_EVENT_METHOD,
+                                  presenterInfo.getPresenterName(),
+                                  eventMethod.getSimpleName().toString(),
+                                  eventHandlingMethodName);
             }
           }
         }
-        if (!isMethodImplemented) {
-          System.out.println("error");
-        }
+//        boolean isMethodImplemented = false;
+//        String eventHandlingMethodName = createEventHandlingMethodName(eventMethod.getSimpleName()
+//                                                                                  .toString());
+//        for (PresenterInfo presenterInfo : applicationInfo.getPresenter()) {
+//          if (processingEnv.getTypeUtils()
+//                           .isSubtype(presenterInfo.getPresenter()
+//                                                   .asType(),
+//                                      model.getBroadcastTo()
+//                                           .asType())) {
+//            // todo Super class checking
+//
+//            for (ExecutableElement presenterMethod : ElementFilter.methodsIn(processingEnv.getElementUtils()
+//                                                                                          .getAllMembers(presenterInfo.getPresenter()))) {
+//
+//
+//              if (presenterMethod.getSimpleName()
+//                                 .toString()
+//                                 .equals(eventHandlingMethodName)) {
+//                isMethodImplemented = true;
+//              }
+//            }
+//          }
+//        }
+//        if (!isMethodImplemented) {
+//          System.out.println("error");
+//        }
       }
     }
   }

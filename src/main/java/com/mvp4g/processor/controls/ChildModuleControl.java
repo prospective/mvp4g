@@ -20,6 +20,7 @@ package com.mvp4g.processor.controls;
 import com.mvp4g.processor.controls.info.ApplicationInfo;
 import com.mvp4g.processor.controls.info.ModuleInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
+import com.mvp4g.processor.utils.Mvp4gUtils;
 import com.mvp4g.processor.utils.Utils;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -85,16 +86,16 @@ public class ChildModuleControl {
                                                                                                    .entrySet()) {
       for (AnnotationMirror mirror : (List<AnnotationMirror>) entry.getValue()
                                                                    .getValue()) {
-        module = (TypeElement) ((DeclaredType) Utils.getAnnotationValue(Utils.ATTRIBUTE_MODULE_CLASS,
+        module = (TypeElement) ((DeclaredType) Utils.getAnnotationValue(Mvp4gUtils.ATTRIBUTE_MODULE_CLASS,
                                                                         mirror)
                                                     .getValue()
         ).asElement();
-        AnnotationValue amIsAsync = Utils.getAnnotationValue(Utils.ATTRIBUTE_ASYNC,
+        AnnotationValue amIsAsync = Utils.getAnnotationValue(Mvp4gUtils.ATTRIBUTE_ASYNC,
                                                              mirror);
         if (amIsAsync != null) {
           isAsync = (Boolean) amIsAsync.getValue();
         }
-        AnnotationValue amIsAutoDisplay = Utils.getAnnotationValue(Utils.ATTRIBUTE_AUTO_DISPLAY,
+        AnnotationValue amIsAutoDisplay = Utils.getAnnotationValue(Mvp4gUtils.ATTRIBUTE_AUTO_DISPLAY,
                                                                    mirror);
         if (amIsAutoDisplay != null) {
           isAutoDisplay = (Boolean) amIsAsync.getValue();

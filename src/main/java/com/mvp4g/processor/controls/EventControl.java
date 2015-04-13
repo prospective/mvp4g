@@ -22,6 +22,7 @@ import com.mvp4g.processor.exceptions.ConfigurationException;
 import com.mvp4g.processor.controls.info.ApplicationInfo;
 import com.mvp4g.processor.controls.info.EventInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
+import com.mvp4g.processor.utils.Mvp4gUtils;
 import com.mvp4g.processor.utils.Utils;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -82,7 +83,7 @@ public class EventControl {
     for (ExecutableElement executable : ElementFilter.methodsIn(processingEnv.getElementUtils()
                                                                              .getAllMembers(element))) {
       for (AnnotationMirror mirror : executable.getAnnotationMirrors()) {
-        if (Utils.EVENT.equals(mirror.getAnnotationType()
+        if (Mvp4gUtils.EVENT.equals(mirror.getAnnotationType()
                                      .toString())) {
           EventInfo info = new EventInfo(executable.getSimpleName()
                                                    .toString());
@@ -95,54 +96,54 @@ public class EventControl {
             keyName = entry.getKey()
                            .getSimpleName()
                            .toString();
-            if (Utils.ATTRIBUTE_HANDLERS.equals(keyName)) {
+            if (Mvp4gUtils.ATTRIBUTE_HANDLERS.equals(keyName)) {
               info.setHandlers(Utils.convert((List<? extends AnnotationValue>) entry.getValue()
                                                                                     .getValue()));
-            } else if (Utils.ATTRIBUTE_HANDLER_NAMES.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_HANDLER_NAMES.equals(keyName)) {
               info.setHandlerNames(Utils.convertNames((List<? extends AnnotationValue>) entry.getValue()
                                                                                              .getValue()));
-            } else if (Utils.ATTRIBUTE_BIND.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_BIND.equals(keyName)) {
               info.setBind(Utils.convert((List<? extends AnnotationValue>) entry.getValue()
                                                                                 .getValue()));
-            } else if (Utils.ATTRIBUTE_BIND_NAMES.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_BIND_NAMES.equals(keyName)) {
               info.setBindNames(Utils.convertNames((List<? extends AnnotationValue>) entry.getValue()
                                                                                           .getValue()));
-            } else if (Utils.ATTRIBUTE_FORWARD_TO_MODULES.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_FORWARD_TO_MODULES.equals(keyName)) {
               info.setForwardToModules(Utils.convert((List<? extends AnnotationValue>) entry.getValue()
                                                                                             .getValue()));
-            } else if (Utils.ATTRIBUTE_FORWARD_TO_PARENT.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_FORWARD_TO_PARENT.equals(keyName)) {
               info.setForwardToParent((Boolean) entry.getValue()
                                                      .getValue());
-            } else if (Utils.ATTRIBUTE_HISTORY_CONVERTER.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_HISTORY_CONVERTER.equals(keyName)) {
               info.setHistoryConverter(Utils.convert(entry.getValue()));
-            } else if (Utils.ATTRIBUTE_HISTORY_CONVERTER_NAME.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_HISTORY_CONVERTER_NAME.equals(keyName)) {
               info.setHistoryConverterName(Utils.convertName(entry.getValue()));
-            } else if (Utils.ATTRIBUTE_ACTIVATE.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_ACTIVATE.equals(keyName)) {
               info.setActivate(Utils.convert((List<? extends AnnotationValue>) entry.getValue()
                                                                                     .getValue()));
-            } else if (Utils.ATTRIBUTE_ACTIVATE_NAMES.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_ACTIVATE_NAMES.equals(keyName)) {
               info.setActivateNames(Utils.convertNames((List<? extends AnnotationValue>) entry.getValue()
                                                                                               .getValue()));
-            } else if (Utils.ATTRIBUTE_DEACTIVATE.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_DEACTIVATE.equals(keyName)) {
               info.setDeactivate(Utils.convert((List<? extends AnnotationValue>) entry.getValue()
                                                                                       .getValue()));
-            } else if (Utils.ATTRIBUTE_DEACTIVATE_NAMES.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_DEACTIVATE_NAMES.equals(keyName)) {
               info.setDeactivateNames(Utils.convertNames((List<? extends AnnotationValue>) entry.getValue()
                                                                                                 .getValue()));
-            } else if (Utils.ATTRIBUTE_NAME.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_NAME.equals(keyName)) {
               info.setName(String.valueOf(entry.getValue()));
-            } else if (Utils.ATTRIBUTE_NAVIGATION_EVENT.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_NAVIGATION_EVENT.equals(keyName)) {
               info.setNavigationEvent((Boolean) entry.getValue()
                                                      .getValue());
-            } else if (Utils.ATTRIBUTE_PASSIVE.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_PASSIVE.equals(keyName)) {
               info.setPassive((Boolean) entry.getValue()
                                              .getValue());
-            } else if (Utils.ATTRIBUTE_BROADCAST_TO.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_BROADCAST_TO.equals(keyName)) {
               info.setBroadcastTo(Utils.convert(entry.getValue()));
-            } else if (Utils.ATTRIBUTE_GENERATE.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_GENERATE.equals(keyName)) {
               info.setGenerate(Utils.convert((List<? extends AnnotationValue>) entry.getValue()
                                                                                     .getValue()));
-            } else if (Utils.ATTRIBUTE_GENERATE_NAMES.equals(keyName)) {
+            } else if (Mvp4gUtils.ATTRIBUTE_GENERATE_NAMES.equals(keyName)) {
               info.setGenerateNames(Utils.convertNames((List<? extends AnnotationValue>) entry.getValue()
                                                                                               .getValue()));
             }

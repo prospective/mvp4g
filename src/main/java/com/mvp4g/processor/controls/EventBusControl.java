@@ -23,6 +23,7 @@ import com.mvp4g.processor.exceptions.ConfigurationException;
 import com.mvp4g.processor.controls.info.ApplicationInfo;
 import com.mvp4g.processor.controls.info.ModuleInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
+import com.mvp4g.processor.utils.Mvp4gUtils;
 import com.mvp4g.processor.utils.Utils;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -90,11 +91,11 @@ public class EventBusControl {
     Map<String, Object> annotationValues = Utils.getAnnotation(Events.class,
                                                                element);
 
-    if (annotationValues.get(Utils.ATTRIBUTE_MODULE)
+    if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_MODULE)
                         .equals(Mvp4gModule.class)) {
       moduleName = Mvp4gModule.class.getCanonicalName();
     } else {
-      moduleName = ((TypeElement) ((DeclaredType) annotationValues.get(Utils.ATTRIBUTE_MODULE)).asElement()).getQualifiedName()
+      moduleName = ((TypeElement) ((DeclaredType) annotationValues.get(Mvp4gUtils.ATTRIBUTE_MODULE)).asElement()).getQualifiedName()
                                                                                               .toString();
     }
 
@@ -109,24 +110,24 @@ public class EventBusControl {
     info.getEventBusInfo()
         .setEventBusName(element.toString());
 
-    if (!annotationValues.get(Utils.ATTRIBUTE_MODULE)
+    if (!annotationValues.get(Mvp4gUtils.ATTRIBUTE_MODULE)
                          .equals(Mvp4gModule.class)) {
-      info.setModule((TypeElement) ((DeclaredType) annotationValues.get(Utils.ATTRIBUTE_MODULE)).asElement());
+      info.setModule((TypeElement) ((DeclaredType) annotationValues.get(Mvp4gUtils.ATTRIBUTE_MODULE)).asElement());
     }
     info.getEventBusInfo()
-        .setStartPresenterName((String) annotationValues.get(Utils.ATTRIBUTE_START_PRESENTER_NAME));
+        .setStartPresenterName((String) annotationValues.get(Mvp4gUtils.ATTRIBUTE_START_PRESENTER_NAME));
     info.getEventBusInfo()
-        .setStartPresenter((TypeElement) ((DeclaredType) annotationValues.get(Utils.ATTRIBUTE_START_PRESENTER)).asElement());
+        .setStartPresenter((TypeElement) ((DeclaredType) annotationValues.get(Mvp4gUtils.ATTRIBUTE_START_PRESENTER)).asElement());
     info.getEventBusInfo()
-        .setHistoryOnStart((Boolean) annotationValues.get(Utils.ATTRIBUTE_HISTORY_ON_START));
+        .setHistoryOnStart((Boolean) annotationValues.get(Mvp4gUtils.ATTRIBUTE_HISTORY_ON_START));
     // ginModules
-    if (annotationValues.get(Utils.ATTRIBUTE_GIN_MODULES) instanceof TypeElement[]) {
+    if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_GIN_MODULES) instanceof TypeElement[]) {
       info.getEventBusInfo()
-          .setGinModules((TypeElement[]) annotationValues.get(Utils.ATTRIBUTE_GIN_MODULES));
+          .setGinModules((TypeElement[]) annotationValues.get(Mvp4gUtils.ATTRIBUTE_GIN_MODULES));
     }
-    if (annotationValues.get(Utils.ATTRIBUTE_GIN_MODULE_PROPERTIES) instanceof String[]) {
+    if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_GIN_MODULE_PROPERTIES) instanceof String[]) {
       info.getEventBusInfo()
-          .setGinModuleProperties((String[]) annotationValues.get(Utils.ATTRIBUTE_GIN_MODULE_PROPERTIES));
+          .setGinModuleProperties((String[]) annotationValues.get(Mvp4gUtils.ATTRIBUTE_GIN_MODULE_PROPERTIES));
     }
 
     applicationInfo.addModules(info.getModuleName(),
