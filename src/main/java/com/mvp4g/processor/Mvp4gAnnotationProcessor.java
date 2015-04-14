@@ -100,8 +100,6 @@ public class Mvp4gAnnotationProcessor
   public boolean process(Set<? extends TypeElement> annotations,
                          RoundEnvironment roundEnv) {
     if (!roundEnv.processingOver()) {
-      // create start message
-      messagerUtils.note("[PresenterAnnotationProcessor] - processing annotations");
       // scan annotations
       try {
         scanAnnotations(annotations,
@@ -110,7 +108,6 @@ public class Mvp4gAnnotationProcessor
         valid = false;
       }
     } else {
-      System.out.println("Start validating");
       if (!roundEnv.errorRaised()) {
         scanBroadcastTo();
 
@@ -123,8 +120,6 @@ public class Mvp4gAnnotationProcessor
       }
       // at least, we clear the appInfo
       applicationInfo = new ApplicationInfo();
-      // create finish message
-      messagerUtils.note("[PresenterAnnotationProcessor] - processing annotations finished");
     }
     return valid;
   }

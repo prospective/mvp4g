@@ -162,7 +162,8 @@ public class ApplicationInfo {
   }
 
   /**
-   * Returns event handler info for the requested event handler name
+   * Returns event handler info for the requested event handler / presenter name.
+   * (includes event handlers and presenters!)
    *
    * @param eventHandlerName name of the event handler
    *

@@ -1382,7 +1382,7 @@ public class Mvp4gConfigurationFileWriter {
     // TODO
     //    // Start view
     //    if (start.hasPresenter()) {
-    //      String startPresenter = start.getPresenter();
+    //      String startPresenter = start.getPresenters();
     //      PresenterElement presenter = getElement(startPresenter,
     //                                              configuration.getPresenters());
     //      if (presenter.isMultiple()) {

@@ -874,7 +874,7 @@ public class Mvp4gConfiguration {
 
             if (viewType.isAssignableTo(reverseViewGenType)) {
               genView = viewType.asParameterizationOf(reverseViewGenType);
-              presenterParam = (JClassType) genView.findMethod("getPresenter",
+              presenterParam = (JClassType) genView.findMethod("getPresenters",
                                                                noParam).getReturnType();
               if (! presenterType.isAssignableTo(presenterParam)) {
                 throw new InvalidTypeException(view,

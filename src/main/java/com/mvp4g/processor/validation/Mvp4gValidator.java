@@ -17,11 +17,8 @@
 
 package com.mvp4g.processor.validation;
 
-import com.mvp4g.client.annotation.Presenter;
-import com.mvp4g.processor.controls.info.ApplicationInfo;
-import com.mvp4g.processor.controls.info.EventHandlerInfo;
-import com.mvp4g.processor.controls.info.ModuleInfo;
-import com.mvp4g.processor.controls.info.PresenterInfo;
+import com.mvp4g.client.annotation.History;
+import com.mvp4g.processor.controls.info.*;
 import com.mvp4g.processor.controls.info.models.BroadcastToModel;
 import com.mvp4g.processor.utils.MessagerUtils;
 import com.mvp4g.processor.utils.Messages;
@@ -29,6 +26,7 @@ import com.mvp4g.processor.utils.Mvp4gUtils;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 
 /**
  * Created by hoss on 12.04.15.
@@ -63,6 +61,8 @@ public class Mvp4gValidator {
   public boolean validate() {
     checkModuleAndEventBus();
     checkBroadcastToDefinitions();
+    checkHistoryConvertersAndEventBus();
+    checkEventHandlersAndEventBus();
 
     return valid;
   }
@@ -70,8 +70,8 @@ public class Mvp4gValidator {
 //==============================================================================
 
   private void checkModuleAndEventBus() {
-    for (ModuleInfo info : applicationInfo.getModules()) {
-      System.out.println("Validate");
+    for (ModuleInfo moduleInfo : applicationInfo.getModules()) {
+
 
     }
   }
@@ -81,21 +81,115 @@ public class Mvp4gValidator {
       for (ExecutableElement eventMethod : model.getMethods()) {
         String eventHandlingMethodName = createEventHandlingMethodName(eventMethod.getSimpleName()
                                                                                   .toString());
+        // check event handler
         for (EventHandlerInfo eventHandlerInfo : applicationInfo.getEventHandlers(true)) {
           if (processingEnv.getTypeUtils()
                            .isSubtype(eventHandlerInfo.getEventHandler()
-                                                   .asType(),
+                                                      .asType(),
                                       model.getBroadcastTo()
                                            .asType())) {
-            if (!Mvp4gUtils.isImplementingMethod(processingEnv,
-                                                 eventHandlerInfo.getEventHandler(),
-                                                 eventMethod,
-                                                 eventHandlingMethodName)) {
-              messagerUtils.error(eventHandlerInfo.getEventHandler(),
-                                  Messages.INVALID_EVENT_METHOD,
-                                  eventHandlerInfo.getEventHandlerName(),
-                                  eventMethod.getSimpleName().toString(),
-                                  eventHandlingMethodName);
+            checkEventMethodImplemention(eventHandlerInfo.getEventHandler(),
+                                         eventMethod,
+                                         eventHandlingMethodName,
+                                         Messages.INVALID_EVENT_METHOD_PRESENTER);
+          }
+        }
+      }
+    }
+  }
+
+  private void checkHistoryConvertersAndEventBus() {
+    for (ModuleInfo moduleInfo : applicationInfo.getModules()) {
+      EventBusInfo eventBusInfo = moduleInfo.getEventBusInfo();
+      if (eventBusInfo.getEvents() != null) {
+        for (EventInfo eventInfo : eventBusInfo.getEvents()) {
+          if (eventInfo.getHistoryConverter() != null) {
+            HistoryConverterInfo historyConverterInfo = applicationInfo.getHistoryConverter(eventInfo.getHistoryConverter()
+                                                                                                     .getQualifiedName()
+                                                                                                     .toString());
+            if (historyConverterInfo == null) {
+              messagerUtils.error(eventBusInfo.getEventBus(),
+                                  Messages.MISSING_HISTORY_CONVERTER,
+                                  eventInfo.getHistoryConverterName());
+
+            } else {
+              // eventBus correct injected?
+              if (!historyConverterInfo.getInjectedEventBus()
+                                       .getSimpleName()
+                                       .toString()
+                                       .equals(eventBusInfo.getEventBus()
+                                                           .getSimpleName()
+                                                           .toString())) {
+                messagerUtils.error(eventBusInfo.getEventBus(),
+                                    Messages.INVALID_EVENT_BUS,
+                                    eventBusInfo.getEventBus()
+                                                .getSimpleName()
+                                                .toString(),
+                                    eventInfo.getHistoryConverterName(),
+                                    eventBusInfo.getEventBus()
+                                                .getSimpleName()
+                                                .toString(),
+                                    eventInfo.getHistoryConverterName());
+              } else {
+                if (historyConverterInfo.getType().equals(History.HistoryConverterType.DEFAULT)) {
+                  String eventHandlingMethodName = createEventHandlingMethodName(eventInfo.getEvent()
+                                                                                          .getSimpleName()
+                                                                                          .toString());
+                  checkEventMethodImplemention(historyConverterInfo.getHistoryConverter(),
+                                               eventInfo.getEvent(),
+                                               eventHandlingMethodName,
+                                               Messages.INVALID_EVENT_METHOD_HISTORY_CONVERTER);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private void checkEventHandlersAndEventBus() {
+    for (ModuleInfo moduleInfo : applicationInfo.getModules()) {
+      EventBusInfo eventBusInfo = moduleInfo.getEventBusInfo();
+      if (eventBusInfo.getEvents() != null) {
+        for (EventInfo eventInfo : eventBusInfo.getEvents()) {
+          if (eventInfo.getHandlers() != null) {
+            for (TypeElement handler : eventInfo.getHandlers()) {
+              EventHandlerInfo eventHandlerInfo = applicationInfo.getEventHandler(handler.getQualifiedName()
+                                                                                         .toString());
+              if (eventHandlerInfo == null) {
+                messagerUtils.error(eventBusInfo.getEventBus(),
+                                    Messages.MISSING_PRESENTER,
+                                    handler.getSimpleName()
+                                           .toString());
+              } else {
+                // eventBus correct injected?
+                if (!eventHandlerInfo.getInjectedEventBus()
+                                     .getSimpleName()
+                                     .toString()
+                                     .equals(eventBusInfo.getEventBus()
+                                                         .getSimpleName()
+                                                         .toString())) {
+                  messagerUtils.error(eventBusInfo.getEventBus(),
+                                      Messages.INVALID_EVENT_BUS,
+                                      eventBusInfo.getEventBus()
+                                                  .getSimpleName()
+                                                  .toString(),
+                                      eventHandlerInfo.getEventHandlerName(),
+                                      eventBusInfo.getEventBus()
+                                                  .getSimpleName()
+                                                  .toString(),
+                                      eventHandlerInfo.getEventHandlerName());
+                } else {
+                  String eventHandlingMethodName = createEventHandlingMethodName(eventInfo.getEvent()
+                                                                                          .getSimpleName()
+                                                                                          .toString());
+                  checkEventMethodImplemention(eventHandlerInfo.getEventHandler(),
+                                               eventInfo.getEvent(),
+                                               eventHandlingMethodName,
+                                               Messages.INVALID_EVENT_METHOD_PRESENTER);
+                }
+              }
             }
           }
         }
@@ -113,7 +207,24 @@ public class Mvp4gValidator {
     if (eventName.length() > 1) {
       name += eventName.substring(1);
     }
-    System.out.println("EventHandling Method name: " + name);
     return name;
+  }
+
+  private void checkEventMethodImplemention(TypeElement element,
+                                            ExecutableElement eventMethod,
+                                            String eventHandlingMethodName,
+                                            String message) {
+    if (!Mvp4gUtils.isImplementingMethod(processingEnv,
+                                         element,
+                                         eventMethod,
+                                         eventHandlingMethodName)) {
+      messagerUtils.error(element,
+                          message,
+                          element.getSimpleName()
+                                 .toString(),
+                          eventMethod.getSimpleName()
+                                     .toString(),
+                          eventHandlingMethodName);
+    }
   }
 }

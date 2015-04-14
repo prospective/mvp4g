@@ -28,7 +28,11 @@ public class Messages {
 
 	public static final String CLASS_SHOULD_NOT_BE_ABSTRACT = "mvp4g: a class annotated with @%s can not be abstract";
 
-	public static final String INVALID_EVENT_METHOD = "mvp4g: presenter: %s -> event >>%s<< has invalid or missing event handling method >>%s<< in the event handler / presenter";
+	public static final String INVALID_EVENT_METHOD_HISTORY_CONVERTER = "mvp4g: history converter: %s -> event >>%s<< has invalid or missing event handling method >>%s<<";
+
+	public static final String INVALID_EVENT_METHOD_PRESENTER = "mvp4g: event handler/presenter: %s -> event >>%s<< has invalid or missing event handling method >>%s<<";
+
+	public static final String INVALID_EVENT_BUS = "mvp4g: invalid Event bus: %s can't be injected to %s. Can not convert %s to %s";
 
 	public static final String INVALID_VIEW = "mvp4g: %s has invalid View: %s can not be converted to %s.";
 
@@ -36,11 +40,13 @@ public class Messages {
 
 	public static final String MISSING_GENERICS_PRESENTER = "mvp4g: presenter %s -> generics <V, E> are missing";
 
+	public static final String MISSING_HISTORY_CONVERTER = "mvp4g: HistoryConverter %s not found. Did you forget to annotate the history converter class with @History?";
+
+	public static final String MISSING_PRESENTER = "mvp4g: presenter %s not found. Did you forget to annotate the presenter/event handler class with @Presenter or @EventHandler?";
+
 	public static final String MUTLIPLE_EVENT_BUS_DEFINITIONS = "mvp4g: the eventbus %s can not retrieve module information. This can happen if you define more than one eventbus per module. Processing terminated";
 
 	public static final String NOT_A_CLASS = "mvp4g: Only classes can be annotated with @%s";
-
-
 
 
 //	public static final String MISSING_METHOD = "%s is missing public method %s: %s";
@@ -49,7 +55,6 @@ public class Messages {
 //
 //	public static final String MISSING_ANNOTATION_OR = MISSING_ANNOTATION + " or @%s";
 //
-//	public static final String INVALID_EVENT_BUS = "Invalid Event bus: %s can't be injected to %s. Can not convert %s to %s";
 
 
 //	public static final String MODULE_ASSOCIATED_TWICE = "Module %s: a module can't be associated to 2 event bus, %s and %s.";

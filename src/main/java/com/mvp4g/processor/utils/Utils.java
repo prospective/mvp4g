@@ -17,10 +17,6 @@
 
 package com.mvp4g.processor.utils;
 
-import com.mvp4g.client.annotation.Event;
-import com.mvp4g.client.annotation.Events;
-import com.mvp4g.client.annotation.History;
-import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.annotation.module.ChildModules;
 import com.mvp4g.client.presenter.BasePresenter;
 import com.mvp4g.client.presenter.CyclePresenter;
@@ -464,7 +460,7 @@ public class Utils {
         if (defaultValue != null) {
           if (!lenientIsInstance(defaultValue.getClass(),
                                  value)) {
-            throw new IllegalStateException(String.format("Value of %s.%s is a %s but expected a %s\n    value: %s",
+            throw new IllegalStateException(String.format("mvp4g: Value of %s.%s is a %s but expected a %s\n    value: %s",
                                                           annotationType,
                                                           name,
                                                           value.getClass()

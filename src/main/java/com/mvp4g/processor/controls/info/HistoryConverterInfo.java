@@ -48,7 +48,7 @@ public class HistoryConverterInfo {
     super();
 
     this.historyConverter = historyConverter;
-    this.name = historyConverter.getSimpleName()
+    this.name = historyConverter.getQualifiedName()
                                 .toString();
 
     eventHandlingMethods = new ArrayList<>();

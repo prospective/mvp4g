@@ -241,7 +241,7 @@ public class TypeOracleStub
                              new HashMap<Class<? extends Annotation>, Annotation>(),
                              null);
         method.setReturnType(findType(SimpleView.class.getCanonicalName()));
-      } else if ("getPresenter".equals(name)) {
+      } else if ("getPresenters".equals(name)) {
         method = new JMethod(this.getBaseType(),
                              name,
                              new HashMap<Class<? extends Annotation>, Annotation>(),

@@ -17,11 +17,13 @@
 
 package com.mvp4g.processor.controls;
 
-import com.mvp4g.processor.utils.Messages;
-import com.mvp4g.processor.exceptions.ConfigurationException;
+import com.mvp4g.client.annotation.InitHistory;
+import com.mvp4g.client.history.ClearHistory;
 import com.mvp4g.processor.controls.info.ApplicationInfo;
 import com.mvp4g.processor.controls.info.EventInfo;
+import com.mvp4g.processor.exceptions.ConfigurationException;
 import com.mvp4g.processor.utils.MessagerUtils;
+import com.mvp4g.processor.utils.Messages;
 import com.mvp4g.processor.utils.Mvp4gUtils;
 import com.mvp4g.processor.utils.Utils;
 
@@ -84,7 +86,7 @@ public class EventControl {
                                                                              .getAllMembers(element))) {
       for (AnnotationMirror mirror : executable.getAnnotationMirrors()) {
         if (Mvp4gUtils.EVENT.equals(mirror.getAnnotationType()
-                                     .toString())) {
+                                          .toString())) {
           EventInfo info = new EventInfo(executable.getSimpleName()
                                                    .toString());
           info.setEvent(executable);
@@ -115,9 +117,15 @@ public class EventControl {
               info.setForwardToParent((Boolean) entry.getValue()
                                                      .getValue());
             } else if (Mvp4gUtils.ATTRIBUTE_HISTORY_CONVERTER.equals(keyName)) {
-              info.setHistoryConverter(Utils.convert(entry.getValue()));
-            } else if (Mvp4gUtils.ATTRIBUTE_HISTORY_CONVERTER_NAME.equals(keyName)) {
-              info.setHistoryConverterName(Utils.convertName(entry.getValue()));
+              TypeElement historyElement = Utils.convert(entry.getValue());
+              if (!historyElement.getQualifiedName()
+                                 .toString()
+                                 .equals(InitHistory.class.getCanonicalName()) &&
+                  !historyElement.getQualifiedName()
+                                 .toString()
+                                 .equals(ClearHistory.class.getCanonicalName())) {
+                info.setHistoryConverter(historyElement);
+              }
             } else if (Mvp4gUtils.ATTRIBUTE_ACTIVATE.equals(keyName)) {
               info.setActivate(Utils.convert((List<? extends AnnotationValue>) entry.getValue()
                                                                                     .getValue()));
@@ -130,8 +138,6 @@ public class EventControl {
             } else if (Mvp4gUtils.ATTRIBUTE_DEACTIVATE_NAMES.equals(keyName)) {
               info.setDeactivateNames(Utils.convertNames((List<? extends AnnotationValue>) entry.getValue()
                                                                                                 .getValue()));
-            } else if (Mvp4gUtils.ATTRIBUTE_NAME.equals(keyName)) {
-              info.setName(String.valueOf(entry.getValue()));
             } else if (Mvp4gUtils.ATTRIBUTE_NAVIGATION_EVENT.equals(keyName)) {
               info.setNavigationEvent((Boolean) entry.getValue()
                                                      .getValue());
