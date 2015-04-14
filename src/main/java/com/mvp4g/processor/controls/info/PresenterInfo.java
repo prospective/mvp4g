@@ -17,70 +17,32 @@
 
 package com.mvp4g.processor.controls.info;
 
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import java.util.ArrayList;
-import java.util.List;
 
-public class PresenterInfo {
+public class PresenterInfo
+  extends EventHandlerInfo {
 
-  /* info name */
-  private String      presenterName;
-  /* type element of the presenter */
-  private TypeElement presenter;
-  /* attribute name*/
-  private String      name;
   private TypeElement view;
   private String      viewName;
-  private boolean     multiple;
-  private TypeElement async;
-
-  private TypeElement eventBus;
 
   private TypeElement injectedView;
-  private TypeElement injectedEventBus;
-
-  private ExecutableElement       bindMethod;
-  private List<ExecutableElement> eventHandlingMethods;
 
 //------------------------------------------------------------------------------
 
+  @SuppressWarnings("unused")
   private PresenterInfo() {
     this(null,
          null);
   }
 
-  public PresenterInfo(String presenterName,
-                       TypeElement presenter) {
-    super();
-
-    this.presenterName = presenterName;
-    this.presenter = presenter;
-
-    eventHandlingMethods = new ArrayList<>();
+  public PresenterInfo(String eventHandlerName,
+                       TypeElement eventHandler) {
+    super(eventHandlerName,
+          eventHandler,
+          true);
   }
 
 //------------------------------------------------------------------------------
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public TypeElement getEventBus() {
-    return eventBus;
-  }
-
-  public void setEventBus(TypeElement eventBus) {
-    this.eventBus = eventBus;
-  }
-
-  public String getPresenterName() {
-    return presenterName;
-  }
 
   public TypeElement getView() {
     return view;
@@ -90,6 +52,7 @@ public class PresenterInfo {
     this.view = view;
   }
 
+  @SuppressWarnings("unused")
   public String getViewName() {
     return viewName;
   }
@@ -98,55 +61,11 @@ public class PresenterInfo {
     this.viewName = viewName;
   }
 
-  public boolean isMultiple() {
-    return multiple;
-  }
-
-  public void setMultiple(boolean multiple) {
-    this.multiple = multiple;
-  }
-
-  public TypeElement getAsync() {
-    return async;
-  }
-
-  public void setAsync(TypeElement async) {
-    this.async = async;
-  }
-
-  public TypeElement getPresenter() {
-    return presenter;
-  }
-
   public TypeElement getInjectedView() {
     return injectedView;
   }
 
   public void setInjectedView(TypeElement injectedView) {
     this.injectedView = injectedView;
-  }
-
-  public TypeElement getInjectedEventBus() {
-    return injectedEventBus;
-  }
-
-  public void setInjectedEventBus(TypeElement injectedEventBus) {
-    this.injectedEventBus = injectedEventBus;
-  }
-
-  public List<ExecutableElement> getEventHandlingMethods() {
-    return eventHandlingMethods;
-  }
-
-  public void setEventHandlingMethods(List<ExecutableElement> eventHandlingMethods) {
-    this.eventHandlingMethods = eventHandlingMethods;
-  }
-
-  public ExecutableElement getBindMethod() {
-    return bindMethod;
-  }
-
-  public void setBindMethod(ExecutableElement bindMethod) {
-    this.bindMethod = bindMethod;
   }
 }

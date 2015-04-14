@@ -39,6 +39,8 @@ public class EventHandlerInfo {
   private ExecutableElement       bindMethod;
   private List<ExecutableElement> eventHandlingMethods;
 
+  private boolean presenter;
+
 //------------------------------------------------------------------------------
 
   private EventHandlerInfo() {
@@ -48,10 +50,19 @@ public class EventHandlerInfo {
 
   public EventHandlerInfo(String eventHandlerName,
                           TypeElement eventHandler) {
+    this(eventHandlerName,
+         eventHandler,
+         false);
+  }
+
+  public EventHandlerInfo(String eventHandlerName,
+                          TypeElement eventHandler,
+                          boolean presenter) {
     super();
 
     this.eventHandlerName = eventHandlerName;
     this.eventHandler = eventHandler;
+    this.presenter = presenter;
 
     eventHandlingMethods = new ArrayList<>();
   }
@@ -120,5 +131,9 @@ public class EventHandlerInfo {
 
   public void setEventHandlingMethods(List<ExecutableElement> eventHandlingMethods) {
     this.eventHandlingMethods = eventHandlingMethods;
+  }
+
+  public boolean isPresenter() {
+    return presenter;
   }
 }

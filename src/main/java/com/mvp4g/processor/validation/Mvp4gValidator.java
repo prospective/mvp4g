@@ -19,6 +19,7 @@ package com.mvp4g.processor.validation;
 
 import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.processor.controls.info.ApplicationInfo;
+import com.mvp4g.processor.controls.info.EventHandlerInfo;
 import com.mvp4g.processor.controls.info.ModuleInfo;
 import com.mvp4g.processor.controls.info.PresenterInfo;
 import com.mvp4g.processor.controls.info.models.BroadcastToModel;
@@ -80,50 +81,24 @@ public class Mvp4gValidator {
       for (ExecutableElement eventMethod : model.getMethods()) {
         String eventHandlingMethodName = createEventHandlingMethodName(eventMethod.getSimpleName()
                                                                                   .toString());
-        for (PresenterInfo presenterInfo : applicationInfo.getPresenter()) {
+        for (EventHandlerInfo eventHandlerInfo : applicationInfo.getEventHandlers(true)) {
           if (processingEnv.getTypeUtils()
-                           .isSubtype(presenterInfo.getPresenter()
+                           .isSubtype(eventHandlerInfo.getEventHandler()
                                                    .asType(),
                                       model.getBroadcastTo()
                                            .asType())) {
             if (!Mvp4gUtils.isImplementingMethod(processingEnv,
-                                                 presenterInfo.getPresenter(),
+                                                 eventHandlerInfo.getEventHandler(),
                                                  eventMethod,
                                                  eventHandlingMethodName)) {
-              messagerUtils.error(presenterInfo.getPresenter(),
+              messagerUtils.error(eventHandlerInfo.getEventHandler(),
                                   Messages.INVALID_EVENT_METHOD,
-                                  presenterInfo.getPresenterName(),
+                                  eventHandlerInfo.getEventHandlerName(),
                                   eventMethod.getSimpleName().toString(),
                                   eventHandlingMethodName);
             }
           }
         }
-//        boolean isMethodImplemented = false;
-//        String eventHandlingMethodName = createEventHandlingMethodName(eventMethod.getSimpleName()
-//                                                                                  .toString());
-//        for (PresenterInfo presenterInfo : applicationInfo.getPresenter()) {
-//          if (processingEnv.getTypeUtils()
-//                           .isSubtype(presenterInfo.getPresenter()
-//                                                   .asType(),
-//                                      model.getBroadcastTo()
-//                                           .asType())) {
-//            // todo Super class checking
-//
-//            for (ExecutableElement presenterMethod : ElementFilter.methodsIn(processingEnv.getElementUtils()
-//                                                                                          .getAllMembers(presenterInfo.getPresenter()))) {
-//
-//
-//              if (presenterMethod.getSimpleName()
-//                                 .toString()
-//                                 .equals(eventHandlingMethodName)) {
-//                isMethodImplemented = true;
-//              }
-//            }
-//          }
-//        }
-//        if (!isMethodImplemented) {
-//          System.out.println("error");
-//        }
       }
     }
   }

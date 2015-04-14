@@ -29,8 +29,6 @@ public class ApplicationInfo {
   private Map<String, ModuleInfo>           modules;
   /* event handler info */
   private Map<String, EventHandlerInfo>     eventHandlerInfos;
-  /* presenter info */
-  private Map<String, PresenterInfo>        presenters;
   /* history infos */
   private Map<String, HistoryConverterInfo> histroyConverterInfos;
   /* list of all broadcast interfaces odf this application */
@@ -42,7 +40,6 @@ public class ApplicationInfo {
     super();
 
     modules = new HashMap<>();
-    presenters = new HashMap<>();
     histroyConverterInfos = new HashMap<>();
     eventHandlerInfos = new HashMap<>();
   }
@@ -81,13 +78,13 @@ public class ApplicationInfo {
   /**
    * Add a presenter info
    *
-   * @param presenterName name of the presenter info
-   * @param info          presenter info
+   * @param eventHandlerName name of the presenter info
+   * @param info             presenter info
    */
-  public void addPresenter(String presenterName,
+  public void addPresenter(String eventHandlerName,
                            PresenterInfo info) {
-    presenters.put(presenterName,
-                   info);
+    eventHandlerInfos.put(eventHandlerName,
+                          info);
   }
 
   /**
@@ -106,6 +103,7 @@ public class ApplicationInfo {
    * Returns the ModuleInfo for the requested module
    *
    * @param module name of the module info
+   *
    * @return the modules
    */
   public ModuleInfo getModule(String module) {
@@ -125,6 +123,7 @@ public class ApplicationInfo {
    * Returns module info for the requested event bus name
    *
    * @param eventBusName name of the event bus
+   *
    * @return the module info
    */
   public ModuleInfo getModuleInfoForEventBus(String eventBusName) {
@@ -149,6 +148,7 @@ public class ApplicationInfo {
    * Returns history converter info for the requested history converter name
    *
    * @param historyConverterName name of the presenter
+   *
    * @return the history converter info
    */
   public HistoryConverterInfo getHistoryConverter(String historyConverterName) {
@@ -165,6 +165,7 @@ public class ApplicationInfo {
    * Returns event handler info for the requested event handler name
    *
    * @param eventHandlerName name of the event handler
+   *
    * @return the event handler info
    */
   public EventHandlerInfo getEventHandler(String eventHandlerName) {
@@ -181,11 +182,12 @@ public class ApplicationInfo {
    * Returns presenter info for the requested presenter name
    *
    * @param presenterName name of the presenter
+   *
    * @return the presenter info
    */
   public PresenterInfo getPresenter(String presenterName) {
-    for (PresenterInfo info : presenters.values()) {
-      if (info.getPresenterName()
+    for (PresenterInfo info : getPresenters()) {
+      if (info.getEventHandlerName()
               .equals(presenterName)) {
         return info;
       }
@@ -196,10 +198,33 @@ public class ApplicationInfo {
   /**
    * Returns all presenter infos of the application
    *
-   * @return list of presenters of thsi application
+   * @return list of presenters of this application
    */
-  public Collection<PresenterInfo> getPresenter() {
-    return presenters.values();
+  public Collection<PresenterInfo> getPresenters() {
+    Map<String, PresenterInfo> m = new HashMap<>();
+    for (EventHandlerInfo info : eventHandlerInfos.values()) {
+      if (info.isPresenter()) {
+        m.put(info.getEventHandlerName(),
+              (PresenterInfo) info);
+      }
+    }
+    return m.values();
+  }
+
+  /**
+   * Returns all presenter infos of the application
+   *
+   * @return list of presenters of this application
+   */
+  public Collection<EventHandlerInfo> getEventHandlers(boolean includePresenter) {
+    Map<String, EventHandlerInfo> m = new HashMap<>();
+    for (EventHandlerInfo info : eventHandlerInfos.values()) {
+      if (info.isPresenter() && includePresenter) {
+        m.put(info.getEventHandlerName(),
+              info);
+      }
+    }
+    return m.values();
   }
 
   /**

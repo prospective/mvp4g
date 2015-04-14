@@ -131,7 +131,7 @@ public class PresenterControl {
       }
     }
 
-    applicationInfo.addPresenter(info.getPresenterName(),
+    applicationInfo.addPresenter(info.getEventHandlerName(),
                                  info);
 
     return true;
