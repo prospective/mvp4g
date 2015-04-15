@@ -17,6 +17,8 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/../mvp4g-examples/EmployeeAdmin/pom.xml" />
         <option value="$PROJECT_DIR$/../mvp4g-examples/Mvp4gModules/pom.xml" />
+        <option value="$PROJECT_DIR$/mvp4g/pom.xml" />
+        <option value="$PROJECT_DIR$/mvp4g-apt/pom.xml" />
       </list>
     </option>
   </component>
