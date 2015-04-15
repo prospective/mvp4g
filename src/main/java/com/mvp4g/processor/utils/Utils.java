@@ -22,13 +22,14 @@ import com.mvp4g.client.presenter.BasePresenter;
 import com.mvp4g.client.presenter.CyclePresenter;
 import com.mvp4g.client.presenter.LazyPresenter;
 import com.mvp4g.processor.controls.info.models.TypeModel;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.*;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.*;
 import javax.lang.model.util.SimpleAnnotationValueVisitor6;
+import javax.lang.model.util.SimpleTypeVisitor6;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -269,148 +270,148 @@ public class Utils {
    *                            Use '.' for references to existing types in code. Use '$' to define new
    *                            class names and for strings that will be used by runtime reflection.
    */
-//  public static void typeToString(final TypeMirror type,
-//                                  final StringBuilder result,
-//                                  final char innerClassSeparator) {
-//    type.accept(new SimpleTypeVisitor6<Void, Void>() {
-//                  @Override
-//                  protected Void defaultAction(TypeMirror typeMirror,
-//                                               Void v) {
-//                    throw new UnsupportedOperationException(
-//                                                             "Unexpected TypeKind " + typeMirror.getKind() + " for " + typeMirror);
-//                  }
-//
-//                  @Override
-//                  public Void visitDeclared(DeclaredType declaredType,
-//                                            Void v) {
-//                    TypeElement typeElement = (TypeElement) declaredType.asElement();
-//                    rawTypeToString(result,
-//                                    typeElement,
-//                                    innerClassSeparator);
-//                    List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
-//                    if (!typeArguments.isEmpty()) {
-//                      result.append("<");
-//                      for (int i = 0; i < typeArguments.size(); i++) {
-//                        if (i != 0) {
-//                          result.append(", ");
-//                        }
-//                        typeToString(typeArguments.get(i),
-//                                     result,
-//                                     innerClassSeparator);
-//                      }
-//                      result.append(">");
-//                    }
-//                    return null;
-//                  }
-//
-//                  @Override
-//                  public Void visitPrimitive(PrimitiveType primitiveType,
-//                                             Void v) {
-//                    result.append(box((PrimitiveType) type));
-//                    return null;
-//                  }
-//
-//                  @Override
-//                  public Void visitArray(ArrayType arrayType,
-//                                         Void v) {
-//                    TypeMirror type = arrayType.getComponentType();
-//                    if (type instanceof PrimitiveType) {
-//                      result.append(type.toString()); // Don't box, since this is an array.
-//                    } else {
-//                      typeToString(arrayType.getComponentType(),
-//                                   result,
-//                                   innerClassSeparator);
-//                    }
-//                    result.append("[]");
-//                    return null;
-//                  }
-//
-//                  @Override
-//                  public Void visitTypeVariable(TypeVariable typeVariable,
-//                                                Void v) {
-//                    result.append(typeVariable.asElement()
-//                                              .getSimpleName());
-//                    return null;
-//                  }
-//
-//                  @Override
-//                  public Void visitError(ErrorType errorType,
-//                                         Void v) {
-//                    // Error type found, a type may not yet have been generated, but we need the type
-//                    // so we can generate the correct code in anticipation of the type being available
-//                    // to the compiler.
-//
-//                    // Paramterized types which don't exist are returned as an error type whose name is "<any>"
-//                    //                    if ("<any>".equals(errorType.toString())) {
-//                    //                      throw new CodeGenerationIncompleteException("Type reported as <any> is likely a not-yet generated parameterized type.");
-//                    //                    }
-//                    // TODO(cgruber): Figure out a strategy for non-FQCN cases.
-//                    result.append(errorType.toString());
-//                    return null;
-//                  }
-//                },
-//                null);
-//  }
+  public static void typeToString(final TypeMirror type,
+                                  final StringBuilder result,
+                                  final char innerClassSeparator) {
+    type.accept(new SimpleTypeVisitor6<Void, Void>() {
+                  @Override
+                  protected Void defaultAction(TypeMirror typeMirror,
+                                               Void v) {
+                    throw new UnsupportedOperationException(
+                                                             "Unexpected TypeKind " + typeMirror.getKind() + " for " + typeMirror);
+                  }
 
-//  /**
-//   * Returns a string for {@code type}. Primitive types are always boxed.
-//   */
-//  public static TypeName injectableType(TypeMirror type) {
-//    return type.accept(new SimpleTypeVisitor6<TypeName, Void>() {
-//                         @Override
-//                         public TypeName visitPrimitive(PrimitiveType primitiveType,
-//                                                        Void v) {
-//                           return box(primitiveType);
-//                         }
-//
-//                         @Override
-//                         public TypeName visitError(ErrorType errorType,
-//                                                    Void v) {
-//                           // Error type found, a type may not yet have been generated, but we need the type
-//                           // so we can generate the correct code in anticipation of the type being available
-//                           // to the compiler.
-//
-//                           // Paramterized types which don't exist are returned as an error type whose name is "<any>"
-//                           //                           if ("<any>".equals(errorType.toString())) {
-//                           //                             throw new CodeGenerationIncompleteException("Type reported as <any> is likely a not-yet generated parameterized type.");
-//                           //                           }
-//
-//                           return ClassName.bestGuess(errorType.toString());
-//                         }
-//
-//                         @Override
-//                         protected TypeName defaultAction(TypeMirror typeMirror,
-//                                                          Void v) {
-//                           return TypeName.get(typeMirror);
-//                         }
-//                       },
-//                       null);
-//  }
+                  @Override
+                  public Void visitDeclared(DeclaredType declaredType,
+                                            Void v) {
+                    TypeElement typeElement = (TypeElement) declaredType.asElement();
+                    rawTypeToString(result,
+                                    typeElement,
+                                    innerClassSeparator);
+                    List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
+                    if (!typeArguments.isEmpty()) {
+                      result.append("<");
+                      for (int i = 0; i < typeArguments.size(); i++) {
+                        if (i != 0) {
+                          result.append(", ");
+                        }
+                        typeToString(typeArguments.get(i),
+                                     result,
+                                     innerClassSeparator);
+                      }
+                      result.append(">");
+                    }
+                    return null;
+                  }
 
-//  private static TypeName box(PrimitiveType primitiveType) {
-//    switch (primitiveType.getKind()) {
-//      case BYTE:
-//        return ClassName.get(Byte.class);
-//      case SHORT:
-//        return ClassName.get(Short.class);
-//      case INT:
-//        return ClassName.get(Integer.class);
-//      case LONG:
-//        return ClassName.get(Long.class);
-//      case FLOAT:
-//        return ClassName.get(Float.class);
-//      case DOUBLE:
-//        return ClassName.get(Double.class);
-//      case BOOLEAN:
-//        return ClassName.get(Boolean.class);
-//      case CHAR:
-//        return ClassName.get(Character.class);
-//      case VOID:
-//        return ClassName.get(Void.class);
-//      default:
-//        throw new AssertionError();
-//    }
-//  }
+                  @Override
+                  public Void visitPrimitive(PrimitiveType primitiveType,
+                                             Void v) {
+                    result.append(box((PrimitiveType) type));
+                    return null;
+                  }
+
+                  @Override
+                  public Void visitArray(ArrayType arrayType,
+                                         Void v) {
+                    TypeMirror type = arrayType.getComponentType();
+                    if (type instanceof PrimitiveType) {
+                      result.append(type.toString()); // Don't box, since this is an array.
+                    } else {
+                      typeToString(arrayType.getComponentType(),
+                                   result,
+                                   innerClassSeparator);
+                    }
+                    result.append("[]");
+                    return null;
+                  }
+
+                  @Override
+                  public Void visitTypeVariable(TypeVariable typeVariable,
+                                                Void v) {
+                    result.append(typeVariable.asElement()
+                                              .getSimpleName());
+                    return null;
+                  }
+
+                  @Override
+                  public Void visitError(ErrorType errorType,
+                                         Void v) {
+                    // Error type found, a type may not yet have been generated, but we need the type
+                    // so we can generate the correct code in anticipation of the type being available
+                    // to the compiler.
+
+                    // Paramterized types which don't exist are returned as an error type whose name is "<any>"
+                    //                    if ("<any>".equals(errorType.toString())) {
+                    //                      throw new CodeGenerationIncompleteException("Type reported as <any> is likely a not-yet generated parameterized type.");
+                    //                    }
+                    // TODO(cgruber): Figure out a strategy for non-FQCN cases.
+                    result.append(errorType.toString());
+                    return null;
+                  }
+                },
+                null);
+  }
+
+  /**
+   * Returns a string for {@code type}. Primitive types are always boxed.
+   */
+  public static TypeName injectableType(TypeMirror type) {
+    return type.accept(new SimpleTypeVisitor6<TypeName, Void>() {
+                         @Override
+                         public TypeName visitPrimitive(PrimitiveType primitiveType,
+                                                        Void v) {
+                           return box(primitiveType);
+                         }
+
+                         @Override
+                         public TypeName visitError(ErrorType errorType,
+                                                    Void v) {
+                           // Error type found, a type may not yet have been generated, but we need the type
+                           // so we can generate the correct code in anticipation of the type being available
+                           // to the compiler.
+
+                           // Paramterized types which don't exist are returned as an error type whose name is "<any>"
+                           //                           if ("<any>".equals(errorType.toString())) {
+                           //                             throw new CodeGenerationIncompleteException("Type reported as <any> is likely a not-yet generated parameterized type.");
+                           //                           }
+
+                           return ClassName.bestGuess(errorType.toString());
+                         }
+
+                         @Override
+                         protected TypeName defaultAction(TypeMirror typeMirror,
+                                                          Void v) {
+                           return TypeName.get(typeMirror);
+                         }
+                       },
+                       null);
+  }
+
+  private static TypeName box(PrimitiveType primitiveType) {
+    switch (primitiveType.getKind()) {
+      case BYTE:
+        return ClassName.get(Byte.class);
+      case SHORT:
+        return ClassName.get(Short.class);
+      case INT:
+        return ClassName.get(Integer.class);
+      case LONG:
+        return ClassName.get(Long.class);
+      case FLOAT:
+        return ClassName.get(Float.class);
+      case DOUBLE:
+        return ClassName.get(Double.class);
+      case BOOLEAN:
+        return ClassName.get(Boolean.class);
+      case CHAR:
+        return ClassName.get(Character.class);
+      case VOID:
+        return ClassName.get(Void.class);
+      default:
+        throw new AssertionError();
+    }
+  }
 
   //
   //  // TODO(sgoldfed): better format for other types of elements?

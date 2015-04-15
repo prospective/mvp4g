@@ -155,12 +155,12 @@ public class EventControl {
             }
           }
 
-          // No module info found. this can happen, if a module has more than eventbus defined.
+          // No module info found. this can happen, if a module has more than one eventbus defined.
           if (applicationInfo.getModuleInfoForEventBus(element.toString()) == null) {
             messagerUtils.warning(element,
                                   Messages.MUTLIPLE_EVENT_BUS_DEFINITIONS,
                                   element.toString());
-            throw new ConfigurationException("No module found for eventBus >>" + element.toString() + "<<! Processing terminated!");
+            throw new ConfigurationException("mvp4g: No module found for eventBus >>" + element.toString() + "<<! Processing terminated!");
           }
 
           applicationInfo.getModuleInfoForEventBus(element.toString())

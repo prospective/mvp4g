@@ -102,8 +102,12 @@ public class Mvp4gUtils {
       return false;
     }
     for (int i = 0; i < parameters01.size(); i++) {
-      String element01Mirror = parameters01.get(i).asType().toString();
-      String element02Mirror = parameters02.get(i).asType().toString();
+      String element01Mirror = parameters01.get(i)
+                                           .asType()
+                                           .toString();
+      String element02Mirror = parameters02.get(i)
+                                           .asType()
+                                           .toString();
       if (!element01Mirror.equals(element02Mirror)) {
         return false;
       }
@@ -115,15 +119,26 @@ public class Mvp4gUtils {
                                                         TypeElement element,
                                                         Class clazz) {
     List<? extends TypeMirror> interfaces = element.getInterfaces();
-    for (TypeMirror mirror : interfaces) {
-      TypeElement el = (TypeElement) ((DeclaredType) mirror).asElement();
-      if (el.toString()
-            .equals(clazz.getCanonicalName())) {
-        return true;
+    if (interfaces.size() == 0) {
+      // may be the super class will implement the interface ...
+      TypeMirror superClassMirror = element.getSuperclass();
+      if (superClassMirror.toString()
+                          .equals("<none>")) {
+        return false;
+      } else {
+        return isImplementingType(processingEnv,
+                                  (TypeElement) ((DeclaredType) superClassMirror).asElement(),
+                                  clazz);
+      }
+    } else{
+        for (TypeMirror mirror : interfaces) {
+          TypeElement el = (TypeElement) ((DeclaredType) mirror).asElement();
+          if (el.toString()
+                .equals(clazz.getCanonicalName())) {
+            return true;
+          }
+        }
+        return false;
       }
     }
-    return false;
   }
-
-
-}

@@ -17,6 +17,7 @@
 
 package com.mvp4g.processor.controls;
 
+import com.mvp4g.client.annotation.EventHandler;
 import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
 import com.mvp4g.processor.utils.Messages;
@@ -198,23 +199,34 @@ public class PresenterControl {
   }
 
   private boolean getTypeParameter(TypeElement element) {
-    List<TypeModel> genericTypes = Utils.getTypeParameterFromClass(element);
-    if (genericTypes.size() > 0) {
-      for (TypeModel model : genericTypes) {
-        if (model.getType()
-                 .equals("E")) {
-          info.setInjectedEventBus(model.getArgument());
-        } else if (model.getType()
-                        .equals("V")) {
-          info.setInjectedView(model.getArgument());
-        }
-      }
-    } else {
+    if (element.getTypeParameters()
+               .size() > 0) {
       messagerUtils.error(element,
-                          Messages.MISSING_GENERICS_PRESENTER,
+                          Messages.INVALID_PRESENTER_ANNOTAITON_USE,
+                          element.getQualifiedName()
+                                 .toString(),
+                          EventHandler.class.getSimpleName(),
                           Presenter.class.getSimpleName());
       return false;
+    } else {
+      List<TypeModel> genericTypes = Utils.getTypeParameterFromClass(element);
+      if (genericTypes.size() > 0) {
+        for (TypeModel model : genericTypes) {
+          if (model.getType()
+                   .equals("E")) {
+            info.setInjectedEventBus(model.getArgument());
+          } else if (model.getType()
+                          .equals("V")) {
+            info.setInjectedView(model.getArgument());
+          }
+        }
+      } else {
+        messagerUtils.error(element,
+                            Messages.MISSING_GENERICS_PRESENTER,
+                            Presenter.class.getSimpleName());
+        return false;
+      }
+      return true;
     }
-    return true;
   }
 }

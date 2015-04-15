@@ -24,7 +24,7 @@ public class Messages {
 
 	public static final String CLASS_SHOULD_EXTEND_BASE_PRESENTER = "mvp4g: a presenter annotated with @%s must extend BasePresenter or LazyPresenter";
 
-	public static final String CLASS_SHOULD_IMPLEMENTS_HISTORY_CONVERTER = "mvp4g: a history converter annotated with @%s must implement HistoryConverter";
+	public static final String CLASS_SHOULD_IMPLEMENTS_HISTORY_CONVERTER = "mvp4g: history converter %s annotated with @%s must implement HistoryConverter";
 
 	public static final String CLASS_SHOULD_NOT_BE_ABSTRACT = "mvp4g: a class annotated with @%s can not be abstract";
 
@@ -43,6 +43,8 @@ public class Messages {
 	public static final String MISSING_HISTORY_CONVERTER = "mvp4g: HistoryConverter %s not found. Did you forget to annotate the history converter class with @History?";
 
 	public static final String MISSING_PRESENTER = "mvp4g: presenter %s not found. Did you forget to annotate the presenter/event handler class with @Presenter or @EventHandler?";
+
+	public static final String INVALID_PRESENTER_ANNOTAITON_USE = "mvp4g: event handler/presenter: %s no %s / %s anntoation on generic classes";
 
 	public static final String MUTLIPLE_EVENT_BUS_DEFINITIONS = "mvp4g: the eventbus %s can not retrieve module information. This can happen if you define more than one eventbus per module. Processing terminated";
 

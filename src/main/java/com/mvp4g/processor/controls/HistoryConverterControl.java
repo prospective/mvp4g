@@ -167,6 +167,7 @@ public class HistoryConverterControl {
               HistoryConverter.class)) {
         messagerUtils.error(element,
                             Messages.CLASS_SHOULD_IMPLEMENTS_HISTORY_CONVERTER,
+                            element.getQualifiedName().toString(),
                             History.class.getSimpleName());
         return false;
       }

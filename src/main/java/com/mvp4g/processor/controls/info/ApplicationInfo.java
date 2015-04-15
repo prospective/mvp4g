@@ -129,9 +129,7 @@ public class ApplicationInfo {
   public ModuleInfo getModuleInfoForEventBus(String eventBusName) {
     for (ModuleInfo info : modules.values()) {
       if (info.getEventBusInfo()
-              .getEventBus() == null) {
-        return null;
-      } else {
+              .getEventBus() != null) {
         if (info.getEventBusInfo()
                 .getEventBus()
                 .getQualifiedName()

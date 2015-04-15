@@ -1384,7 +1384,7 @@ public class Mvp4gConfigurationFileWriter {
     //    if (start.hasPresenter()) {
     //      String startPresenter = start.getPresenters();
     //      PresenterElement presenter = getElement(startPresenter,
-    //                                              configuration.getPresenters());
+    //                                              configuration.getPresenter());
     //      if (presenter.isMultiple()) {
     //        sourceWriter.print("this.startPresenter = eventBus.addHandler(");
     //        sourceWriter.print(presenter.getClassName());
