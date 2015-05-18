@@ -33,6 +33,7 @@ import javax.lang.model.util.ElementFilter;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class HistoryConverterControl {
 
   /* application info */
@@ -162,8 +163,8 @@ public class HistoryConverterControl {
         return false;
       }
       // check if the class extends BasePresenter
-      if (!Mvp4gUtils.isImplementingType(processingEnv,
-              element,
+      if (!Mvp4gUtils.isImplementingType(
+                                          element,
               HistoryConverter.class)) {
         messagerUtils.error(element,
                             Messages.CLASS_SHOULD_IMPLEMENTS_HISTORY_CONVERTER,

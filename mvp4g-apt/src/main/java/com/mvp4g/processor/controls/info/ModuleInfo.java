@@ -19,6 +19,7 @@ package com.mvp4g.processor.controls.info;
 
 import javax.lang.model.element.TypeElement;
 
+@Deprecated
 public class ModuleInfo {
 
   private String       moduleName;

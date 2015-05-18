@@ -18,30 +18,19 @@
 package com.mvp4g.processor.controls;
 
 import com.mvp4g.client.annotation.EventHandler;
-import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.event.BaseEventHandler;
-import com.mvp4g.processor.controls.info.ApplicationInfo;
 import com.mvp4g.processor.controls.info.EventHandlerInfo;
-import com.mvp4g.processor.controls.info.models.TypeModel;
 import com.mvp4g.processor.utils.MessagerUtils;
 import com.mvp4g.processor.utils.Messages;
-import com.mvp4g.processor.utils.Mvp4gUtils;
 import com.mvp4g.processor.utils.Utils;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.util.ElementFilter;
 import java.lang.reflect.Modifier;
-import java.util.List;
-import java.util.Map;
 
+@Deprecated
 public class EventHandlerControl {
-
-  /* application info */
-  private ApplicationInfo applicationInfo;
 
   /* processing envirement */
   private ProcessingEnvironment processingEnv;
@@ -53,10 +42,8 @@ public class EventHandlerControl {
 
 //------------------------------------------------------------------------------
 
-  public EventHandlerControl(ApplicationInfo applicationInfo,
-                             MessagerUtils messagerUtils,
+  public EventHandlerControl(MessagerUtils messagerUtils,
                              ProcessingEnvironment processingEnv) {
-    this.applicationInfo = applicationInfo;
     this.messagerUtils = messagerUtils;
     this.processingEnv = processingEnv;
   }
@@ -75,59 +62,60 @@ public class EventHandlerControl {
    * @return true, if it is valid class
    */
   public boolean process(TypeElement element) {
-    // fill eventBus info
-    if (!createInfo(element)) {
+    if (isEventHandler(element)) {
+
+    } else {
       return false;
     }
     ;
     // validate
-    return isValid(element);
+    return true;
   }
 
 //------------------------------------------------------------------------------
 
   private boolean createInfo(TypeElement element) {
-    // create info
-    info = applicationInfo.getEventHandler(element.toString());
-    if (info == null) {
-      info = new EventHandlerInfo(element.toString(),
-                                  element);
-    }
-
-    Map<String, Object> annotationValues = Utils.getAnnotation(EventHandler.class,
-                                                               element);
-    if (annotationValues != null) {
-      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_NAME) != null) {
-        info.setName((String) annotationValues.get(Mvp4gUtils.ATTRIBUTE_NAME));
-      }
-      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_MULTIPLE) != null) {
-        info.setMultiple((Boolean) annotationValues.get(Mvp4gUtils.ATTRIBUTE_MULTIPLE));
-      }
-      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_ASYNC) instanceof TypeElement) {
-        info.setAsync((TypeElement) ((DeclaredType) annotationValues.get(Mvp4gUtils.ATTRIBUTE_ASYNC)).asElement());
-      }
-    }
-
-    if (!getTypeParameter(element)) {
-      return false;
-    }
-
-    for (ExecutableElement executable : ElementFilter.methodsIn(processingEnv.getElementUtils()
-                                                                             .getAllMembers(element))) {
-      if (executable.getSimpleName()
-                    .toString()
-                    .equals(Mvp4gUtils.METHOD_BIND)) {
-        info.setBindMethod(executable);
-      } else if (executable.getSimpleName()
-                           .toString()
-                           .startsWith(Mvp4gUtils.METHOD_EVENT)) {
-        info.getEventHandlingMethods()
-            .add(executable);
-      }
-    }
-
-    applicationInfo.addEventHandler(info.getEventHandlerName(),
-                                    info);
+//    // create info
+//    info = applicationInfo.getEventHandler(element.toString());
+//    if (info == null) {
+//      info = new EventHandlerInfo(element.toString(),
+//                                  element);
+//    }
+//
+//    Map<String, Object> annotationValues = Utils.getAnnotation(EventHandler.class,
+//                                                               element);
+//    if (annotationValues != null) {
+//      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_NAME) != null) {
+//        info.setName((String) annotationValues.get(Mvp4gUtils.ATTRIBUTE_NAME));
+//      }
+//      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_MULTIPLE) != null) {
+//        info.setMultiple((Boolean) annotationValues.get(Mvp4gUtils.ATTRIBUTE_MULTIPLE));
+//      }
+//      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_ASYNC) instanceof TypeElement) {
+//        info.setAsync((TypeElement) ((DeclaredType) annotationValues.get(Mvp4gUtils.ATTRIBUTE_ASYNC)).asElement());
+//      }
+//    }
+//
+//    if (!getTypeParameter(element)) {
+//      return false;
+//    }
+//
+//    for (ExecutableElement executable : ElementFilter.methodsIn(processingEnv.getElementUtils()
+//                                                                             .getAllMembers(element))) {
+//      if (executable.getSimpleName()
+//                    .toString()
+//                    .equals(Mvp4gUtils.METHOD_BIND)) {
+//        info.setBindMethod(executable);
+//      } else if (executable.getSimpleName()
+//                           .toString()
+//                           .startsWith(Mvp4gUtils.METHOD_EVENT)) {
+//        info.getEventHandlingMethods()
+//            .add(executable);
+//      }
+//    }
+//
+//    applicationInfo.addEventHandler(info.getEventHandlerName(),
+//                                    info);
 
     return true;
   }
@@ -145,7 +133,7 @@ public class EventHandlerControl {
    * @param element the annotated presenter to validate
    * @return true, if it is valid class
    */
-  private boolean isValid(TypeElement element) {
+  private boolean isEventHandler(TypeElement element) {
     // check presenter
     if (element != null) {
       // Check if the annotated file is a class
@@ -176,21 +164,21 @@ public class EventHandlerControl {
     return true;
   }
 
-  private boolean getTypeParameter(TypeElement element) {
-    List<TypeModel> genericTypes = Utils.getTypeParameterFromClass(element);
-    if (genericTypes.size() > 0) {
-      for (TypeModel model : genericTypes) {
-        if (model.getType()
-                 .equals("E")) {
-          info.setInjectedEventBus(model.getArgument());
-        }
-      }
-    } else {
-      messagerUtils.error(element,
-                          Messages.MISSING_GENERICS_PRESENTER,
-                          Presenter.class.getSimpleName());
-      return false;
-    }
-    return true;
-  }
+//  private boolean getTypeParameter(TypeElement element) {
+//    List<TypeModel> genericTypes = Utils.getTypeParameterFromClass(element);
+//    if (genericTypes.size() > 0) {
+//      for (TypeModel model : genericTypes) {
+//        if (model.getType()
+//                 .equals("E")) {
+//          info.setInjectedEventBus(model.getArgument());
+//        }
+//      }
+//    } else {
+//      messagerUtils.error(element,
+//                          Messages.MISSING_GENERICS_PRESENTER,
+//                          Presenter.class.getSimpleName());
+//      return false;
+//    }
+//    return true;
+//  }
 }

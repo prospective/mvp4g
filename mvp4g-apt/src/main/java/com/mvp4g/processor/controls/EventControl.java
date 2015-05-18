@@ -36,6 +36,7 @@ import javax.lang.model.util.ElementFilter;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class EventControl {
 
   /* application info */

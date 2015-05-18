@@ -27,6 +27,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.TypeElement;
 
+@Deprecated
 public class ModuleControl {
 
   /* application info */
@@ -81,16 +82,16 @@ public class ModuleControl {
   public boolean process(TypeElement element)
     throws ConfigurationException {
     // process
-    for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
-      if (Mvp4gUtils.EVENTS.equals(annotationMirror.getAnnotationType()
-                                              .toString())) {
+    for (AnnotationMirror elementMirror : element.getAnnotationMirrors()) {
+      if (Mvp4gUtils.EVENTS.equals(elementMirror.getAnnotationType()
+                                                   .toString())) {
         if (!eventBusControl.process(element)) {
           return false;
         }
-      } else if (Utils.CHILD_MODULES.equals(annotationMirror.getAnnotationType()
+      } else if (Utils.CHILD_MODULES.equals(elementMirror.getAnnotationType()
                                                             .toString())) {
         if (!childModuleControl.process(element,
-                                        annotationMirror)) {
+                                        elementMirror)) {
           return false;
         }
       }

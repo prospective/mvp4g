@@ -20,26 +20,29 @@ package com.mvp4g.processor.utils;
 import com.mvp4g.client.annotation.Event;
 import com.mvp4g.client.annotation.Events;
 import com.mvp4g.client.annotation.History;
-import com.mvp4g.client.annotation.Presenter;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ErrorType;
+import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.SimpleTypeVisitor6;
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by hoss on 13.04.15.
- */
+@Deprecated
 public class Mvp4gUtils {
 
   public final static String EVENT     = Event.class.getCanonicalName();
   public final static String EVENTS    = Events.class.getCanonicalName();
   public final static String HISTORY   = History.class.getCanonicalName();
-  public final static String PRESENTER = Presenter.class.getCanonicalName();
+//  public final static String PRESENTER = Presenter.class.getCanonicalName();
 
   public final static String ATTRIBUTE_ACTIVATE               = "activate";
   public final static String ATTRIBUTE_ACTIVATE_NAMES         = "activateNames";
@@ -59,11 +62,11 @@ public class Mvp4gUtils {
   public final static String ATTRIBUTE_HANDLERS               = "handlers";
   public final static String ATTRIBUTE_HANDLER_NAMES          = "handlerNames";
   public final static String ATTRIBUTE_HISTORY_CONVERTER      = "historyConverter";
-  public final static String ATTRIBUTE_HISTORY_CONVERTER_NAME = "historyConverterName";
+//  public final static String ATTRIBUTE_HISTORY_CONVERTER_NAME = "historyConverterName";
   public final static String ATTRIBUTE_HISTORY_ON_START       = "historyOnStart";
   public final static String ATTRIBUTE_MODULE                 = "module";
   public final static String ATTRIBUTE_MODULE_CLASS           = "moduleClass";
-  public final static String ATTRIBUTE_MODULES_TO_LOAD        = "modulesToLoad";
+//  public final static String ATTRIBUTE_MODULES_TO_LOAD        = "modulesToLoad";
   public final static String ATTRIBUTE_MULTIPLE               = "mutiple";
   public final static String ATTRIBUTE_NAME                   = "name";
   public final static String ATTRIBUTE_NAVIGATION_EVENT       = "navigationEvent";
@@ -71,7 +74,7 @@ public class Mvp4gUtils {
   public final static String ATTRIBUTE_START_PRESENTER        = "startPresenter";
   public final static String ATTRIBUTE_START_PRESENTER_NAME   = "startPresenterName";
   public final static String ATTRIBUTE_TYPE                   = "type";
-  public final static String ATTRIBUTE_VALUE                  = "value";
+//  public final static String ATTRIBUTE_VALUE                  = "value";
   public final static String ATTRIBUTE_VIEW                   = "view";
   public final static String ATTRIBUTE_VIEW_NAME              = "viewName";
 
@@ -102,43 +105,114 @@ public class Mvp4gUtils {
       return false;
     }
     for (int i = 0; i < parameters01.size(); i++) {
-      String element01Mirror = parameters01.get(i)
-                                           .asType()
-                                           .toString();
-      String element02Mirror = parameters02.get(i)
-                                           .asType()
-                                           .toString();
-      if (!element01Mirror.equals(element02Mirror)) {
+      TypeName typeName01 = injectableType(parameters01.get(i)
+                                                       .asType());
+      TypeName typeName02 = injectableType(parameters02.get(i)
+                                                       .asType());
+      if (!typeName01.toString()
+                     .equals(typeName02.toString())) {
         return false;
       }
     }
     return true;
   }
 
-  public static synchronized boolean isImplementingType(ProcessingEnvironment processingEnv,
-                                                        TypeElement element,
+  public static synchronized List<ExecutableElement> getImplementingMethod(ProcessingEnvironment processingEnv,
+                                                                           TypeElement element,
+                                                                           String methodName) {
+    List<ExecutableElement> methods = new ArrayList<>();
+    for (ExecutableElement method : ElementFilter.methodsIn(processingEnv.getElementUtils()
+                                                                         .getAllMembers(element))) {
+      if (method.getSimpleName()
+                .toString()
+                .equals(methodName)) {
+        methods.add(method);
+      }
+    }
+    return methods;
+  }
+
+  public static synchronized boolean isImplementingType(TypeElement element,
                                                         Class clazz) {
     List<? extends TypeMirror> interfaces = element.getInterfaces();
     if (interfaces.size() == 0) {
       // may be the super class will implement the interface ...
       TypeMirror superClassMirror = element.getSuperclass();
-      if (superClassMirror.toString()
-                          .equals("<none>")) {
-        return false;
-      } else {
-        return isImplementingType(processingEnv,
-                                  (TypeElement) ((DeclaredType) superClassMirror).asElement(),
-                                  clazz);
-      }
-    } else{
-        for (TypeMirror mirror : interfaces) {
-          TypeElement el = (TypeElement) ((DeclaredType) mirror).asElement();
-          if (el.toString()
-                .equals(clazz.getCanonicalName())) {
-            return true;
-          }
+      return !superClassMirror.toString()
+                              .equals("<none>") &&
+             isImplementingType((TypeElement) ((DeclaredType) superClassMirror).asElement(),
+                                                                      clazz);
+    } else {
+      for (TypeMirror mirror : interfaces) {
+        TypeElement el = (TypeElement) ((DeclaredType) mirror).asElement();
+        if (el.toString()
+              .equals(clazz.getCanonicalName())) {
+          return true;
         }
-        return false;
       }
+      return false;
     }
   }
+
+//==============================================================================
+
+  /**
+   * Returns a string for {@code type}. Primitive types are always boxed.
+   */
+  private static TypeName injectableType(TypeMirror type) {
+    return type.accept(new SimpleTypeVisitor6<TypeName, Void>() {
+                         @Override
+                         protected TypeName defaultAction(TypeMirror typeMirror,
+                                                          Void v) {
+                           return TypeName.get(typeMirror);
+                         }
+
+                         @Override
+                         public TypeName visitPrimitive(PrimitiveType primitiveType,
+                                                        Void v) {
+                           return box(primitiveType);
+                         }
+
+                         @Override
+                         public TypeName visitError(ErrorType errorType,
+                                                    Void v) {
+                           // Error type found, a type may not yet have been generated, but we need the type
+                           // so we can generate the correct code in anticipation of the type being available
+                           // to the compiler.
+
+                           // Paramterized types which don't exist are returned as an error type whose name is "<any>"
+                           //                           if ("<any>".equals(errorType.toString())) {
+                           //                             throw new CodeGenerationIncompleteException("Type reported as <any> is likely a not-yet generated parameterized type.");
+                           //                           }
+
+                           return ClassName.bestGuess(errorType.toString());
+                         }
+                       },
+                       null);
+  }
+
+  private static TypeName box(PrimitiveType primitiveType) {
+    switch (primitiveType.getKind()) {
+      case BYTE:
+        return ClassName.get(Byte.class);
+      case SHORT:
+        return ClassName.get(Short.class);
+      case INT:
+        return ClassName.get(Integer.class);
+      case LONG:
+        return ClassName.get(Long.class);
+      case FLOAT:
+        return ClassName.get(Float.class);
+      case DOUBLE:
+        return ClassName.get(Double.class);
+      case BOOLEAN:
+        return ClassName.get(Boolean.class);
+      case CHAR:
+        return ClassName.get(Character.class);
+      case VOID:
+        return ClassName.get(Void.class);
+      default:
+        throw new AssertionError();
+    }
+  }
+}

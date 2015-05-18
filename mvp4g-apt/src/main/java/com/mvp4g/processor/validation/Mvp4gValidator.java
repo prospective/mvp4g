@@ -19,7 +19,6 @@ package com.mvp4g.processor.validation;
 
 import com.mvp4g.client.annotation.History;
 import com.mvp4g.processor.controls.info.*;
-import com.mvp4g.processor.controls.info.models.BroadcastToModel;
 import com.mvp4g.processor.utils.MessagerUtils;
 import com.mvp4g.processor.utils.Messages;
 import com.mvp4g.processor.utils.Mvp4gUtils;
@@ -27,10 +26,12 @@ import com.mvp4g.processor.utils.Mvp4gUtils;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Created by hoss on 12.04.15.
- */
+
+@Deprecated
 public class Mvp4gValidator {
 
   /* application info */
@@ -68,30 +69,37 @@ public class Mvp4gValidator {
   }
 
 //==============================================================================
-
+// TODO alles in die Einzelnen Controler bewegen ... und ausschließlich mit Annotation arbeiten ...
   private void checkModuleAndEventBus() {
-    for (ModuleInfo moduleInfo : applicationInfo.getModules()) {
-
-
-    }
+//    for (ModuleInfo moduleInfo : applicationInfo.getModules()) {
+//
+//
+//    }
   }
 
   private void checkBroadcastToDefinitions() {
-    for (BroadcastToModel model : applicationInfo.getBroadcastTos()) {
-      for (ExecutableElement eventMethod : model.getMethods()) {
-        String eventHandlingMethodName = createEventHandlingMethodName(eventMethod.getSimpleName()
-                                                                                  .toString());
-        // check event handler
-        for (EventHandlerInfo eventHandlerInfo : applicationInfo.getEventHandlers(true)) {
-          if (processingEnv.getTypeUtils()
-                           .isSubtype(eventHandlerInfo.getEventHandler()
-                                                      .asType(),
-                                      model.getBroadcastTo()
-                                           .asType())) {
-            checkEventMethodImplemention(eventHandlerInfo.getEventHandler(),
-                                         eventMethod,
-                                         eventHandlingMethodName,
-                                         Messages.INVALID_EVENT_METHOD_PRESENTER);
+    for (ModuleInfo moduleInfo : applicationInfo.getModules()) {
+      EventBusInfo eventBusInfo = moduleInfo.getEventBusInfo();
+      if (eventBusInfo.getEvents() != null) {
+        for (EventInfo eventInfo : eventBusInfo.getEvents()) {
+          if (eventInfo.getBroadcastTo() != null) {
+            String eventHandlingMethodName = createEventHandlingMethodName(eventInfo.getEvent()
+                                                                                    .getSimpleName()
+                                                                                    .toString(),
+                                                                           eventInfo.getCalledMethod());
+            // check event handler
+            for (EventHandlerInfo eventHandlerInfo : applicationInfo.getEventHandlers(true)) {
+              if (processingEnv.getTypeUtils()
+                               .isSubtype(eventHandlerInfo.getEventHandler()
+                                                          .asType(),
+                                          eventInfo.getBroadcastTo()
+                                                   .asType())) {
+                checkEventMethodImplemention(eventHandlerInfo.getEventHandler(),
+                                             eventInfo.getEvent(),
+                                             eventHandlingMethodName,
+                                             Messages.INVALID_EVENT_METHOD_PRESENTER);
+              }
+            }
           }
         }
       }
@@ -110,7 +118,10 @@ public class Mvp4gValidator {
             if (historyConverterInfo == null) {
               messagerUtils.error(eventBusInfo.getEventBus(),
                                   Messages.MISSING_HISTORY_CONVERTER,
-                                  eventInfo.getHistoryConverterName());
+                                  moduleInfo.getModuleName(),
+                                  eventInfo.getHistoryConverter()
+                                           .getSimpleName()
+                                           .toString());
 
             } else {
               // eventBus correct injected?
@@ -131,14 +142,44 @@ public class Mvp4gValidator {
                                                 .toString(),
                                     eventInfo.getHistoryConverterName());
               } else {
-                if (historyConverterInfo.getType().equals(History.HistoryConverterType.DEFAULT)) {
-                  String eventHandlingMethodName = createEventHandlingMethodName(eventInfo.getEvent()
-                                                                                          .getSimpleName()
-                                                                                          .toString());
+                if (historyConverterInfo.getType()
+                                        .equals(History.HistoryConverterType.DEFAULT)) {
                   checkEventMethodImplemention(historyConverterInfo.getHistoryConverter(),
                                                eventInfo.getEvent(),
-                                               eventHandlingMethodName,
+                                               createEventHandlingMethodName(eventInfo.getEvent()
+                                                                                      .getSimpleName()
+                                                                                      .toString(),
+                                                                             eventInfo.getCalledMethod()),
                                                Messages.INVALID_EVENT_METHOD_HISTORY_CONVERTER);
+                } else if (historyConverterInfo.getType()
+                                               .equals(History.HistoryConverterType.SIMPLE)) {
+                  List<ExecutableElement> convertToTokenMethods = Mvp4gUtils.getImplementingMethod(processingEnv,
+                                                                                                   historyConverterInfo.getHistoryConverter(),
+                                                                                                   "convertToToken");
+
+                  boolean methodFound = false;
+                  for (ExecutableElement convertToTokenMethod : convertToTokenMethods) {
+                    List<VariableElement> listOfParameters = new ArrayList<>();
+                    // remove first method because that the eventName
+                    if (convertToTokenMethod.getParameters()
+                                            .size() > 0) {
+                      for (int i = 1; i < convertToTokenMethod.getParameters()
+                                                              .size(); i++) {
+                        listOfParameters.add(convertToTokenMethod.getParameters()
+                                                                 .get(i));
+                      }
+                    }
+                    if (Mvp4gUtils.hasSameSignature(listOfParameters,
+                                                    eventInfo.getEvent()
+                                                             .getParameters())) {
+                      methodFound = true;
+                      break;
+                    }
+                  }
+                  if (!methodFound) {
+                    messagerUtils.error(historyConverterInfo.getHistoryConverter(),
+                                        Messages.INVALID_CONVERT_TO_TOKEN_HISTORY_CONVERTER);
+                  }
                 }
               }
             }
@@ -181,12 +222,12 @@ public class Mvp4gValidator {
                                                   .toString(),
                                       eventHandlerInfo.getEventHandlerName());
                 } else {
-                  String eventHandlingMethodName = createEventHandlingMethodName(eventInfo.getEvent()
-                                                                                          .getSimpleName()
-                                                                                          .toString());
                   checkEventMethodImplemention(eventHandlerInfo.getEventHandler(),
                                                eventInfo.getEvent(),
-                                               eventHandlingMethodName,
+                                               createEventHandlingMethodName(eventInfo.getEvent()
+                                                                                      .getSimpleName()
+                                                                                      .toString(),
+                                                                             eventInfo.getCalledMethod()),
                                                Messages.INVALID_EVENT_METHOD_PRESENTER);
                 }
               }
@@ -199,15 +240,22 @@ public class Mvp4gValidator {
 
 //==============================================================================
 
-  private String createEventHandlingMethodName(String eventName) {
-    String name = "on";
-    name += eventName.substring(0,
-                                1)
-                     .toUpperCase();
-    if (eventName.length() > 1) {
-      name += eventName.substring(1);
+  private String createEventHandlingMethodName(String eventName,
+                                               String calledMethod) {
+    if (calledMethod != null &&
+        calledMethod.trim()
+                    .length() > 0) {
+      return calledMethod;
+    } else {
+      String name = "on";
+      name += eventName.substring(0,
+                                  1)
+                       .toUpperCase();
+      if (eventName.length() > 1) {
+        name += eventName.substring(1);
+      }
+      return name;
     }
-    return name;
   }
 
   private void checkEventMethodImplemention(TypeElement element,

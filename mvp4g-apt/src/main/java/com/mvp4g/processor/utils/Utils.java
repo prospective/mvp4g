@@ -43,6 +43,7 @@ public class Utils {
     //	public final static String ATTRIBUTE_MODULE_CLASS = "moduleClass";
   //	public final static String ATTRIBUTE_CALLED_METHOD = "calledMethod";
 
+  @Deprecated
   private static final AnnotationValueVisitor<Object, Void> VALUE_EXTRACTOR =
     new SimpleAnnotationValueVisitor6<Object, Void>() {
       @Override
@@ -83,6 +84,7 @@ public class Utils {
 
 //------------------------------------------------------------------------------
 
+  @Deprecated
   public final String[] MVP4G_PRESENTER_SUPERCLASSES = new String[]{BasePresenter.class.getCanonicalName(),
                                                                     LazyPresenter.class.getCanonicalName(),
                                                                     CyclePresenter.class.getCanonicalName()
@@ -122,6 +124,7 @@ public class Utils {
   private Utils() {
   }
 
+  @Deprecated
   public static AnnotationValue getAnnotationValue(String annotationName,
                                                    String elementName,
                                                    TypeElement elemnent) {
@@ -134,6 +137,7 @@ public class Utils {
                                     am);
   }
 
+  @Deprecated
   public static AnnotationMirror getAnnotationMirror(String annotationName,
                                                      TypeElement element) {
     if (null == element || null == annotationName || annotationName.length() == 0) {
@@ -184,7 +188,15 @@ public class Utils {
   //  private Util() {
   //  }
 
-    public static boolean isSubType(ProcessingEnvironment processingEnv,
+  /**
+   * Checks weather a element is a subtype of the class or not.
+   *
+   * @param processingEnv the processing environment
+   * @param element the element to check
+   * @param clazz the super class
+   * @return true -> element is a subclass of the clazz
+   */
+  public static boolean isSubType(ProcessingEnvironment processingEnv,
                                   Element element,
                                   Class clazz) {
     TypeElement el = (TypeElement) element;
@@ -248,6 +260,7 @@ public class Utils {
   /**
    * Returns a string for the raw type of {@code type}. Primitive types are always boxed.
    */
+  @Deprecated
   public static String rawTypeToString(TypeMirror type,
                                        char innerClassSeparator) {
     if (!(type instanceof DeclaredType)) {
@@ -270,6 +283,7 @@ public class Utils {
    *                            Use '.' for references to existing types in code. Use '$' to define new
    *                            class names and for strings that will be used by runtime reflection.
    */
+  @Deprecated
   public static void typeToString(final TypeMirror type,
                                   final StringBuilder result,
                                   final char innerClassSeparator) {
@@ -356,6 +370,7 @@ public class Utils {
   /**
    * Returns a string for {@code type}. Primitive types are always boxed.
    */
+  @Deprecated
   public static TypeName injectableType(TypeMirror type) {
     return type.accept(new SimpleTypeVisitor6<TypeName, Void>() {
                          @Override
@@ -388,6 +403,7 @@ public class Utils {
                        null);
   }
 
+  @Deprecated
   private static TypeName box(PrimitiveType primitiveType) {
     switch (primitiveType.getKind()) {
       case BYTE:
@@ -434,6 +450,7 @@ public class Utils {
    * the fact that Class and Class[] fields won't work at code generation time.
    * See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5089128
    */
+  @Deprecated
   public static Map<String, Object> getAnnotation(Class<?> annotationType,
                                                   Element element) {
     for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
@@ -460,7 +477,7 @@ public class Utils {
         if (defaultValue != null) {
           if (!lenientIsInstance(defaultValue.getClass(),
                                  value)) {
-            throw new IllegalStateException(String.format("mvp4g: Value of %s.%s is a %s but expected a %s\n    value: %s",
+            throw new IllegalStateException(String.format("mvp4g: Value of >>%s<<. >>%s<< is a >>%s<< but expected a >>%s<<\nvalue: >>%s<<",
                                                           annotationType,
                                                           name,
                                                           value.getClass()
@@ -548,6 +565,7 @@ public class Utils {
 
   //==============================================================================
 
+  @Deprecated
   static void rawTypeToString(StringBuilder result,
                               TypeElement type,
                               char innerClassSeparator) {
@@ -567,10 +585,12 @@ public class Utils {
     }
   }
 
+  @Deprecated
   public static TypeElement convert(AnnotationValue value) {
     return (TypeElement) ((DeclaredType) value.getValue()).asElement();
   }
 
+  @Deprecated
   public static TypeElement[] convert(List<? extends AnnotationValue> list) {
     TypeElement[] elements;
     if (list != null) {
@@ -587,6 +607,7 @@ public class Utils {
     return elements;
   }
 
+  @Deprecated
   public static String convertName(AnnotationValue annotationValue) {
     String name = "";
     if (annotationValue != null) {
@@ -596,6 +617,7 @@ public class Utils {
     return name;
   }
 
+  @Deprecated
   public static String[] convertNames(List<? extends AnnotationValue> list) {
     String[] elements;
     if (list != null) {
@@ -612,6 +634,7 @@ public class Utils {
 
 //==============================================================================
 
+  @Deprecated
   public static PackageElement getPackage(Element type) {
     while (type.getKind() != ElementKind.PACKAGE) {
       type = type.getEnclosingElement();
@@ -623,6 +646,7 @@ public class Utils {
    * Returns true if {@code value} can be assigned to {@code expectedClass}.
    * Like {@link Class#isInstance} but more lenient for {@code Class<?>} values.
    */
+  @Deprecated
   private static boolean lenientIsInstance(Class<?> expectedClass,
                                            Object value) {
     if (expectedClass.isArray()) {
@@ -646,12 +670,14 @@ public class Utils {
 
 //==============================================================================
 
+  @Deprecated
   public static List<TypeModel> getTypeParameterFromClass(TypeElement element) {
     List<TypeModel> list = new ArrayList<>();
     return Utils.doGetTypeParameterFromClass(element,
                                              list);
   }
 
+  @Deprecated
   private static List<TypeModel> doGetTypeParameterFromClass(TypeElement element,
                                                              List<TypeModel> list) {
     TypeMirror superClassMirror = element.getSuperclass();

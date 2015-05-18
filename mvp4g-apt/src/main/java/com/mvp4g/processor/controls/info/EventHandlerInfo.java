@@ -17,123 +17,121 @@
 
 package com.mvp4g.processor.controls.info;
 
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import java.util.ArrayList;
-import java.util.List;
+public class EventHandlerInfo
+  extends Mvp4gInfo {
 
-public class EventHandlerInfo {
-
-  /* info name */
-  private String      eventHandlerName;
-  /* type element of the presenter */
-  private TypeElement eventHandler;
-  /* attribute name*/
-  private String      name;
-  private boolean     multiple;
-  private TypeElement async;
-
-  private TypeElement eventBus;
-  private TypeElement injectedEventBus;
-
-  private ExecutableElement       bindMethod;
-  private List<ExecutableElement> eventHandlingMethods;
-
-  private boolean presenter;
+//
+//  /* info name */
+//  private String      eventHandlerName;
+//  /* type element of the presenter */
+//  private TypeElement eventHandler;
+//  /* attribute name*/
+//  private String      name;
+//  private boolean     multiple;
+//  private TypeElement async;
+//
+//  private TypeElement eventBus;
+//  private TypeElement injectedEventBus;
+//
+//  private ExecutableElement       bindMethod;
+//  private List<ExecutableElement> eventHandlingMethods;
+//
+//  private boolean presenter;
 
 //------------------------------------------------------------------------------
 
   private EventHandlerInfo() {
-    this(null,
-         null);
+//    this(null,
+//         null,
+//         null);
   }
 
-  public EventHandlerInfo(String eventHandlerName,
-                          TypeElement eventHandler) {
-    this(eventHandlerName,
-         eventHandler,
-         false);
-  }
-
-  public EventHandlerInfo(String eventHandlerName,
-                          TypeElement eventHandler,
-                          boolean presenter) {
-    super();
-
-    this.eventHandlerName = eventHandlerName;
-    this.eventHandler = eventHandler;
-    this.presenter = presenter;
-
-    eventHandlingMethods = new ArrayList<>();
-  }
+//  public EventHandlerInfo(String eventHandlerName,
+//                          TypeElement eventHandler) {
+//    this(eventHandlerName,
+//         eventHandler,
+//         false);
+//  }
+//
+//  public EventHandlerInfo(String eventHandlerName,
+//                          TypeElement eventHandler,
+//                          boolean presenter) {
+//    super();
+//
+//    this.eventHandlerName = eventHandlerName;
+//    this.eventHandler = eventHandler;
+//    this.presenter = presenter;
+//
+//    eventHandlingMethods = new ArrayList<>();
+//  }
 
 //------------------------------------------------------------------------------
 
-  public String getEventHandlerName() {
-    return eventHandlerName;
-  }
-
-  public TypeElement getEventHandler() {
-    return eventHandler;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public boolean isMultiple() {
-    return multiple;
-  }
-
-  public TypeElement getAsync() {
-    return async;
-  }
-
-  public TypeElement getEventBus() {
-    return eventBus;
-  }
-
-  public TypeElement getInjectedEventBus() {
-    return injectedEventBus;
-  }
-
-  public ExecutableElement getBindMethod() {
-    return bindMethod;
-  }
-
-  public List<ExecutableElement> getEventHandlingMethods() {
-    return eventHandlingMethods;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public void setMultiple(boolean multiple) {
-    this.multiple = multiple;
-  }
-
-  public void setAsync(TypeElement async) {
-    this.async = async;
-  }
-
-  public void setEventBus(TypeElement eventBus) {
-    this.eventBus = eventBus;
-  }
-
-  public void setInjectedEventBus(TypeElement injectedEventBus) {
-    this.injectedEventBus = injectedEventBus;
-  }
-
-  public void setBindMethod(ExecutableElement bindMethod) {
-    this.bindMethod = bindMethod;
-  }
-
-  public void setEventHandlingMethods(List<ExecutableElement> eventHandlingMethods) {
-    this.eventHandlingMethods = eventHandlingMethods;
-  }
-
-  public boolean isPresenter() {
-    return presenter;
-  }
+//  public String getEventHandlerName() {
+//    return eventHandlerName;
+//  }
+//
+//  public TypeElement getEventHandler() {
+//    return eventHandler;
+//  }
+//
+//  public String getName() {
+//    return name;
+//  }
+//
+//  public boolean isMultiple() {
+//    return multiple;
+//  }
+//
+//  public TypeElement getAsync() {
+//    return async;
+//  }
+//
+//  public TypeElement getEventBus() {
+//    return eventBus;
+//  }
+//
+//  public TypeElement getInjectedEventBus() {
+//    return injectedEventBus;
+//  }
+//
+//  public ExecutableElement getBindMethod() {
+//    return bindMethod;
+//  }
+//
+//  public List<ExecutableElement> getEventHandlingMethods() {
+//    return eventHandlingMethods;
+//  }
+//
+//  public void setName(String name) {
+//    this.name = name;
+//  }
+//
+//  public void setMultiple(boolean multiple) {
+//    this.multiple = multiple;
+//  }
+//
+//  public void setAsync(TypeElement async) {
+//    this.async = async;
+//  }
+//
+//  public void setEventBus(TypeElement eventBus) {
+//    this.eventBus = eventBus;
+//  }
+//
+//  public void setInjectedEventBus(TypeElement injectedEventBus) {
+//    this.injectedEventBus = injectedEventBus;
+//  }
+//
+//  public void setBindMethod(ExecutableElement bindMethod) {
+//    this.bindMethod = bindMethod;
+//  }
+//
+//  public void setEventHandlingMethods(List<ExecutableElement> eventHandlingMethods) {
+//    this.eventHandlingMethods = eventHandlingMethods;
+//  }
+//
+//  public boolean isPresenter() {
+//    return presenter;
+//  }
 }

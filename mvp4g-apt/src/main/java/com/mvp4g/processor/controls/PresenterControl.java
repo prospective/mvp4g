@@ -17,31 +17,23 @@
 
 package com.mvp4g.processor.controls;
 
-import com.mvp4g.client.annotation.EventHandler;
 import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
-import com.mvp4g.processor.utils.Messages;
-import com.mvp4g.processor.controls.info.ApplicationInfo;
-import com.mvp4g.processor.controls.info.PresenterInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
-import com.mvp4g.processor.utils.Mvp4gUtils;
+import com.mvp4g.processor.utils.Messages;
 import com.mvp4g.processor.utils.Utils;
-import com.mvp4g.processor.controls.info.models.TypeModel;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.util.ElementFilter;
-import java.lang.reflect.Modifier;
-import java.util.List;
-import java.util.Map;
 
-public class PresenterControl {
+public class PresenterControl
+  implements Mvp4gControl {
 
   /* application info */
-  private ApplicationInfo applicationInfo;
+//  private ApplicationInfo applicationInfo;
 
   /* processing envirement */
   private ProcessingEnvironment processingEnv;
@@ -49,14 +41,12 @@ public class PresenterControl {
   private MessagerUtils         messagerUtils;
 
   /* info */
-  private PresenterInfo info;
+//  private PresenterInfo info;
 
 //------------------------------------------------------------------------------
 
-  public PresenterControl(ApplicationInfo applicationInfo,
-                          MessagerUtils messagerUtils,
+  public PresenterControl(MessagerUtils messagerUtils,
                           ProcessingEnvironment processingEnv) {
-    this.applicationInfo = applicationInfo;
     this.messagerUtils = messagerUtils;
     this.processingEnv = processingEnv;
   }
@@ -74,66 +64,75 @@ public class PresenterControl {
    * @param element the annotated presenter to validate
    * @return true, if it is valid class
    */
-  public boolean process(TypeElement element) {
-    // fill eventBus info
-    if (!createInfo(element)) {
+  @Override
+  public boolean process(Element element) {
+    if (isPresenter(element)) {
+      // create the printer info class
+
+      // validate the newly information
+    } else {
       return false;
     }
-    ;
-    // validate
-    return isValid(element);
+
+//    // fill eventBus info
+//    if (!createInfo(element)) {
+//      return false;
+//    }
+//    ;
+
+    return true;
   }
 
 //------------------------------------------------------------------------------
 
   private boolean createInfo(TypeElement element) {
-    // create info
-    info = applicationInfo.getPresenter(element.toString());
-    if (info == null) {
-      info = new PresenterInfo(element.toString(),
-                               element);
-    }
-
-    Map<String, Object> annotationValues = Utils.getAnnotation(Presenter.class,
-                                                               element);
-    if (annotationValues != null) {
-      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_VIEW) != null) {
-        info.setView((TypeElement) ((DeclaredType) annotationValues.get(Mvp4gUtils.ATTRIBUTE_VIEW)).asElement());
-      }
-      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_VIEW_NAME) != null) {
-        info.setViewName((String) annotationValues.get(Mvp4gUtils.ATTRIBUTE_VIEW_NAME));
-      }
-      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_NAME) != null) {
-        info.setName((String) annotationValues.get(Mvp4gUtils.ATTRIBUTE_NAME));
-      }
-      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_MULTIPLE) != null) {
-        info.setMultiple((Boolean) annotationValues.get(Mvp4gUtils.ATTRIBUTE_MULTIPLE));
-      }
-      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_ASYNC) instanceof TypeElement) {
-        info.setAsync((TypeElement) ((DeclaredType) annotationValues.get(Mvp4gUtils.ATTRIBUTE_ASYNC)).asElement());
-      }
-    }
-
-    if (!getTypeParameter(element)) {
-      return false;
-    }
-
-    for (ExecutableElement executable : ElementFilter.methodsIn(processingEnv.getElementUtils()
-                                                                             .getAllMembers(element))) {
-      if (executable.getSimpleName()
-                    .toString()
-                    .equals(Mvp4gUtils.METHOD_BIND)) {
-        info.setBindMethod(executable);
-      } else if (executable.getSimpleName()
-                           .toString()
-                           .startsWith(Mvp4gUtils.METHOD_EVENT)) {
-        info.getEventHandlingMethods()
-            .add(executable);
-      }
-    }
-
-    applicationInfo.addPresenter(info.getEventHandlerName(),
-                                 info);
+//    // create info
+//    info = applicationInfo.getPresenter(element.toString());
+//    if (info == null) {
+//      info = new PresenterInfo(element.toString(),
+//                               element);
+//    }
+//
+//    Map<String, Object> annotationValues = Utils.getAnnotation(Presenter.class,
+//                                                               element);
+//    if (annotationValues != null) {
+//      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_VIEW) != null) {
+//        info.setView((TypeElement) ((DeclaredType) annotationValues.get(Mvp4gUtils.ATTRIBUTE_VIEW)).asElement());
+//      }
+//      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_VIEW_NAME) != null) {
+//        info.setViewName((String) annotationValues.get(Mvp4gUtils.ATTRIBUTE_VIEW_NAME));
+//      }
+//      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_NAME) != null) {
+//        info.setName((String) annotationValues.get(Mvp4gUtils.ATTRIBUTE_NAME));
+//      }
+//      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_MULTIPLE) != null) {
+//        info.setMultiple((Boolean) annotationValues.get(Mvp4gUtils.ATTRIBUTE_MULTIPLE));
+//      }
+//      if (annotationValues.get(Mvp4gUtils.ATTRIBUTE_ASYNC) instanceof TypeElement) {
+//        info.setAsync((TypeElement) ((DeclaredType) annotationValues.get(Mvp4gUtils.ATTRIBUTE_ASYNC)).asElement());
+//      }
+//    }
+//
+//    if (!getTypeParameter(element)) {
+//      return false;
+//    }
+//
+//    for (ExecutableElement executable : ElementFilter.methodsIn(processingEnv.getElementUtils()
+//                                                                             .getAllMembers(element))) {
+//      if (executable.getSimpleName()
+//                    .toString()
+//                    .equals(Mvp4gUtils.METHOD_BIND)) {
+//        info.setBindMethod(executable);
+//      } else if (executable.getSimpleName()
+//                           .toString()
+//                           .startsWith(Mvp4gUtils.METHOD_EVENT)) {
+//        info.getEventHandlingMethods()
+//            .add(executable);
+//      }
+//    }
+//
+//    applicationInfo.addPresenter(info.getEventHandlerName(),
+//                                 info);
 
     return true;
   }
@@ -151,8 +150,7 @@ public class PresenterControl {
    * @param element the annotated presenter to validate
    * @return true, if it is valid class
    */
-  private boolean isValid(TypeElement element) {
-    // check presenter
+  private boolean isPresenter(Element element) {
     if (element != null) {
       // Check if the annotated file is a class
       if (element.getKind() != ElementKind.CLASS) {
@@ -161,7 +159,7 @@ public class PresenterControl {
                             Presenter.class.getSimpleName());
         return false;
       }
-      // Check if the annotated file is a class
+      // Check if the annotated file is not abstract
       if (element.getModifiers()
                  .contains(Modifier.ABSTRACT)) {
         messagerUtils.error(element,
@@ -178,55 +176,55 @@ public class PresenterControl {
                             Presenter.class.getSimpleName());
         return false;
       }
-      if (!processingEnv.getTypeUtils()
-                        .isSubtype(info.getView()
-                                       .asType(),
-                                   info.getInjectedView()
-                                       .asType())) {
-        messagerUtils.error(element,
-                            Messages.INVALID_VIEW,
-                            element.getSimpleName()
-                                   .toString(),
-                            info.getInjectedView()
-                                .getSimpleName(),
-                            info.getView()
-                                .getSimpleName());
-        return false;
-
-      }
+//      if (!processingEnv.getTypeUtils()
+//                        .isSubtype(info.getView()
+//                                       .asType(),
+//                                   info.getInjectedView()
+//                                       .asType())) {
+//        messagerUtils.error(element,
+//                            Messages.INVALID_VIEW,
+//                            element.getSimpleName()
+//                                   .toString(),
+//                            info.getInjectedView()
+//                                .getSimpleName(),
+//                            info.getView()
+//                                .getSimpleName());
+//        return false;
+//
+//      }
     }
     return true;
   }
 
-  private boolean getTypeParameter(TypeElement element) {
-    if (element.getTypeParameters()
-               .size() > 0) {
-      messagerUtils.error(element,
-                          Messages.INVALID_PRESENTER_ANNOTAITON_USE,
-                          element.getQualifiedName()
-                                 .toString(),
-                          EventHandler.class.getSimpleName(),
-                          Presenter.class.getSimpleName());
-      return false;
-    } else {
-      List<TypeModel> genericTypes = Utils.getTypeParameterFromClass(element);
-      if (genericTypes.size() > 0) {
-        for (TypeModel model : genericTypes) {
-          if (model.getType()
-                   .equals("E")) {
-            info.setInjectedEventBus(model.getArgument());
-          } else if (model.getType()
-                          .equals("V")) {
-            info.setInjectedView(model.getArgument());
-          }
-        }
-      } else {
-        messagerUtils.error(element,
-                            Messages.MISSING_GENERICS_PRESENTER,
-                            Presenter.class.getSimpleName());
-        return false;
-      }
-      return true;
-    }
-  }
+//  private boolean getTypeParameter(TypeElement element) {
+//    if (element.getTypeParameters()
+//               .size() > 0) {
+//      messagerUtils.error(element,
+//                          Messages.INVALID_PRESENTER_ANNOTAITON_USE,
+//                          element.getQualifiedName()
+//                                 .toString(),
+//                          EventHandler.class.getSimpleName(),
+//                          Presenter.class.getSimpleName());
+//      return false;
+//    } else {
+//      List<TypeModel> genericTypes = Utils.getTypeParameterFromClass(element);
+//      if (genericTypes.size() > 0) {
+//        for (TypeModel model : genericTypes) {
+//          if (model.getType()
+//                   .equals("E")) {
+//            info.setInjectedEventBus(model.getArgument());
+//          } else if (model.getType()
+//                          .equals("V")) {
+//            info.setInjectedView(model.getArgument());
+//          }
+//        }
+//      } else {
+//        messagerUtils.error(element,
+//                            Messages.MISSING_GENERICS_PRESENTER,
+//                            Presenter.class.getSimpleName());
+//        return false;
+//      }
+//      return true;
+//    }
+//  }
 }

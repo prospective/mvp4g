@@ -24,6 +24,7 @@ import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class HistoryConverterInfo {
 
   /* history converter element */

@@ -19,9 +19,9 @@ package com.mvp4g.processor.controls;
 
 import com.mvp4g.client.Mvp4gModule;
 import com.mvp4g.client.annotation.Events;
-import com.mvp4g.processor.exceptions.ConfigurationException;
 import com.mvp4g.processor.controls.info.ApplicationInfo;
 import com.mvp4g.processor.controls.info.ModuleInfo;
+import com.mvp4g.processor.exceptions.ConfigurationException;
 import com.mvp4g.processor.utils.MessagerUtils;
 import com.mvp4g.processor.utils.Mvp4gUtils;
 import com.mvp4g.processor.utils.Utils;
@@ -31,6 +31,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import java.util.Map;
 
+@Deprecated
 public class EventBusControl {
 
   /* application info */
@@ -96,7 +97,7 @@ public class EventBusControl {
       moduleName = Mvp4gModule.class.getCanonicalName();
     } else {
       moduleName = ((TypeElement) ((DeclaredType) annotationValues.get(Mvp4gUtils.ATTRIBUTE_MODULE)).asElement()).getQualifiedName()
-                                                                                              .toString();
+                                                                                                                 .toString();
     }
 
     // create info

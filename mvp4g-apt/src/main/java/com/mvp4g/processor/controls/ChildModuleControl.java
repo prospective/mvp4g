@@ -26,11 +26,10 @@ import com.mvp4g.processor.utils.Utils;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.util.SimpleAnnotationValueVisitor7;
 import java.util.List;
-import java.util.Map;
 
 public class ChildModuleControl {
 
@@ -62,56 +61,36 @@ public class ChildModuleControl {
    * <li>that class extends BasePresenter</li>
    * </ul>
    *
-   * @param element       the annotated presenter to validate
+   * @param element the annotated presenter to validate
    * @return true, if it is valid class
    */
   public boolean process(TypeElement element,
                          AnnotationMirror annotationMirror) {
     // fill info
-    createInfo(element, annotationMirror);
+    createInfo(element,
+               annotationMirror);
     // validate
     return isValid(element);
   }
 
 //------------------------------------------------------------------------------
 
-  private void createInfo(TypeElement element,
+  private void createInfo(final TypeElement element,
                           AnnotationMirror annotationMirror) {
-
-    boolean isAsync = true;
-    boolean isAutoDisplay = true;
-    TypeElement module;
-
-    for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues()
-                                                                                                   .entrySet()) {
-      for (AnnotationMirror mirror : (List<AnnotationMirror>) entry.getValue()
-                                                                   .getValue()) {
-        module = (TypeElement) ((DeclaredType) Utils.getAnnotationValue(Mvp4gUtils.ATTRIBUTE_MODULE_CLASS,
-                                                                        mirror)
-                                                    .getValue()
-        ).asElement();
-        AnnotationValue amIsAsync = Utils.getAnnotationValue(Mvp4gUtils.ATTRIBUTE_ASYNC,
-                                                             mirror);
-        if (amIsAsync != null) {
-          isAsync = (Boolean) amIsAsync.getValue();
-        }
-        AnnotationValue amIsAutoDisplay = Utils.getAnnotationValue(Mvp4gUtils.ATTRIBUTE_AUTO_DISPLAY,
-                                                                   mirror);
-        if (amIsAutoDisplay != null) {
-          isAutoDisplay = (Boolean) amIsAsync.getValue();
-        }
-        // set up module infos
-        ModuleInfo info = applicationInfo.getModule(module.toString());
-        if (info == null) {
-          info = new ModuleInfo(module.toString());
-          applicationInfo.addModules(info.getModuleName(),
-                                     info);
-        }
-        info.setAutoDisplay(isAutoDisplay);
-        info.setIsAsync(isAsync);
-        info.getEventBusInfo()
-            .setParentEventBus(element);
-      }
+    for (Object value : annotationMirror.getElementValues()
+                                        .values()) {
+      ((AnnotationValue) value).accept(new SimpleAnnotationValueVisitor7<Void, Void>() {
+                                         @Override
+                                         public Void visitArray(List<? extends AnnotationValue> values,
+                                                                Void aVoid) {
+                                           for (AnnotationValue childModuleValue : (List<AnnotationValue>) values) {
+                                             procesChildModule(element,
+                                                               childModuleValue);
+                                           }
+                                           return null;
+                                         }
+                                       },
+                                       null);
     }
   }
 
@@ -119,5 +98,53 @@ public class ChildModuleControl {
 
   private boolean isValid(TypeElement element) {
     return true;
+  }
+
+  private void procesChildModule(final TypeElement element,
+                                 AnnotationValue value) {
+    value.accept(new SimpleAnnotationValueVisitor7<Void, Void>() {
+                   @Override
+                   public Void visitAnnotation(AnnotationMirror mirror,
+                                               Void aVoid) {
+                     fillInfo(element,
+                              mirror);
+                     return null;
+                   }
+                 },
+                 null);
+  }
+
+  private void fillInfo(TypeElement element,
+                        AnnotationMirror childModule) {
+
+    boolean isAsync = true;
+    boolean isAutoDisplay = true;
+    TypeElement module;
+
+    module = (TypeElement) ((DeclaredType) Utils.getAnnotationValue(Mvp4gUtils.ATTRIBUTE_MODULE_CLASS,
+                                                                    childModule)
+                                                .getValue()
+    ).asElement();
+    AnnotationValue amIsAsync = Utils.getAnnotationValue(Mvp4gUtils.ATTRIBUTE_ASYNC,
+                                                         childModule);
+    if (amIsAsync != null) {
+      isAsync = (Boolean) amIsAsync.getValue();
+    }
+    AnnotationValue amIsAutoDisplay = Utils.getAnnotationValue(Mvp4gUtils.ATTRIBUTE_AUTO_DISPLAY,
+                                                               childModule);
+    if (amIsAutoDisplay != null) {
+      isAutoDisplay = (Boolean) amIsAsync.getValue();
+    }
+    // set up module infos
+    ModuleInfo info = applicationInfo.getModule(module.toString());
+    if (info == null) {
+      info = new ModuleInfo(module.toString());
+      applicationInfo.addModules(info.getModuleName(),
+                                 info);
+    }
+    info.setAutoDisplay(isAutoDisplay);
+    info.setIsAsync(isAsync);
+    info.getEventBusInfo()
+        .setParentEventBus(element);
   }
 }

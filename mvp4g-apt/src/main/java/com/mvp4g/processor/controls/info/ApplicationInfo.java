@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class ApplicationInfo {
 
   /* modules of the application */
@@ -42,11 +43,6 @@ public class ApplicationInfo {
     modules = new HashMap<>();
     histroyConverterInfos = new HashMap<>();
     eventHandlerInfos = new HashMap<>();
-  }
-
-  @Deprecated
-  public ApplicationInfo(Map<String, ModuleInfo> modules,
-                         Map<String, String> eventBus) {
   }
 
 //------------------------------------------------------------------------------

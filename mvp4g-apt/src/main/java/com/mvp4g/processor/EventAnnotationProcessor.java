@@ -18,7 +18,6 @@
 package com.mvp4g.processor;
 
 import com.mvp4g.processor.controls.info.ApplicationInfo;
-import com.mvp4g.processor.controls.info.ModuleInfo;
 import com.mvp4g.processor.utils.MessagerUtils;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -30,8 +29,11 @@ import javax.lang.model.element.TypeElement;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
+@Deprecated
 @SupportedAnnotationTypes({"com.mvp4g.annotations.Events"})
 public class EventAnnotationProcessor
   extends AbstractProcessor {
@@ -204,57 +206,57 @@ public class EventAnnotationProcessor
 
   //	@SuppressWarnings( "unchecked" )
 
-  private ApplicationInfo loadChildModules(List<TypeElement> eventBus) {
-    Map<String, ModuleInfo> childModules = new HashMap<String, ModuleInfo>();
-    Map<String, String> eventBusMap = new HashMap<String, String>();
-//		AnnotationValue value;
-//		String module;
-//		ModuleInfo info;
-//		List<AnnotationValue> children;
-//		AnnotationMirror child;
-//		for ( TypeElement e : eventBus ) {
-//			for ( AnnotationMirror annotation : e.getAnnotationMirrors() ) {
-//				if ( ProcessorUtil.EVENTS.equals( annotation.getAnnotationType().toString() ) ) {
-//					annotation = ProcessorUtil.getAnnotationMirror( ProcessorUtil.EVENTS, e );
-//					value = ProcessorUtil.getAnnotationValue( ProcessorUtil.ATTRIBUTE_MODULE, annotation );
-//					if ( value != null ) {
-//						module = ( (DeclaredType)value.getValue() ).toString();
-//						info = childModules.get( module );
-//						if ( info == null ) {
-//							info = new ModuleInfo();
-//							childModules.put( module, info );
-//						}
-//						if ( info.getCurrentEventBus() != null ) {
-//							processingEnv.getMessager().printMessage( Kind.ERROR,
-//									String.format( Messages.MODULE_ASSOCIATED_TWICE, module, info.getCurrentEventBus().asType(), e.asType() ), e );
-//						} else {
-//							info.setCurrentEventBus( e );
-//							eventBusMap.put( e.getQualifiedName().toString(), module );
-//						}
-//					}
-//				} else if ( ProcessorUtil.CHILD_MODULES.equals( annotation.getAnnotationType().toString() ) ) {
-//					children = (List<AnnotationValue>)ProcessorUtil.getAnnotationValue( ProcessorUtil.ATTRIBUTE_VALUE, annotation ).getValue();
-//					for ( AnnotationValue childValue : children ) {
-//						child = (AnnotationMirror)childValue.getValue();
-//						module = ( (DeclaredType)ProcessorUtil.getAnnotationValue( ProcessorUtil.ATTRIBUTE_MODULE_CLASS, child ).getValue() )
-//								.toString();
-//						info = childModules.get( module );
-//						if ( info == null ) {
-//							info = new ModuleInfo();
-//							childModules.put( module, info );
-//						}
-//						if ( info.getParentEventBus() != null ) {
-//							processingEnv.getMessager().printMessage( Kind.ERROR,
-//									String.format( Messages.MODULE_TWO_PARENT_EVENT_BUS, module, info.getParentEventBus().asType(), e.asType() ), e );
-//						} else {
-//							info.setParentEventBus( e );
-//						}
-//					}
-//				}
-//			}
-//		}
-
-    return new ApplicationInfo(childModules,
-                               eventBusMap);
-  }
+//  private ApplicationInfo loadChildModules(List<TypeElement> eventBus) {
+//    Map<String, ModuleInfo> childModules = new HashMap<String, ModuleInfo>();
+//    Map<String, String> eventBusMap = new HashMap<String, String>();
+////		AnnotationValue value;
+////		String module;
+////		ModuleInfo info;
+////		List<AnnotationValue> children;
+////		AnnotationMirror child;
+////		for ( TypeElement e : eventBus ) {
+////			for ( AnnotationMirror annotation : e.getAnnotationMirrors() ) {
+////				if ( ProcessorUtil.EVENTS.equals( annotation.getAnnotationType().toString() ) ) {
+////					annotation = ProcessorUtil.getAnnotationMirror( ProcessorUtil.EVENTS, e );
+////					value = ProcessorUtil.getAnnotationValue( ProcessorUtil.ATTRIBUTE_MODULE, annotation );
+////					if ( value != null ) {
+////						module = ( (DeclaredType)value.getValue() ).toString();
+////						info = childModules.get( module );
+////						if ( info == null ) {
+////							info = new ModuleInfo();
+////							childModules.put( module, info );
+////						}
+////						if ( info.getCurrentEventBus() != null ) {
+////							processingEnv.getMessager().printMessage( Kind.ERROR,
+////									String.format( Messages.MODULE_ASSOCIATED_TWICE, module, info.getCurrentEventBus().asType(), e.asType() ), e );
+////						} else {
+////							info.setCurrentEventBus( e );
+////							eventBusMap.put( e.getQualifiedName().toString(), module );
+////						}
+////					}
+////				} else if ( ProcessorUtil.CHILD_MODULES.equals( annotation.getAnnotationType().toString() ) ) {
+////					children = (List<AnnotationValue>)ProcessorUtil.getAnnotationValue( ProcessorUtil.ATTRIBUTE_VALUE, annotation ).getValue();
+////					for ( AnnotationValue childValue : children ) {
+////						child = (AnnotationMirror)childValue.getValue();
+////						module = ( (DeclaredType)ProcessorUtil.getAnnotationValue( ProcessorUtil.ATTRIBUTE_MODULE_CLASS, child ).getValue() )
+////								.toString();
+////						info = childModules.get( module );
+////						if ( info == null ) {
+////							info = new ModuleInfo();
+////							childModules.put( module, info );
+////						}
+////						if ( info.getParentEventBus() != null ) {
+////							processingEnv.getMessager().printMessage( Kind.ERROR,
+////									String.format( Messages.MODULE_TWO_PARENT_EVENT_BUS, module, info.getParentEventBus().asType(), e.asType() ), e );
+////						} else {
+////							info.setParentEventBus( e );
+////						}
+////					}
+////				}
+////			}
+////		}
+//
+//    return new ApplicationInfo(childModules,
+//                               eventBusMap);
+//  }
 }
