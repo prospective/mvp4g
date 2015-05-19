@@ -23,6 +23,7 @@ import com.mvp4g.processor.controls.PresenterControl;
 import com.mvp4g.processor.exceptions.ConfigurationException;
 import com.mvp4g.processor.utils.MessagerUtils;
 
+import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
@@ -34,7 +35,7 @@ import java.util.Set;
 
 @AutoService(Processor.class)
 public class Mvp4gProcessor
-  extends Mvp4gAbstractProcessor {
+  extends AbstractProcessor {
 //
 //  /* info */
 //  private ApplicationInfo applicationInfo;
