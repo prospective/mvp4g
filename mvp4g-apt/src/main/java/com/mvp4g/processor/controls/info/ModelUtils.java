@@ -25,6 +25,30 @@ import java.util.Arrays;
  */
 public class ModelUtils {
 
+  private static final String FILE_DELIMITER = "$";
+  private static final String FILE_TYPE = "ser";
+  private static final String INFO_TYPE_DELIMITER = "_";
+
+//------------------------------------------------------------------------------
+
+  public String createFileName(String packageName,
+                        String className,
+                        InfoType type) {
+    StringBuffer name = new StringBuffer();
+    if (packageName != null) {
+      name.append(packageName.replaceAll("\\\\",
+                                         ModelUtils.FILE_DELIMITER));
+      name.append(ModelUtils.FILE_DELIMITER);
+    }
+    name.append(className);
+    name.append(ModelUtils.INFO_TYPE_DELIMITER);
+    name.append(type.toString().toLowerCase());
+    name.append(".");
+    name.append(ModelUtils.FILE_TYPE);
+    return name.toString();
+  }
+
+
   public static String createKeyValue(String key,
                                       String value) {
     StringBuilder sb = new StringBuilder();
@@ -33,6 +57,7 @@ public class ModelUtils {
       .append(value);
     return sb.toString();
   }
+
 
   public static String toByteArray(Object object) {
     try (ByteArrayOutputStream baos = new ByteArrayOutputStream(1024)) {
@@ -45,6 +70,7 @@ public class ModelUtils {
     return null;
   }
 
+
   public static Object toByteArray(Object object) {
     try (ByteArrayOutputStream baos = new ByteArrayOutputStream(1024)) {
       ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -56,6 +82,11 @@ public class ModelUtils {
     return null;
   }
 
+//------------------------------------------------------------------------------
+
+  public enum InfoType {
+    PRESENTER
+  }
 }
 
 //public class ExerciseSerializableNew {
